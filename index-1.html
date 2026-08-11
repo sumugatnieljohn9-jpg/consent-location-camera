@@ -1,1327 +1,341 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recovery & Location Assistance</title><link rel="stylesheet"
+ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#07101d;color:#fff}
+.container{max-width:900px;margin:auto;padding:15px}
+header{text-align:center;padding:20px 5px}
+header h1{font-size:23px;margin:8px 0}
+header p,.note{color:#9eabbf;font-size:12px;line-height:1.5}
 
-<title>Recovery & Location Assistance Dashboard</title>
+.card{background:#101b2b;border:1px solid #24344b;border-radius:16px;padding:16px;margin-bottom:14px}
+.title{font-weight:bold;font-size:16px;margin-bottom:12px}
 
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  integrity="sha256-p4NxAoJBhIINfQ3P0bYf6P9Q0h7M8x9QxG9Q8Q9Q9Q="
-  crossorigin=""
->
+.status,.box{background:#0b1524;border-radius:11px;padding:12px}
+.status{display:flex;gap:9px;align-items:center;margin-bottom:10px}
+.dot{width:10px;height:10px;border-radius:50%;background:#777}
+.active .dot{background:#21d879;box-shadow:0 0 10px #21d879}
 
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
+button,.btn{border:0;border-radius:10px;padding:12px 14px;
+font-weight:bold;cursor:pointer;text-decoration:none;text-align:center}
+button:disabled{opacity:.55}
+.primary{background:#1677ff;color:white}
+.secondary{background:#29384e;color:white}
+.buttons{display:flex;gap:8px}
+.buttons>*{flex:1}
+
+#map{height:400px;border-radius:13px;overflow:hidden}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.label{color:#8290a4;font-size:10px;margin-bottom:5px}
+.value{font-size:13px;font-weight:bold;word-break:break-word}
+
+input,select,textarea{
+width:100%;margin-top:5px;padding:12px;background:#07101d;
+border:1px solid #29384e;border-radius:9px;color:#fff;font-size:13px}
+textarea{resize:vertical}
+.error{color:#ff7777;font-size:12px;margin-top:9px}
+.success{color:#21d879;font-size:12px;margin-top:9px}
+.tool{display:flex;justify-content:space-between;align-items:center;
+gap:10px;background:#0b1524;padding:12px;border-radius:10px;margin-top:8px}
+.tool small{color:#8290a4;display:block;margin-top:3px}
+.notice{background:#1b1b16;border-left:4px solid #f0b429;
+padding:12px;color:#d8d1ad;font-size:11px;line-height:1.6}
+.footer{text-align:center;color:#65748a;font-size:10px;padding:15px}
+
+/* MAP LOADING SCREEN */
+#mapLoading{
+position:fixed;inset:0;background:#07101d;z-index:9999;
+display:flex;align-items:center;justify-content:center;
+text-align:center;transition:.4s
 }
-
-body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#07101d;
-  color:#fff;
-}
-
-.container{
-  width:100%;
-  max-width:950px;
-  margin:auto;
-  padding:16px;
-}
-
-.header{
-  text-align:center;
-  padding:25px 10px;
-}
-
-.header-icon{
-  font-size:48px;
-}
-
-.header h1{
-  font-size:25px;
-  margin:8px 0;
-}
-
-.header p{
-  color:#9eabbf;
-  font-size:13px;
-  line-height:1.6;
-}
-
-.card{
-  background:#101b2b;
-  border:1px solid #24344b;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:16px;
-}
-
-.card-title{
-  font-size:17px;
-  font-weight:bold;
-  margin-bottom:14px;
-}
-
-.info-box{
-  background:#0b1524;
-  border-radius:12px;
-  padding:13px;
-}
-
-.info-label{
-  color:#8795a9;
-  font-size:11px;
-  margin-bottom:6px;
-}
-
-.info-value{
-  font-size:14px;
-  font-weight:600;
-  word-break:break-word;
-}
-
-.input-field{
-  width:100%;
-  padding:13px;
-  margin-top:5px;
-  background:#07101d;
-  border:1px solid #29384e;
-  border-radius:10px;
-  color:#fff;
-  outline:none;
-  font-size:14px;
-}
-
-.input-field:focus{
-  border-color:#1677ff;
-}
-
-textarea{
-  resize:vertical;
-}
-
-button,
-.button{
-  border:0;
-  border-radius:11px;
-  padding:13px 16px;
-  font-size:13px;
-  font-weight:bold;
-  cursor:pointer;
-  text-decoration:none;
-  display:inline-block;
-  text-align:center;
-}
-
-button:disabled{
-  opacity:.6;
-  cursor:not-allowed;
-}
-
-.primary{
-  background:#1677ff;
-  color:#fff;
-}
-
-.secondary{
-  background:#29384e;
-  color:#fff;
-}
-
-.telegram{
-  background:#229ed9;
-  color:#fff;
-}
-
-button:hover,
-.button:hover{
-  opacity:.9;
-}
-
-.buttons{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.buttons button{
-  flex:1;
-  min-width:160px;
-}
-
-.status{
-  background:#0b1524;
-  border-radius:12px;
-  padding:13px;
-  margin-bottom:12px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
-
-.status-dot{
-  width:11px;
-  height:11px;
-  min-width:11px;
-  border-radius:50%;
-  background:#727d8c;
-}
-
-.status.active .status-dot{
-  background:#21d879;
-  box-shadow:0 0 12px #21d879;
-}
-
-.error{
-  color:#ff7777;
-  font-size:12px;
-  margin-top:10px;
-  line-height:1.5;
-}
-
-.success{
-  color:#21d879;
-  font-size:12px;
-  margin-top:10px;
-  line-height:1.5;
-}
-
-#map{
-  width:100%;
-  height:420px;
-  border-radius:15px;
-  overflow:hidden;
-}
-
-.map-note{
-  color:#8290a4;
-  font-size:11px;
-  margin-top:8px;
-  line-height:1.5;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-
-.accuracy-box{
-  background:#0b1524;
-  padding:13px;
-  border-radius:12px;
-  margin-top:12px;
-}
-
-.accuracy-bar{
-  height:8px;
-  background:#29384e;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:8px;
-}
-
-.accuracy-fill{
-  height:100%;
-  width:0%;
-  background:#21d879;
-  transition:.4s;
-}
-
-.tool{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  background:#0b1524;
-  padding:13px;
-  border-radius:12px;
-  margin-top:9px;
-}
-
-.tool-info{
-  flex:1;
-}
-
-.tool-name{
-  font-size:14px;
-  font-weight:bold;
-}
-
-.tool-description{
-  color:#8290a4;
-  font-size:11px;
-  margin-top:4px;
-  line-height:1.5;
-}
-
-.notice{
-  background:#1b1b16;
-  border-left:4px solid #f0b429;
-  border-radius:8px;
-  padding:13px;
-  color:#d8d1ad;
-  font-size:12px;
-  line-height:1.6;
-}
-
-.preview{
-  display:none;
-  width:120px;
-  height:120px;
-  object-fit:cover;
-  border-radius:15px;
-  margin-top:12px;
-  border:1px solid #29384e;
-}
-
-.footer{
-  text-align:center;
-  color:#65748a;
-  font-size:11px;
-  padding:20px;
-  line-height:1.6;
-}
-
-.loading{
-  opacity:.7;
-}
+.loader{width:42px;height:42px;border:4px solid #29384e;
+border-top-color:#1677ff;border-radius:50%;animation:spin 1s linear infinite;
+margin:0 auto 15px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#mapLoading small{color:#8290a4}
 
 @media(max-width:600px){
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  #map{
-    height:350px;
-  }
-
-  .tool{
-    flex-direction:column;
-    align-items:stretch;
-  }
-
-  .tool .button{
-    width:100%;
-  }
-
-  .header h1{
-    font-size:22px;
-  }
+.grid{grid-template-columns:1fr}
+#map{height:340px}
+.buttons{flex-direction:column}
+.tool{align-items:stretch;flex-direction:column}
+.tool .btn{width:100%}
 }
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<header class="header">
-  <div class="header-icon">🛡️</div>
-
-  <h1>Recovery & Location Assistance</h1>
-
-  <p>
-    Consent-based location dashboard and account recovery
-    case-management tools.
-  </p>
-</header>
-
-
-<!-- LIVE LOCATION -->
-<section class="card">
-
-  <div class="card-title">📍 Live Location</div>
-
-  <div class="status" id="statusBox">
-
-    <div class="status-dot"></div>
-
-    <div id="statusText">
-      Location sharing is not active.
-    </div>
-
+</style></head><body><!-- SATELLITE MAP LOADING SCREEN --><div id="mapLoading">
+  <div>
+    <div class="loader"></div>
+    <h3>🛰️ Loading Satellite Map</h3>
+    <small>Please wait...</small>
   </div>
-
-  <div class="buttons">
-
-    <button
-      id="startLocationButton"
-      class="primary"
-      onclick="startLocation()"
-    >
+</div><div class="container"><header>
+  <div style="font-size:42px">🛡️</div>
+  <h1>Recovery & Location Assistance</h1>
+  <p>Consent-based location dashboard and account recovery tools.</p>
+</header><!-- LOCATION --><section class="card">
+  <div class="title">📍 Live Location</div>  <div class="status" id="statusBox">
+    <span class="dot"></span>
+    <span id="statusText">Location sharing is not active.</span>
+  </div>  <div class="buttons">
+    <button class="primary" id="startBtn" onclick="startLocation()">
       📍 Allow Live Location
     </button>
-
-    <button
-      id="stopLocationButton"
-      class="secondary"
-      onclick="stopLocation()"
-    >
+    <button class="secondary" onclick="stopLocation()">
       ⏹ Stop Sharing
     </button>
-
-  </div>
-
-  <div id="locationError" class="error"></div>
-
-</section>
-
-
-<!-- MAP -->
-<section class="card">
-
-  <div class="card-title">🛰️ Satellite Map</div>
-
+  </div>  <div id="locationError" class="error"></div>
+</section><!-- SATELLITE MAP --><section class="card">
+  <div class="title">🛰️ Satellite Map</div>
   <div id="map"></div>
-
-  <div class="map-note">
-    The marker and accuracy circle appear only after the
-    user grants location permission.
+  <div class="note" style="margin-top:8px">
+    The location marker appears only after the user grants location permission.
   </div>
-
-</section>
-
-
-<!-- LOCATION INFORMATION -->
-<section class="card">
-
-  <div class="card-title">🗺️ Location Information</div>
-
-  <div class="grid">
-
-    <div class="info-box">
-      <div class="info-label">🌍 Country</div>
-      <div class="info-value" id="country">—</div>
-    </div>
-
-    <div class="info-box">
-      <div class="info-label">🏙️ City</div>
-      <div class="info-value" id="city">—</div>
-    </div>
-
-    <div class="info-box">
-      <div class="info-label">🏠 Address</div>
-      <div class="info-value" id="address">—</div>
-    </div>
-
-    <div class="info-box">
-      <div class="info-label">📍 Latitude</div>
-      <div class="info-value" id="latitude">—</div>
-    </div>
-
-    <div class="info-box">
-      <div class="info-label">📍 Longitude</div>
-      <div class="info-value" id="longitude">—</div>
-    </div>
-
-    <div class="info-box">
-      <div class="info-label">🎯 Accuracy</div>
-      <div class="info-value" id="accuracy">—</div>
-    </div>
-
-    <div class="info-box">
-      <div class="info-label">🕐 Timestamp</div>
-      <div class="info-value" id="timestamp">—</div>
-    </div>
-
+</section><!-- LOCATION DATA --><section class="card">
+  <div class="title">🗺️ Location Information</div>  <div class="grid">
+    <div class="box"><div class="label">🌍 Country</div><div class="value" id="country">—</div></div>
+    <div class="box"><div class="label">🏙️ City</div><div class="value" id="city">—</div></div>
+    <div class="box"><div class="label">🏠 Address</div><div class="value" id="address">—</div></div>
+    <div class="box"><div class="label">📍 Latitude</div><div class="value" id="lat">—</div></div>
+    <div class="box"><div class="label">📍 Longitude</div><div class="value" id="lng">—</div></div>
+    <div class="box"><div class="label">🎯 Accuracy</div><div class="value" id="acc">—</div></div>
+    <div class="box"><div class="label">🕐 Timestamp</div><div class="value" id="time">—</div></div>
   </div>
-
-  <div class="accuracy-box">
-
-    <div class="info-label">
-      📡 Location Accuracy
-    </div>
-
-    <div id="accuracyText">
-      Waiting for location...
-    </div>
-
-    <div class="accuracy-bar">
-      <div
-        class="accuracy-fill"
-        id="accuracyFill"
-      ></div>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- FACEBOOK URL -->
-<section class="card">
-
-  <div class="card-title">
-    🔗 Facebook Account URL
-  </div>
-
-  <div class="info-box">
-
-    <div class="info-label">
-      Facebook Profile / Page / Post URL
-    </div>
-
-    <input
-      type="url"
-      id="facebookUrl"
-      class="input-field"
-      placeholder="https://www.facebook.com/username"
-      autocomplete="url"
-    >
-
-    <button
-      class="primary"
-      onclick="openFacebookUrl()"
-      style="width:100%;margin-top:12px;"
-    >
+</section><!-- FACEBOOK URL --><section class="card">
+  <div class="title">🔗 Facebook Account URL</div>
+  <div class="box">
+    <div class="label">Profile / Page / Post URL</div>
+    <input id="fbUrl" type="url" placeholder="https://www.facebook.com/username">
+    <button class="primary" style="width:100%;margin-top:9px" onclick="openFB()">
       🔗 Open Facebook URL
     </button>
+    <div id="fbError" class="error"></div>
+  </div>
+</section><!-- CASE STATUS --><section class="card">
+  <div class="title">📊 Account Status Tracker</div>  <div class="box">
+    <div class="label">👤 Account Name</div>
+    <input id="accountName" placeholder="Account name"><div class="label" style="margin-top:10px">📊 Status</div>
+<select id="accountStatus">
+  <option value="">Select status</option>
+  <option>🟢 Active</option>
+  <option>🟠 Suspended</option>
+  <option>🔴 Disabled</option>
+  <option>🔒 Locked</option>
+  <option>🟡 Under Review</option>
+  <option>⚪ Unknown</option>
+</select>
 
-    <div id="facebookError" class="error"></div>
+<div class="label" style="margin-top:10px">📝 Case Notes</div>
+<textarea id="caseNotes" rows="4" placeholder="Describe the issue..."></textarea>
+
+<button class="primary" style="width:100%;margin-top:9px" onclick="saveCase()">
+  💾 Save Case
+</button>
+
+<div id="caseMsg" class="success"></div>
 
   </div>
-
-</section>
-
-
-<!-- ACCOUNT STATUS -->
-<section class="card">
-
-  <div class="card-title">
-    📊 Account Status Tracker
+</section><!-- OFFICIAL RECOVERY --><section class="card">
+  <div class="title">🔐 Official Facebook Recovery Tools</div>  <div class="tool">
+    <div>Find Your Account<small>Official account recovery page.</small></div>
+    <a class="btn primary" href="https://www.facebook.com/login/identify/"
+       target="_blank" rel="noopener">Open</a>
+  </div>  <div class="tool">
+    <div>Hacked Account<small>Recovery for compromised accounts.</small></div>
+    <a class="btn primary" href="https://www.facebook.com/hacked/"
+       target="_blank" rel="noopener">Open</a>
+  </div>  <div class="tool">
+    <div>Help Center<small>Official Facebook help resources.</small></div>
+    <a class="btn primary" href="https://www.facebook.com/help/"
+       target="_blank" rel="noopener">Open</a>
   </div>
-
-  <div class="info-box">
-
-    <div class="info-label">
-      👤 Account Name
-    </div>
-
-    <input
-      type="text"
-      id="accountName"
-      class="input-field"
-      placeholder="Account name"
-    >
-
-    <div
-      class="info-label"
-      style="margin-top:12px;"
-    >
-      📊 Reported Status
-    </div>
-
-    <select
-      id="accountStatus"
-      class="input-field"
-    >
-
-      <option value="">
-        Select status
-      </option>
-
-      <option value="Active">
-        🟢 Active
-      </option>
-
-      <option value="Suspended">
-        🟠 Suspended
-      </option>
-
-      <option value="Disabled">
-        🔴 Disabled
-      </option>
-
-      <option value="Locked">
-        🔒 Locked
-      </option>
-
-      <option value="Under Review">
-        🟡 Under Review
-      </option>
-
-      <option value="Unknown">
-        ⚪ Unknown
-      </option>
-
-    </select>
-
-
-    <div
-      class="info-label"
-      style="margin-top:12px;"
-    >
-      📝 Case Notes
-    </div>
-
-    <textarea
-      id="caseNotes"
-      class="input-field"
-      rows="4"
-      placeholder="Describe the issue..."
-    ></textarea>
-
-
-    <button
-      id="saveStatusButton"
-      class="primary"
-      onclick="saveStatusCase()"
-      style="width:100%;margin-top:12px;"
-    >
-      💾 Save Case
-    </button>
-
-    <div
-      id="statusMessage"
-      class="success"
-    ></div>
-
-  </div>
-
-
-  <div
-    id="statusResult"
-    style="display:none;margin-top:12px;"
-    class="info-box"
-  >
-
-    <div class="info-label">
-      Saved Case
-    </div>
-
-    <div
-      class="info-value"
-      id="savedStatus"
-    >
-      —
-    </div>
-
-    <div
-      style="margin-top:8px;"
-      class="info-label"
-    >
-      Last Updated
-    </div>
-
-    <div
-      class="info-value"
-      id="savedStatusTime"
-    >
-      —
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- ACCOUNT PHOTO -->
-<section class="card">
-
-  <div class="card-title">
-    📸 Facebook Account Photo & Issue
-  </div>
-
-  <p
-    style="
-      color:#9eabbf;
-      font-size:13px;
-      line-height:1.6;
-      margin-bottom:14px;
-    "
-  >
-    Upload a screenshot or account photo related
-    to your recovery case.
-  </p>
-
-
-  <div class="info-box">
-
-    <div class="info-label">
-      📸 Account Photo / Screenshot
-    </div>
-
-    <input
-      type="file"
-      id="accountPhoto"
-      accept="image/*"
-      class="input-field"
-      onchange="previewAccountPhoto(event)"
-    >
-
-    <img
-      id="photoPreview"
-      class="preview"
-      alt="Account photo preview"
-    >
-
-
-    <div
-      class="info-label"
-      style="margin-top:15px;"
-    >
-      ⚠️ Account Issue
-    </div>
-
-    <select
-      id="accountIssue"
-      class="input-field"
-    >
-
-      <option value="">
-        Select issue
-      </option>
-
-      <option value="Account Disabled">
-        🔴 Account Disabled
-      </option>
-
-      <option value="Account Suspended">
-        🟠 Account Suspended
-      </option>
-
-      <option value="Account Locked">
-        🔒 Account Locked
-      </option>
-
-      <option value="Login Problem">
-        🔑 Login Problem
-      </option>
-
-      <option value="Hacked / Compromised">
-        🛡️ Hacked / Compromised
-      </option>
-
-      <option value="Appeal Pending">
-        🟡 Appeal Pending
-      </option>
-
-      <option value="Other">
-        ⚪ Other Issue
-      </option>
-
-    </select>
-
-
-    <div
-      class="info-label"
-      style="margin-top:15px;"
-    >
-      📝 Issue Description
-    </div>
-
-    <textarea
-      id="issueDescription"
-      class="input-field"
-      rows="5"
-      placeholder="Describe the account issue..."
-    ></textarea>
-
-
-    <button
-      class="primary"
-      onclick="saveIssueCase()"
-      style="width:100%;margin-top:12px;"
-    >
-      💾 Save Issue
-    </button>
-
-    <div
-      id="issueMessage"
-      class="success"
-    ></div>
-
-  </div>
-
-</section>
-
-
-<!-- ISSUE RESULT -->
-<section
-  class="card"
-  id="issueResult"
-  style="display:none;"
->
-
-  <div class="card-title">
-    📋 Issue Report
-  </div>
-
-  <img
-    id="savedPhoto"
-    class="preview"
-    alt="Saved account photo"
-  >
-
-  <div class="info-box">
-
-    <div class="info-label">
-      ⚠️ Issue
-    </div>
-
-    <div
-      class="info-value"
-      id="savedIssue"
-    >
-      —
-    </div>
-
-  </div>
-
-
-  <div
-    class="info-box"
-    style="margin-top:10px;"
-  >
-
-    <div class="info-label">
-      📝 Description
-    </div>
-
-    <div
-      class="info-value"
-      id="savedDescription"
-    >
-      —
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- FACEBOOK TOOLS -->
-<section class="card">
-
-  <div class="card-title">
-    🔐 Official Facebook Recovery Tools
-  </div>
-
-
-  <div class="tool">
-
-    <div class="tool-info">
-
-      <div class="tool-name">
-        Find Your Account
-      </div>
-
-      <div class="tool-description">
-        Official Meta account recovery page.
-      </div>
-
-    </div>
-
-    <a
-      class="button primary"
-      href="https://www.facebook.com/login/identify/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Open
-    </a>
-
-  </div>
-
-
-  <div class="tool">
-
-    <div class="tool-info">
-
-      <div class="tool-name">
-        Hacked Account Recovery
-      </div>
-
-      <div class="tool-description">
-        Official recovery page for compromised accounts.
-      </div>
-
-    </div>
-
-    <a
-      class="button primary"
-      href="https://www.facebook.com/hacked/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Open
-    </a>
-
-  </div>
-
-
-  <div class="tool">
-
-    <div class="tool-info">
-
-      <div class="tool-name">
-        Facebook Help Center
-      </div>
-
-      <div class="tool-description">
-        Official Facebook troubleshooting resources.
-      </div>
-
-    </div>
-
-    <a
-      class="button primary"
-      href="https://www.facebook.com/help/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Open
-    </a>
-
-  </div>
-
-</section>
-
-
-<!-- CONTACT -->
-<section class="card">
-
-  <div class="card-title">
-    📞 Contact Information
-  </div>
-
-  <div class="info-box">
-
-    <div class="info-label">
-      💬 Telegram
-    </div>
-
-    <div
-      class="info-value"
-      style="font-size:16px;margin-bottom:12px;"
-    >
-      @Minimumwage_01
-    </div>
-
-    <a
-      class="button telegram"
-      href="https://t.me/Minimumwage_01"
-      target="_blank"
-      rel="noopener noreferrer"
-      style="width:100%;"
-    >
-      💬 Contact via Telegram
-    </a>
-
-  </div>
-
-</section>
-
-
-<!-- PRIVACY -->
-<section class="card">
-
-  <div class="card-title">
-    🔐 Privacy & Authorization
-  </div>
-
+</section><!-- PRIVACY --><section class="card">
+  <div class="title">🔐 Privacy & Authorization</div>
   <div class="notice">
-
-    <strong>Important:</strong>
-
-    <br><br>
-
-    Location access begins only after the user grants
-    browser permission.
-
-    <br><br>
-
-    The account-status and issue sections are
-    case-management forms. They do not connect to
-    Facebook's private systems and cannot independently
-    confirm whether an account is suspended or disabled.
-
-    <br><br>
-
-    Do not submit passwords, authentication codes,
-    cookies, access tokens, or other private credentials.
-
-    <br><br>
-
-    Use recovery tools only for accounts you own or
-    are authorized to manage.
-
+    <b>Important:</b><br><br>
+    Location access starts only after the user grants browser permission.
+    This page does not secretly track users or bypass device permissions.
+    Account-status information is manually entered and does not connect to
+    Facebook's private systems.<br><br>
+    Never submit passwords, authentication codes, cookies, access tokens,
+    or other private credentials. Use recovery tools only for accounts
+    you own or are authorized to manage.
   </div>
+</section><div class="footer">
+  🛡️ Recovery & Location Assistance Dashboard<br>
+  Consent-based location sharing • Authorized recovery only
+</div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
+let map,marker,circle,watchId=null,lastGeo=0;
 
-</section>
+/* MAP */
+function initMap(){
+  map=L.map("map").setView([12.8797,121.7740],6);
 
-
-<div class="footer">
-
-  🛡️ Recovery & Location Assistance Dashboard
-
-  <br>
-
-  Consent-based location sharing • Authorized account recovery only
-
-</div>
-
-</div>
-
-
-<!-- LEAFLET -->
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-  crossorigin=""
-></script>
-
-
-<script>
-
-/* =====================================================
-   MAP
-===================================================== */
-
-let map;
-
-let standardMap;
-let satelliteMap;
-
-let locationMarker = null;
-let accuracyCircle = null;
-
-let watchId = null;
-
-let lastGeocode = 0;
-
-let lastMapPosition = null;
-
-
-function initializeMap(){
-
-  map = L.map("map", {
-    zoomControl:true
-  }).setView(
-    [12.8797,121.7740],
-    6
-  );
-
-
-  standardMap = L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      maxZoom:19,
-      attribution:
-        "&copy; OpenStreetMap contributors"
-    }
-  );
-
-
-  satelliteMap = L.tileLayer(
+  const satellite=L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    {
-      maxZoom:19,
-      attribution:
-        "Tiles &copy; Esri"
-    }
-  );
-
-
-  satelliteMap.addTo(map);
-
-
-  L.control.layers(
-    {
-      "🛰️ Satellite":satelliteMap,
-      "🗺️ Standard":standardMap
-    },
-    null,
-    {
-      collapsed:true
-    }
+    {maxZoom:19,attribution:"Tiles © Esri"}
   ).addTo(map);
 
+  const standard=L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {maxZoom:19,attribution:"© OpenStreetMap"}
+  );
 
-  setTimeout(function(){
+  L.control.layers({
+    "🛰️ Satellite":satellite,
+    "🗺️ Standard":standard
+  }).addTo(map);
+
+  setTimeout(()=>{
     map.invalidateSize();
-  },300);
+    document.getElementById("mapLoading").style.opacity="0";
+    setTimeout(()=>document.getElementById("mapLoading").remove(),450);
+  },700);
 }
 
-
-/* =====================================================
-   LIVE LOCATION
-===================================================== */
-
+/* LOCATION */
 function startLocation(){
-
-  const error =
-    document.getElementById("locationError");
-
-  const startButton =
-    document.getElementById("startLocationButton");
-
-  error.textContent = "";
-
+  const err=document.getElementById("locationError");
 
   if(!window.isSecureContext){
-
-    error.textContent =
-      "Live Location requires HTTPS or localhost. " +
-      "Please open this website using a secure HTTPS link.";
-
+    err.textContent="Location requires HTTPS or localhost.";
     return;
   }
-
 
   if(!navigator.geolocation){
-
-    error.textContent =
-      "Geolocation is not supported by this browser.";
-
+    err.textContent="Geolocation is not supported by this browser.";
     return;
   }
 
-
-  if(watchId !== null){
-
-    error.textContent =
-      "Location sharing is already active.";
-
+  if(watchId!==null){
+    err.textContent="Location sharing is already active.";
     return;
   }
 
+  document.getElementById("startBtn").disabled=true;
+  document.getElementById("statusBox").classList.add("active");
+  document.getElementById("statusText").textContent=
+    "Requesting location permission...";
 
-  startButton.disabled = true;
-
-  document
-    .getElementById("statusBox")
-    .classList.add("active");
-
-  document
-    .getElementById("statusText")
-    .textContent =
-      "Requesting location permission...";
-
-
-  watchId =
-    navigator.geolocation.watchPosition(
-      updateLocation,
-      locationError,
-      {
-        enableHighAccuracy:true,
-        maximumAge:5000,
-        timeout:15000
-      }
-    );
+  watchId=navigator.geolocation.watchPosition(
+    updateLocation,
+    locationError,
+    {enableHighAccuracy:true,maximumAge:5000,timeout:15000}
+  );
 }
 
+function updateLocation(p){
+  const lat=p.coords.latitude;
+  const lng=p.coords.longitude;
+  const accuracy=p.coords.accuracy;
+  const point=[lat,lng];
 
-/* =====================================================
-   LOCATION UPDATE
-===================================================== */
+  $("lat").textContent=lat.toFixed(6);
+  $("lng").textContent=lng.toFixed(6);
+  $("acc").textContent=Math.round(accuracy)+" meters";
+  $("time").textContent=new Date(p.timestamp).toLocaleString();
 
-function updateLocation(position){
-
-  const latitude =
-    position.coords.latitude;
-
-  const longitude =
-    position.coords.longitude;
-
-  const accuracy =
-    position.coords.accuracy;
-
-  const point =
-    [latitude,longitude];
-
-
-  document.getElementById("latitude")
-    .textContent =
-    latitude.toFixed(6);
-
-
-  document.getElementById("longitude")
-    .textContent =
-    longitude.toFixed(6);
-
-
-  document.getElementById("accuracy")
-    .textContent =
-    Math.round(accuracy) + " meters";
-
-
-  document.getElementById("timestamp")
-    .textContent =
-    new Date(
-      position.timestamp
-    ).toLocaleString();
-
-
-  document
-    .getElementById("statusBox")
-    .classList.add("active");
-
-
-  document
-    .getElementById("statusText")
-    .textContent =
+  document.getElementById("statusBox").classList.add("active");
+  document.getElementById("statusText").textContent=
     "Location sharing is active.";
+  document.getElementById("locationError").textContent="";
+  document.getElementById("startBtn").disabled=false;
 
+  if(!marker){
+    marker=L.marker(point).addTo(map)
+      .bindPopup("<b>📍 Current Location</b>").openPopup();
+  }else marker.setLatLng(point);
 
-  document.getElementById("locationError")
-    .textContent = "";
-
-
-  document.getElementById("startLocationButton")
-    .disabled = false;
-
-
-  /* Marker */
-
-  if(!locationMarker){
-
-    locationMarker =
-      L.marker(point)
-        .addTo(map)
-        .bindPopup(
-          "<strong>📍 Current Location</strong>"
-        );
-
+  if(!circle){
+    circle=L.circle(point,{radius:accuracy,weight:2,fillOpacity:.15})
+      .addTo(map);
   }else{
-
-    locationMarker
-      .setLatLng(point);
-
+    circle.setLatLng(point);
+    circle.setRadius(accuracy);
   }
 
+  map.setView(point,16);
 
-  /* Accuracy Circle */
-
-  if(!accuracyCircle){
-
-    accuracyCircle =
-      L.circle(
-        point,
-        {
-          radius:accuracy,
-          weight:2,
-          fillOpacity:.15
-        }
-      ).addTo(map);
-
-  }else{
-
-    accuracyCircle
-      .setLatLng(point);
-
-    accuracyCircle
-      .setRadius(accuracy);
-
+  if(Date.now()-lastGeo>10000){
+    lastGeo=Date.now();
+    reverseGeocode(lat,lng);
   }
-
-
-  /*
-    Only move the map if this is
-    the first location or the user
-    moved significantly.
-  */
-
-  if(!lastMapPosition){
-
-    map.setView(
-      point,
-      16
-    );
-
-    lastMapPosition = point;
-
-  }else{
-
-    const distance =
-      map.distance(
-        lastMapPosition,
-        point
-      );
-
-    if(distance > 30){
-
-      map.panTo(point);
-
-      lastMapPosition = point;
-
-    }
-
-  }
-
-
-  updateAccuracy(accuracy);
-
-
-  /* Reverse geocode every 10 seconds */
-
-  const now = Date.now();
-
-  if(
-    now - lastGeocode > 10000
-  ){
-
-    lastGeocode = now;
-
-    reverseGeocode(
-      latitude,
-      longitude
-    );
-
-  }
-
 }
 
+function locationError(e){
+  document.getElementById("startBtn").disabled=false;
+  document.getElementById("statusText").textContent=
+    "Unable to get location.";
+  document.getElementById("locationError").textContent=e.message;
+}
 
-/* =====================================================
-   ACCURACY
-===================================================== */
-
-function updateAccuracy(accuracy){
-
-  let value =
-    Math.max(
-      5,
-      Math.min(
-        100,
-        100 - accuracy
-      )
-    );
-
-
-  document.getElementById(
-    "accuracyFill"
-  ).style.width =
-    value + "%";
-
-
-  let text;
-
-
-  if(accuracy <= 20){
-
-    text =
-      "High accuracy";
-
-  }else if(accuracy <= 100){
-
-    text =
-      "Good accuracy";
-
-  }else{
-
-    text =
-      "Low accuracy";
-
+function stopLocation(){
+  if(watchId!==null){
+    navigator.geolocation.clearWatch(watchId);
+    watchId=null;
   }
 
+  document.getElementById("statusBox").classList.remove("active");
+  document.getElementById("statusText").textContent=
+    "Location sharing is stopped.";
+  document.getElementById("startBtn").disabled=false;
+}
 
-  document.getElementById(
-    "acc
+/* ADDRESS */
+async function reverseGeocode(lat,lng){
+  try{
+    const url=`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+    const r=await fetch(url,{headers:{"Accept-Language":"en"}});
+    const d=await r.json();
+    const a=d.address||{};
+
+    $("address").textContent=d.display_name||"—";
+    $("country").textContent=a.country||"—";
+    $("city").textContent=
+      a.city||a.town||a.municipality||a.village||"—";
+  }catch(e){
+    $("address").textContent="Address unavailable";
+  }
+}
+
+/* FACEBOOK */
+function openFB(){
+  const url=document.getElementById("fbUrl").value.trim();
+  const error=document.getElementById("fbError");
+
+  if(!/^https?:\/\/(www\.)?facebook\.com\//i.test(url)){
+    error.textContent="Enter a valid Facebook URL.";
+    return;
+  }
+
+  error.textContent="";
+  window.open(url,"_blank","noopener");
+}
+
+/* CASE */
+function saveCase(){
+  const name=$("accountName").value.trim();
+  const status=$("accountStatus").value;
+  const notes=$("caseNotes").value.trim();
+
+  if(!name||!status){
+    $("caseMsg").textContent="Please enter account name and status.";
+    return;
+  }
+
+  localStorage.setItem("recoveryCase",JSON.stringify({
+    name,status,notes,time:new Date().toLocaleString()
+  }));
+
+  $("caseMsg").textContent="Case saved on this device.";
+}
+
+/* SHORT HELPER */
+function $(id){
+  return document.getElementById(id);
+}
+
+initMap();
+</script></body>
+</html>
