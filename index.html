@@ -6,7 +6,6 @@
 
   <title>Live Location Dashboard</title>
 
-  <!-- Leaflet -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -22,7 +21,7 @@
     body {
       font-family: Arial, Helvetica, sans-serif;
       background: #07101d;
-      color: #ffffff;
+      color: #fff;
       min-height: 100vh;
     }
 
@@ -33,11 +32,9 @@
       padding: 16px;
     }
 
-    /* HEADER */
-
     .header {
       text-align: center;
-      padding: 24px 10px;
+      padding: 25px 10px;
     }
 
     .header-icon {
@@ -56,8 +53,6 @@
       line-height: 1.5;
     }
 
-    /* CARD */
-
     .card {
       background: #101b2b;
       border: 1px solid #24344b;
@@ -72,8 +67,6 @@
       font-weight: bold;
       margin-bottom: 15px;
     }
-
-    /* STATUS */
 
     .status {
       display: flex;
@@ -90,7 +83,6 @@
       height: 11px;
       border-radius: 50%;
       background: #737d8d;
-      flex-shrink: 0;
     }
 
     .status.active .status-dot {
@@ -101,8 +93,6 @@
     .status-text {
       font-size: 14px;
     }
-
-    /* BUTTONS */
 
     .buttons {
       display: flex;
@@ -123,7 +113,7 @@
 
     .allow {
       background: #1677ff;
-      color: #ffffff;
+      color: #fff;
     }
 
     .allow:hover {
@@ -132,7 +122,7 @@
 
     .stop {
       background: #29384e;
-      color: #ffffff;
+      color: #fff;
     }
 
     .stop:hover {
@@ -141,21 +131,18 @@
 
     .telegram {
       background: #229ed9;
-      color: #ffffff;
+      color: #fff;
     }
 
     .telegram:hover {
       background: #168ac2;
     }
 
-    /* MAP */
-
     #map {
       width: 100%;
       height: 420px;
       border-radius: 15px;
       overflow: hidden;
-      background: #172235;
     }
 
     .map-note {
@@ -164,8 +151,6 @@
       font-size: 11px;
       line-height: 1.5;
     }
-
-    /* LOCATION GRID */
 
     .location-grid {
       display: grid;
@@ -191,8 +176,6 @@
       word-break: break-word;
     }
 
-    /* ACCURACY */
-
     .accuracy-box {
       margin-top: 13px;
       background: #0b1524;
@@ -215,8 +198,6 @@
       transition: width .4s ease;
     }
 
-    /* INPUT */
-
     .input-field {
       width: 100%;
       padding: 14px;
@@ -224,7 +205,7 @@
       border: 1px solid #29384e;
       border-radius: 10px;
       background: #07101d;
-      color: #ffffff;
+      color: #fff;
       outline: none;
       font-size: 14px;
     }
@@ -233,16 +214,12 @@
       border-color: #1677ff;
     }
 
-    /* ERROR */
-
     .error {
       color: #ff7777;
       font-size: 12px;
       line-height: 1.5;
       margin-top: 10px;
     }
-
-    /* PRIVACY */
 
     .privacy {
       color: #a5b1c2;
@@ -255,8 +232,6 @@
       padding-left: 20px;
     }
 
-    /* FOOTER */
-
     .footer {
       text-align: center;
       color: #65748a;
@@ -265,10 +240,7 @@
       line-height: 1.6;
     }
 
-    /* MOBILE */
-
     @media (max-width: 600px) {
-
       .container {
         padding: 12px;
       }
@@ -296,23 +268,15 @@
 
 <div class="container">
 
-  <!-- HEADER -->
-
   <header class="header">
+    <div class="header-icon">🛰️</div>
 
-    <div class="header-icon">
-      🛰️
-    </div>
-
-    <h1>
-      Live Location Dashboard
-    </h1>
+    <h1>Live Location Dashboard</h1>
 
     <p>
-      Your location is displayed only after you grant
-      browser location permission.
+      Location is displayed only after the user
+      grants browser permission.
     </p>
-
   </header>
 
 
@@ -328,10 +292,7 @@
 
       <div class="status-dot"></div>
 
-      <div
-        class="status-text"
-        id="statusText"
-      >
+      <div class="status-text" id="statusText">
         Location sharing is not active.
       </div>
 
@@ -341,31 +302,24 @@
 
       <button
         class="allow"
-        type="button"
-        onclick="startLocation()"
-      >
+        onclick="startLocation()">
         📍 Allow Live Location
       </button>
 
       <button
         class="stop"
-        type="button"
-        onclick="stopLocation()"
-      >
+        onclick="stopLocation()">
         ⏹ Stop Sharing
       </button>
 
     </div>
 
-    <div
-      id="errorMessage"
-      class="error"
-    ></div>
+    <div id="errorMessage" class="error"></div>
 
   </section>
 
 
-  <!-- INTERACTIVE MAP -->
+  <!-- MAP -->
 
   <section class="card">
 
@@ -376,14 +330,14 @@
     <div id="map"></div>
 
     <div class="map-note">
-      The live marker and accuracy circle appear only
-      after location permission is granted.
+      The live marker and accuracy circle appear
+      only after location permission is granted.
     </div>
 
   </section>
 
 
-  <!-- LOCATION DETAILS -->
+  <!-- LOCATION INFORMATION -->
 
   <section class="card">
 
@@ -394,99 +348,41 @@
     <div class="location-grid">
 
       <div class="info-box">
-        <div class="info-label">
-          🌍 Country
-        </div>
-        <div
-          class="info-value"
-          id="country"
-        >
-          —
-        </div>
+        <div class="info-label">🌍 Country</div>
+        <div class="info-value" id="country">—</div>
       </div>
 
-
       <div class="info-box">
-        <div class="info-label">
-          🏙️ City
-        </div>
-        <div
-          class="info-value"
-          id="city"
-        >
-          —
-        </div>
+        <div class="info-label">🏙️ City</div>
+        <div class="info-value" id="city">—</div>
       </div>
 
-
       <div class="info-box">
-        <div class="info-label">
-          🏠 Address
-        </div>
-        <div
-          class="info-value"
-          id="address"
-        >
-          —
-        </div>
+        <div class="info-label">🏠 Address</div>
+        <div class="info-value" id="address">—</div>
       </div>
 
-
       <div class="info-box">
-        <div class="info-label">
-          📍 Latitude
-        </div>
-        <div
-          class="info-value"
-          id="latitude"
-        >
-          —
-        </div>
+        <div class="info-label">📍 Latitude</div>
+        <div class="info-value" id="latitude">—</div>
       </div>
 
-
       <div class="info-box">
-        <div class="info-label">
-          📍 Longitude
-        </div>
-        <div
-          class="info-value"
-          id="longitude"
-        >
-          —
-        </div>
+        <div class="info-label">📍 Longitude</div>
+        <div class="info-value" id="longitude">—</div>
       </div>
 
-
       <div class="info-box">
-        <div class="info-label">
-          🎯 Accuracy
-        </div>
-        <div
-          class="info-value"
-          id="accuracy"
-        >
-          —
-        </div>
+        <div class="info-label">🎯 Accuracy</div>
+        <div class="info-value" id="accuracy">—</div>
       </div>
 
-
       <div class="info-box">
-        <div class="info-label">
-          🕐 Last Updated
-        </div>
-        <div
-          class="info-value"
-          id="timestamp"
-        >
-          —
-        </div>
+        <div class="info-label">🕐 Last Updated</div>
+        <div class="info-value" id="timestamp">—</div>
       </div>
 
     </div>
-
-
-    <!-- ACCURACY -->
 
     <div class="accuracy-box">
 
@@ -499,12 +395,10 @@
       </div>
 
       <div class="accuracy-bar">
-
         <div
           class="accuracy-fill"
-          id="accuracyFill"
-        ></div>
-
+          id="accuracyFill">
+        </div>
       </div>
 
     </div>
@@ -512,7 +406,7 @@
   </section>
 
 
-  <!-- DEVICE INFORMATION -->
+  <!-- DEVICE -->
 
   <section class="card">
 
@@ -530,13 +424,11 @@
 
         <div
           class="info-value"
-          id="device"
-        >
+          id="device">
           —
         </div>
 
       </div>
-
 
       <div class="info-box">
 
@@ -546,8 +438,7 @@
 
         <div
           class="info-value"
-          id="platform"
-        >
+          id="platform">
           —
         </div>
 
@@ -558,12 +449,12 @@
   </section>
 
 
-  <!-- FACEBOOK PROFILE -->
+  <!-- FACEBOOK URL -->
 
   <section class="card">
 
     <div class="card-title">
-      🔗 Facebook Profile
+      🔗 Facebook Profile / URL
     </div>
 
     <p style="
@@ -572,15 +463,15 @@
       line-height:1.6;
       margin-bottom:14px;
     ">
-      Enter a Facebook profile URL below.
-      This is an optional field and does not
-      automatically identify or track a Facebook account.
+      Paste any valid Facebook URL below.
+      This field only opens the URL you provide;
+      it does not access private Facebook information.
     </p>
 
     <div class="info-box">
 
       <div class="info-label">
-        👤 Facebook Profile URL
+        👤 Facebook URL
       </div>
 
       <input
@@ -591,16 +482,6 @@
         autocomplete="url"
       >
 
-      <p style="
-        color:#718096;
-        font-size:11px;
-        margin-top:8px;
-        line-height:1.5;
-      ">
-        Example:
-        https://www.facebook.com/username
-      </p>
-
       <button
         class="allow"
         type="button"
@@ -610,20 +491,20 @@
           width:100%;
         "
       >
-        🔗 Open Facebook Profile
+        🔗 Open Facebook URL
       </button>
 
       <div
         id="facebookError"
-        class="error"
-      ></div>
+        class="error">
+      </div>
 
     </div>
 
   </section>
 
 
-  <!-- CONTACT INFORMATION -->
+  <!-- TELEGRAM CONTACT -->
 
   <section class="card">
 
@@ -638,7 +519,7 @@
       margin-bottom:14px;
     ">
       For questions, assistance, or inquiries,
-      you may contact us through Telegram.
+      contact us through Telegram.
     </p>
 
     <div class="info-box">
@@ -671,7 +552,7 @@
   </section>
 
 
-  <!-- PRIVACY & CONSENT -->
+  <!-- PRIVACY -->
 
   <section class="card">
 
@@ -682,40 +563,24 @@
     <div class="privacy">
 
       <p>
-        This dashboard uses your browser's
-        Geolocation API. Location access starts
-        only after you choose
+        This dashboard uses the browser's
+        Geolocation API. Location access begins
+        only after the user selects
         <strong>Allow Live Location</strong>.
       </p>
 
       <ul>
-        <li>
-          Location permission is required.
-        </li>
-
-        <li>
-          You can stop sharing at any time.
-        </li>
-
-        <li>
-          Coordinates come from your device.
-        </li>
-
-        <li>
-          The page does not secretly access location.
-        </li>
-
-        <li>
-          Facebook Profile information is optional.
-        </li>
+        <li>Location permission is required.</li>
+        <li>The user can stop sharing at any time.</li>
+        <li>Coordinates come from the user's device.</li>
+        <li>No hidden location access is performed.</li>
+        <li>Facebook URL is optional.</li>
       </ul>
 
     </div>
 
   </section>
 
-
-  <!-- FOOTER -->
 
   <div class="footer">
     🔒 Consent-Based Live Location Dashboard
@@ -726,18 +591,18 @@
 </div>
 
 
-<!-- LEAFLET JAVASCRIPT -->
+<!-- LEAFLET -->
 
 <script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-></script>
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
 
 
 <script>
 
-  /* =====================================
-     MAP INITIALIZATION
-  ===================================== */
+  /* ==============================
+     MAP
+  ============================== */
 
   const map =
     L.map("map").setView(
@@ -746,109 +611,77 @@
     );
 
 
-  /* STANDARD MAP */
-
   const standardMap =
     L.tileLayer(
       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       {
         maxZoom: 19,
-
         attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+          '&copy; OpenStreetMap contributors'
       }
     );
 
-
-  /* SATELLITE MAP */
 
   const satelliteMap =
     L.tileLayer(
       "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
       {
         maxZoom: 19,
-
         attribution:
           "Tiles &copy; Esri"
       }
     );
 
 
-  /* DEFAULT SATELLITE */
-
   satelliteMap.addTo(map);
 
-
-  /* MAP LAYER SWITCHER */
 
   L.control.layers(
     {
       "🛰️ Satellite": satelliteMap,
       "🗺️ Standard": standardMap
-    },
-    null,
-    {
-      position: "topright"
     }
   ).addTo(map);
 
 
-  /* =====================================
+  /* ==============================
      LOCATION VARIABLES
-  ===================================== */
+  ============================== */
 
   let watchId = null;
-
   let locationMarker = null;
-
   let accuracyCircle = null;
-
   let lastGeocodeTime = 0;
 
 
-  /* =====================================
-     ELEMENTS
-  ===================================== */
-
   const statusBox =
-    document.getElementById(
-      "statusBox"
-    );
+    document.getElementById("statusBox");
 
   const statusText =
-    document.getElementById(
-      "statusText"
-    );
+    document.getElementById("statusText");
 
   const errorMessage =
-    document.getElementById(
-      "errorMessage"
-    );
+    document.getElementById("errorMessage");
 
 
-  /* =====================================
-     DEVICE INFORMATION
-  ===================================== */
+  /* DEVICE */
 
-  document.getElementById(
-    "device"
-  ).textContent =
+  document.getElementById("device")
+    .textContent =
     navigator.userAgent;
 
-  document.getElementById(
-    "platform"
-  ).textContent =
+  document.getElementById("platform")
+    .textContent =
     navigator.platform || "Unknown";
 
 
-  /* =====================================
+  /* ==============================
      START LOCATION
-  ===================================== */
+  ============================== */
 
   function startLocation() {
 
     errorMessage.textContent = "";
-
 
     if (!navigator.geolocation) {
 
@@ -859,10 +692,7 @@
     }
 
 
-    statusBox.classList.add(
-      "active"
-    );
-
+    statusBox.classList.add("active");
 
     statusText.textContent =
       "Requesting location permission...";
@@ -870,29 +700,22 @@
 
     watchId =
       navigator.geolocation.watchPosition(
-
         updateLocation,
-
         locationError,
-
         {
           enableHighAccuracy: true,
           maximumAge: 5000,
           timeout: 15000
         }
-
       );
-
   }
 
 
-  /* =====================================
+  /* ==============================
      UPDATE LOCATION
-  ===================================== */
+  ============================== */
 
-  function updateLocation(
-    position
-  ) {
+  function updateLocation(position) {
 
     const latitude =
       position.coords.latitude;
@@ -903,62 +726,36 @@
     const accuracy =
       position.coords.accuracy;
 
-
-    const latLng = [
-      latitude,
-      longitude
-    ];
+    const latLng =
+      [latitude, longitude];
 
 
-    /* LATITUDE */
-
-    document.getElementById(
-      "latitude"
-    ).textContent =
+    document.getElementById("latitude")
+      .textContent =
       latitude.toFixed(6);
 
-
-    /* LONGITUDE */
-
-    document.getElementById(
-      "longitude"
-    ).textContent =
+    document.getElementById("longitude")
+      .textContent =
       longitude.toFixed(6);
 
+    document.getElementById("accuracy")
+      .textContent =
+      Math.round(accuracy) + " meters";
 
-    /* ACCURACY */
-
-    document.getElementById(
-      "accuracy"
-    ).textContent =
-      Math.round(accuracy) +
-      " meters";
-
-
-    /* TIMESTAMP */
-
-    document.getElementById(
-      "timestamp"
-    ).textContent =
+    document.getElementById("timestamp")
+      .textContent =
       new Date(
         position.timestamp
       ).toLocaleString();
 
 
-    /* STATUS */
-
-    statusBox.classList.add(
-      "active"
-    );
-
+    statusBox.classList.add("active");
 
     statusText.textContent =
       "Location sharing is active.";
 
 
-    /* =================================
-       LIVE MARKER
-    ================================= */
+    /* MARKER */
 
     if (!locationMarker) {
 
@@ -978,9 +775,7 @@
     }
 
 
-    /* =================================
-       ACCURACY CIRCLE
-    ================================= */
+    /* ACCURACY CIRCLE */
 
     if (!accuracyCircle) {
 
@@ -1003,13 +798,10 @@
       accuracyCircle.setRadius(
         accuracy
       );
-
     }
 
 
-    /* =================================
-       CENTER MAP
-    ================================= */
+    /* CENTER MAP */
 
     map.setView(
       latLng,
@@ -1020,26 +812,13 @@
     );
 
 
-    /* ACCURACY DISPLAY */
-
-    updateAccuracy(
-      accuracy
-    );
+    updateAccuracy(accuracy);
 
 
-    /* =================================
-       ADDRESS LOOKUP
-    ================================= */
+    /* ADDRESS LOOKUP */
 
     const now =
       Date.now();
-
-
-    /*
-     * Do not send repeated requests
-     * too frequently to the public
-     * geocoding service.
-     */
 
     if (
       now - lastGeocodeTime >= 10000
@@ -1051,27 +830,21 @@
         latitude,
         longitude
       );
-
     }
-
   }
 
 
-  /* =====================================
-     ACCURACY DISPLAY
-  ===================================== */
+  /* ==============================
+     ACCURACY
+  ============================== */
 
-  function updateAccuracy(
-    accuracy
-  ) {
+  function updateAccuracy(accuracy) {
 
     let percentage =
       100 - accuracy;
 
-
     if (percentage < 5)
       percentage = 5;
-
 
     if (percentage > 100)
       percentage = 100;
@@ -1090,32 +863,26 @@
       ).textContent =
         "High accuracy";
 
-    }
-
-    else if (accuracy <= 100) {
+    } else if (accuracy <= 100) {
 
       document.getElementById(
         "accuracyText"
       ).textContent =
         "Good accuracy";
 
-    }
-
-    else {
+    } else {
 
       document.getElementById(
         "accuracyText"
       ).textContent =
         "Low accuracy";
-
     }
-
   }
 
 
-  /* =====================================
-     REVERSE GEOCODING
-  ===================================== */
+  /* ==============================
+     ADDRESS LOOKUP
+  ============================== */
 
   async function reverseGeocode(
     latitude,
@@ -1128,13 +895,9 @@
         "https://nominatim.openstreetmap.org/reverse" +
         "?format=jsonv2" +
         "&lat=" +
-        encodeURIComponent(
-          latitude
-        ) +
+        encodeURIComponent(latitude) +
         "&lon=" +
-        encodeURIComponent(
-          longitude
-        ) +
+        encodeURIComponent(longitude) +
         "&zoom=18" +
         "&addressdetails=1";
 
@@ -1152,23 +915,18 @@
 
 
       if (!response.ok) {
-
         throw new Error(
           "Address lookup failed"
         );
-
       }
 
 
       const data =
         await response.json();
 
-
       const address =
         data.address || {};
 
-
-      /* FULL ADDRESS */
 
       const fullAddress =
         data.display_name ||
@@ -1180,8 +938,6 @@
       ).textContent =
         fullAddress;
 
-
-      /* CITY */
 
       const city =
         address.city ||
@@ -1198,8 +954,6 @@
         city;
 
 
-      /* COUNTRY */
-
       document.getElementById(
         "country"
       ).textContent =
@@ -1207,57 +961,212 @@
         "—";
 
 
-      /* MARKER POPUP */
-
       if (locationMarker) {
 
         locationMarker.bindPopup(
           "<strong>📍 Current Location</strong><br>" +
-          escapeHtml(
-            fullAddress
-          )
+          escapeHtml(fullAddress)
         );
-
       }
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
       console.error(
-        "Reverse geocoding error:",
+        "Address lookup error:",
         error
       );
-
 
       document.getElementById(
         "address"
       ).textContent =
         "Address unavailable";
-
     }
-
   }
 
 
-  /* =====================================
+  /* ==============================
      HTML ESCAPE
-  ===================================== */
+  ============================== */
 
-  function escapeHtml(
-    value
-  ) {
+  function escapeHtml(value) {
 
     return String(value)
-      .replaceAll(
-        "&",
-        "&amp;"
-      )
-      .replaceAll(
-        "<",
-        "&lt;"
-      )
-      .replaceAll(
-        ">",
-        "&gt;"
-  
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+
+  /* ==============================
+     LOCATION ERROR
+  ============================== */
+
+  function locationError(error) {
+
+    statusBox.classList.remove(
+      "active"
+    );
+
+    statusText.textContent =
+      "Location sharing is not active.";
+
+
+    if (error.code === 1) {
+
+      errorMessage.textContent =
+        "Location permission was denied. " +
+        "Please allow location access in browser settings.";
+
+    } else if (error.code === 2) {
+
+      errorMessage.textContent =
+        "Your location could not be determined.";
+
+    } else if (error.code === 3) {
+
+      errorMessage.textContent =
+        "Location request timed out. Please try again.";
+
+    } else {
+
+      errorMessage.textContent =
+        "Unable to access your location.";
+    }
+  }
+
+
+  /* ==============================
+     STOP LOCATION
+  ============================== */
+
+  function stopLocation() {
+
+    if (watchId !== null) {
+
+      navigator.geolocation.clearWatch(
+        watchId
+      );
+
+      watchId = null;
+    }
+
+
+    statusBox.classList.remove(
+      "active"
+    );
+
+    statusText.textContent =
+      "Location sharing has been stopped.";
+
+
+    document.getElementById(
+      "accuracyText"
+    ).textContent =
+      "Location sharing stopped.";
+
+
+    document.getElementById(
+      "accuracyFill"
+    ).style.width =
+      "0%";
+  }
+
+
+  /* ==============================
+     FACEBOOK URL
+  ============================== */
+
+  function openFacebookProfile() {
+
+    const input =
+      document.getElementById(
+        "facebookUrl"
+      );
+
+    const error =
+      document.getElementById(
+        "facebookError"
+      );
+
+    const value =
+      input.value.trim();
+
+
+    error.textContent = "";
+
+
+    if (!value) {
+
+      error.textContent =
+        "Please enter a Facebook URL.";
+
+      input.focus();
+
+      return;
+    }
+
+
+    let url;
+
+
+    try {
+
+      url =
+        new URL(value);
+
+    } catch (e) {
+
+      error.textContent =
+        "Invalid URL. Example: https://www.facebook.com/username";
+
+      input.focus();
+
+      return;
+    }
+
+
+    if (
+      url.protocol !== "https:" &&
+      url.protocol !== "http:"
+    ) {
+
+      error.textContent =
+        "Please enter a valid web URL.";
+
+      return;
+    }
+
+
+    /*
+     * The URL is opened only.
+     * It does not access private
+     * Facebook information.
+     */
+
+    window.open(
+      url.href,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }
+
+
+  /* ==============================
+     TELEGRAM
+  ============================== */
+
+  function openTelegram() {
+
+    window.open(
+      "https://t.me/Minimumwage_01",
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }
+
+</script>
+
+</body>
+  </html>
