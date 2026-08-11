@@ -6,88 +6,259 @@
 
   <title>Live Location Dashboard</title>
 
-  <link rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
 
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #eef1f4;
-      color: #111;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #07101d;
+      color: #fff;
+      min-height: 100vh;
     }
 
     .container {
-      max-width: 700px;
+      width: 100%;
+      max-width: 950px;
       margin: auto;
-      padding: 18px;
+      padding: 16px;
     }
+
+    /* HEADER */
+
+    .header {
+      text-align: center;
+      padding: 22px 10px;
+    }
+
+    .header-icon {
+      font-size: 46px;
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 27px;
+      margin-bottom: 7px;
+    }
+
+    .header p {
+      color: #9eabbf;
+      font-size: 13px;
+    }
+
+    /* CARD */
 
     .card {
-      background: white;
-      border-radius: 16px;
+      background: #101b2b;
+      border: 1px solid #24344b;
+      border-radius: 18px;
       padding: 18px;
-      box-shadow: 0 3px 15px rgba(0,0,0,.12);
+      margin-bottom: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
     }
 
-    h1 {
-      text-align: center;
-      margin-top: 5px;
-    }
-
-    .notice {
-      text-align: center;
-      color: #555;
-      line-height: 1.5;
-    }
-
-    button {
-      width: 100%;
-      padding: 15px;
-      border: 0;
-      border-radius: 10px;
-      background: #1877f2;
-      color: white;
-      font-size: 17px;
+    .card-title {
+      font-size: 16px;
       font-weight: bold;
-      margin: 8px 0 15px;
-    }
-
-    #map {
-      height: 430px;
-      border-radius: 12px;
-      overflow: hidden;
       margin-bottom: 15px;
     }
 
-    .info {
-      background: #f3f4f6;
-      border-radius: 10px;
-      padding: 14px;
-      line-height: 1.7;
+    /* STATUS */
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #0b1524;
+      border-radius: 12px;
+      padding: 13px;
+      margin-bottom: 14px;
+    }
+
+    .status-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #737d8d;
+      flex-shrink: 0;
+    }
+
+    .status.active .status-dot {
+      background: #21d879;
+      box-shadow: 0 0 12px #21d879;
+    }
+
+    .status-text {
+      font-size: 14px;
+    }
+
+    /* BUTTONS */
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 14px 17px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      flex: 1;
+      min-width: 170px;
+    }
+
+    .allow {
+      background: #1677ff;
+      color: white;
+    }
+
+    .allow:hover {
+      background: #0e63da;
+    }
+
+    .stop {
+      background: #29384e;
+      color: white;
+    }
+
+    .stop:hover {
+      background: #344963;
+    }
+
+    /* MAP */
+
+    #map {
+      width: 100%;
+      height: 420px;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #172235;
+    }
+
+    .map-note {
+      margin-top: 9px;
+      color: #8996a9;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    /* INFORMATION GRID */
+
+    .location-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 11px;
+    }
+
+    .info-box {
+      background: #0b1524;
+      border-radius: 12px;
+      padding: 13px;
+    }
+
+    .info-label {
+      color: #8795a9;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    .info-value {
+      font-size: 14px;
+      font-weight: 600;
       word-break: break-word;
     }
 
-    .label {
-      font-weight: bold;
+    /* ACCURACY */
+
+    .accuracy-box {
+      margin-top: 13px;
+      background: #0b1524;
+      padding: 14px;
+      border-radius: 12px;
     }
 
-    #status {
-      text-align: center;
-      margin: 10px 0;
-      font-weight: bold;
+    .accuracy-bar {
+      height: 8px;
+      background: #29384e;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 9px;
     }
 
-    .live {
-      color: green;
+    .accuracy-fill {
+      height: 100%;
+      width: 0%;
+      background: #21d879;
+      transition: width .4s ease;
     }
+
+    /* ERROR */
 
     .error {
-      color: #c00;
+      color: #ff7777;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+
+    /* PRIVACY */
+
+    .privacy {
+      color: #a5b1c2;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .privacy ul {
+      margin-top: 8px;
+      padding-left: 20px;
+    }
+
+    /* FOOTER */
+
+    .footer {
+      text-align: center;
+      color: #65748a;
+      font-size: 11px;
+      padding: 12px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 600px) {
+
+      .container {
+        padding: 12px;
+      }
+
+      .header h1 {
+        font-size: 23px;
+      }
+
+      #map {
+        height: 350px;
+      }
+
+      .location-grid {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -96,332 +267,900 @@
 
 <div class="container">
 
-  <div class="card">
+  <!-- HEADER -->
 
-    <h1>🛰️ Live Location</h1>
+  <header class="header">
 
-    <p class="notice">
-      Press the button below to share this device's location.
-      Your browser will ask for permission first.
+    <div class="header-icon">
+      🛰️
+    </div>
+
+    <h1>
+      Live Location Dashboard
+    </h1>
+
+    <p>
+      Your location is displayed only after you grant permission.
     </p>
 
-    <button onclick="startTracking()">
-      📍 Allow Live Location
-    </button>
+  </header>
 
-    <div id="status">
-      Location sharing is not active.
+
+  <!-- LOCATION STATUS -->
+
+  <section class="card">
+
+    <div class="card-title">
+      📍 Location Status
+    </div>
+
+    <div class="status" id="statusBox">
+
+      <div class="status-dot"></div>
+
+      <div class="status-text" id="statusText">
+        Location sharing is not active.
+      </div>
+
+    </div>
+
+    <div class="buttons">
+
+      <button
+        class="allow"
+        onclick="startLocation()">
+        📍 Allow Live Location
+      </button>
+
+      <button
+        class="stop"
+        onclick="stopLocation()">
+        ⏹ Stop Sharing
+      </button>
+
+    </div>
+
+    <div
+      id="errorMessage"
+      class="error">
+    </div>
+
+  </section>
+
+
+  <!-- MAP -->
+
+  <section class="card">
+
+    <div class="card-title">
+      🛰️ Interactive Satellite Map
     </div>
 
     <div id="map"></div>
 
-    <div class="info">
+    <div class="map-note">
+      Use the map controls to zoom and move around.
+      The marker appears only after location permission is granted.
+    </div>
 
-      <div>
-        <span class="label">🌍 Country:</span>
-        <span id="country">—</span>
+  </section>
+
+
+  <!-- LOCATION INFORMATION -->
+
+  <section class="card">
+
+    <div class="card-title">
+      🗺️ Current Location
+    </div>
+
+    <div class="location-grid">
+
+      <div class="info-box">
+
+        <div class="info-label">
+          🌍 Country
+        </div>
+
+        <div
+          class="info-value"
+          id="country">
+          —
+        </div>
+
       </div>
 
-      <div>
-        <span class="label">🏙️ City:</span>
-        <span id="city">—</span>
+
+      <div class="info-box">
+
+        <div class="info-label">
+          🏙️ City
+        </div>
+
+        <div
+          class="info-value"
+          id="city">
+          —
+        </div>
+
       </div>
 
-      <div>
-        <span class="label">🛣️ Address:</span>
-        <span id="address">—</span>
+
+      <div class="info-box">
+
+        <div class="info-label">
+          🏠 Address
+        </div>
+
+        <div
+          class="info-value"
+          id="address">
+          —
+        </div>
+
       </div>
 
-      <div>
-        <span class="label">📍 Latitude:</span>
-        <span id="latitude">—</span>
+
+      <div class="info-box">
+
+        <div class="info-label">
+          📍 Latitude
+        </div>
+
+        <div
+          class="info-value"
+          id="latitude">
+          —
+        </div>
+
       </div>
 
-      <div>
-        <span class="label">📍 Longitude:</span>
-        <span id="longitude">—</span>
+
+      <div class="info-box">
+
+        <div class="info-label">
+          📍 Longitude
+        </div>
+
+        <div
+          class="info-value"
+          id="longitude">
+          —
+        </div>
+
       </div>
 
-      <div>
-        <span class="label">🎯 Accuracy:</span>
-        <span id="accuracy">—</span>
+
+      <div class="info-box">
+
+        <div class="info-label">
+          🎯 Accuracy
+        </div>
+
+        <div
+          class="info-value"
+          id="accuracy">
+          —
+        </div>
+
       </div>
 
-      <div>
-        <span class="label">🕐 Last update:</span>
-        <span id="timestamp">—</span>
+
+      <div class="info-box">
+
+        <div class="info-label">
+          🕐 Last Updated
+        </div>
+
+        <div
+          class="info-value"
+          id="timestamp">
+          —
+        </div>
+
       </div>
 
     </div>
 
+
+    <div class="accuracy-box">
+
+      <div class="info-label">
+        📡 Location Accuracy
+      </div>
+
+      <div id="accuracyText">
+        Waiting for location...
+      </div>
+
+      <div class="accuracy-bar">
+
+        <div
+          class="accuracy-fill"
+          id="accuracyFill">
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- DEVICE -->
+
+  <section class="card">
+
+    <div class="card-title">
+      📱 Device Information
+    </div>
+
+    <div class="location-grid">
+
+      <div class="info-box">
+
+        <div class="info-label">
+          📱 Browser / User Agent
+        </div>
+
+        <div
+          class="info-value"
+          id="device">
+          —
+        </div>
+
+      </div>
+
+
+      <div class="info-box">
+
+        <div class="info-label">
+          🌐 Platform
+        </div>
+
+        <div
+          class="info-value"
+          id="platform">
+          —
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- PRIVACY -->
+
+  <section class="card">
+
+    <div class="card-title">
+      🔐 Privacy & Consent
+    </div>
+
+    <div class="privacy">
+
+      <p>
+        This page uses your browser's Geolocation API.
+        Location access starts only when you choose
+        <strong>Allow Live Location</strong>.
+      </p>
+
+      <ul>
+
+        <li>
+          Location permission is required.
+        </li>
+
+        <li>
+          You can stop sharing at any time.
+        </li>
+
+        <li>
+          Coordinates are obtained from your device.
+        </li>
+
+        <li>
+          The page does not secretly access location.
+        </li>
+
+      </ul>
+
+    </div>
+
+  </section>
+
+
+  <div class="footer">
+    🔒 Consent-Based Live Location Dashboard
   </div>
 
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Leaflet JavaScript -->
+
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
 
 <script>
 
-let map = null;
-let marker = null;
-let accuracyCircle = null;
-let watchId = null;
+  /*
+   * MAP SETUP
+   */
 
-let lastGeocodeTime = 0;
+  const map = L.map("map", {
+    zoomControl: true
+  }).setView([12.8797, 121.7740], 6);
 
-function startTracking() {
-
-  if (!navigator.geolocation) {
-
-    setStatus(
-      "This browser does not support location.",
-      true
-    );
-
-    return;
-  }
-
-  setStatus(
-    "Requesting location permission..."
-  );
-
-  watchId = navigator.geolocation.watchPosition(
-
-    position => {
-
-      updateLocation(position);
-
-    },
-
-    error => {
-
-      setStatus(
-        "Location permission was denied or unavailable.",
-        true
-      );
-
-    },
-
-    {
-      enableHighAccuracy: true,
-      maximumAge: 0,
-      timeout: 15000
-    }
-  );
-}
-
-
-function updateLocation(position) {
-
-  const lat = position.coords.latitude;
-  const lon = position.coords.longitude;
-  const accuracy = position.coords.accuracy;
-
-  document.getElementById("latitude").textContent =
-    lat.toFixed(6);
-
-  document.getElementById("longitude").textContent =
-    lon.toFixed(6);
-
-  document.getElementById("accuracy").textContent =
-    "approximately " +
-    Math.round(accuracy) +
-    " meters";
-
-  const now = new Date();
-
-  document.getElementById("timestamp").textContent =
-    now.toLocaleString();
-
-  setStatus(
-    "● Live location active",
-    false
-  );
-
-  updateMap(lat, lon, accuracy);
 
   /*
-    Avoid repeatedly requesting the address.
-    Reverse geocoding is performed at most once every 10 seconds.
-  */
+   * NORMAL MAP
+   */
 
-  const currentTime = Date.now();
-
-  if (currentTime - lastGeocodeTime > 10000) {
-
-    lastGeocodeTime = currentTime;
-
-    reverseGeocode(lat, lon);
-  }
-}
+  const standardMap = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+    }
+  );
 
 
-function updateMap(lat, lon, accuracy) {
+  /*
+   * SATELLITE-STYLE LAYER
+   *
+   * This example uses Esri World Imagery.
+   * Check the provider's current terms before production use.
+   */
 
-  if (!map) {
-
-    map = L.map("map").setView(
-      [lat, lon],
-      18
-    );
-
-    /*
-      Satellite imagery.
-    */
-
-    L.tileLayer(
-      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-      {
-        maxZoom: 19,
-        attribution: "© Esri"
-      }
-    ).addTo(map);
-
-    marker = L.marker(
-      [lat, lon]
-    ).addTo(map);
-
-    marker.bindPopup(
-      "📍 Current device location"
-    );
-
-    accuracyCircle = L.circle(
-      [lat, lon],
-      {
-        radius: accuracy
-      }
-    ).addTo(map);
-
-  } else {
-
-    marker.setLatLng(
-      [lat, lon]
-    );
-
-    accuracyCircle.setLatLng(
-      [lat, lon]
-    );
-
-    accuracyCircle.setRadius(
-      accuracy
-    );
-
-    map.setView(
-      [lat, lon],
-      map.getZoom()
-    );
-  }
-}
+  const satelliteMap = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      maxZoom: 19,
+      attribution:
+        "Tiles &copy; Esri"
+    }
+  );
 
 
-async function reverseGeocode(lat, lon) {
+  /*
+   * Start with satellite layer
+   */
 
-  document.getElementById("address").textContent =
-    "Looking up address...";
+  satelliteMap.addTo(map);
 
-  try {
 
-    const url =
-      "https://nominatim.openstreetmap.org/reverse" +
-      "?format=jsonv2" +
-      "&lat=" + encodeURIComponent(lat) +
-      "&lon=" + encodeURIComponent(lon) +
-      "&zoom=18" +
-      "&addressdetails=1";
+  /*
+   * MAP LAYER SWITCHER
+   */
 
-    const response = await fetch(url, {
-      headers: {
-        "Accept": "application/json"
-      }
-    });
+  const baseMaps = {
 
-    if (!response.ok) {
-      throw new Error("Geocoding request failed");
+    "🛰️ Satellite":
+      satelliteMap,
+
+    "🗺️ Standard":
+      standardMap
+
+  };
+
+
+  L.control
+    .layers(baseMaps, null, {
+      position: "topright"
+    })
+    .addTo(map);
+
+
+  /*
+   * LOCATION VARIABLES
+   */
+
+  let watchId = null;
+
+  let locationMarker = null;
+
+  let accuracyCircle = null;
+
+  let lastGeocodeTime = 0;
+
+
+  /*
+   * ELEMENTS
+   */
+
+  const statusBox =
+    document.getElementById("statusBox");
+
+  const statusText =
+    document.getElementById("statusText");
+
+  const errorMessage =
+    document.getElementById("errorMessage");
+
+
+  /*
+   * DEVICE INFORMATION
+   */
+
+  document.getElementById("device").textContent =
+    navigator.userAgent;
+
+  document.getElementById("platform").textContent =
+    navigator.platform || "Unknown";
+
+
+  /*
+   * START LOCATION
+   */
+
+  function startLocation() {
+
+    errorMessage.textContent = "";
+
+    if (!navigator.geolocation) {
+
+      errorMessage.textContent =
+        "Your browser does not support location services.";
+
+      return;
     }
 
-    const data = await response.json();
 
-    const a = data.address || {};
+    statusBox.classList.add("active");
 
-    document.getElementById("country").textContent =
-      a.country || "Unavailable";
+    statusText.textContent =
+      "Requesting location permission...";
 
-    document.getElementById("city").textContent =
-      a.city ||
-      a.town ||
-      a.municipality ||
-      a.village ||
-      a.suburb ||
-      "Unavailable";
 
-    document.getElementById("address").textContent =
-      data.display_name ||
-      "Address unavailable";
+    watchId =
+      navigator.geolocation.watchPosition(
 
-  } catch (error) {
+        updateLocation,
 
-    document.getElementById("address").textContent =
-      "Address lookup unavailable";
+        locationError,
+
+        {
+          enableHighAccuracy: true,
+          maximumAge: 5000,
+          timeout: 15000
+        }
+
+      );
 
   }
-}
 
 
-function setStatus(message, isError = false) {
+  /*
+   * UPDATE LOCATION
+   */
 
-  const status =
-    document.getElementById("status");
+  function updateLocation(position) {
 
-  status.textContent = message;
+    const latitude =
+      position.coords.latitude;
 
-  status.className =
-    isError ? "error" : "live";
-}
-function openFacebook() {
-  const input = document.getElementById("facebookUrl");
-  const url = input.value.trim();
+    const longitude =
+      position.coords.longitude;
 
-  if (!url.startsWith("https://www.facebook.com/")) {
-    alert("Please enter a valid Facebook profile URL.");
-    return;
+    const accuracy =
+      position.coords.accuracy;
+
+
+    const latLng =
+      [latitude, longitude];
+
+
+    /*
+     * UPDATE TEXT
+     */
+
+    document.getElementById("latitude")
+      .textContent =
+      latitude.toFixed(6);
+
+
+    document.getElementById("longitude")
+      .textContent =
+      longitude.toFixed(6);
+
+
+    document.getElementById("accuracy")
+      .textContent =
+      Math.round(accuracy) + " meters";
+
+
+    document.getElementById("timestamp")
+      .textContent =
+      new Date(
+        position.timestamp
+      ).toLocaleString();
+
+
+    statusBox.classList.add("active");
+
+    statusText.textContent =
+      "Location sharing is active.";
+
+
+    /*
+     * CREATE / UPDATE MARKER
+     */
+
+    if (!locationMarker) {
+
+      locationMarker =
+        L.marker(latLng)
+          .addTo(map)
+          .bindPopup(
+            "<strong>📍 Current Location</strong>"
+          );
+
+    } else {
+
+      locationMarker
+        .setLatLng(latLng);
+
+    }
+
+
+    /*
+     * CREATE / UPDATE ACCURACY CIRCLE
+     */
+
+    if (!accuracyCircle) {
+
+      accuracyCircle =
+        L.circle(
+          latLng,
+          {
+            radius: accuracy,
+            weight: 2,
+            fillOpacity: 0.15
+          }
+        ).addTo(map);
+
+    } else {
+
+      accuracyCircle
+        .setLatLng(latLng);
+
+      accuracyCircle
+        .setRadius(accuracy);
+
+    }
+
+
+    /*
+     * CENTER MAP
+     */
+
+    map.setView(
+      latLng,
+      Math.max(map.getZoom(), 16)
+    );
+
+
+    /*
+     * UPDATE ACCURACY
+     */
+
+    updateAccuracy(accuracy);
+
+
+    /*
+     * ADDRESS LOOKUP
+     *
+     * Limit requests so that the public
+     * Nominatim service is not repeatedly
+     * queried on every GPS update.
+     */
+
+    const now =
+      Date.now();
+
+    if (
+      now - lastGeocodeTime >= 10000
+    ) {
+
+      lastGeocodeTime = now;
+
+      reverseGeocode(
+        latitude,
+        longitude
+      );
+
+    }
+
   }
 
-  window.open(url, "_blank", "noopener,noreferrer");
-}
+
+  /*
+   * ACCURACY DISPLAY
+   */
+
+  function updateAccuracy(accuracy) {
+
+    let percentage =
+      100 - accuracy;
+
+
+    if (percentage < 5)
+      percentage = 5;
+
+
+    if (percentage > 100)
+      percentage = 100;
+
+
+    document.getElementById(
+      "accuracyFill"
+    ).style.width =
+      percentage + "%";
+
+
+    if (accuracy <= 20) {
+
+      document.getElementById(
+        "accuracyText"
+      ).textContent =
+        "High accuracy";
+
+    }
+
+    else if (accuracy <= 100) {
+
+      document.getElementById(
+        "accuracyText"
+      ).textContent =
+        "Good accuracy";
+
+    }
+
+    else {
+
+      document.getElementById(
+        "accuracyText"
+      ).textContent =
+        "Low accuracy";
+
+    }
+
+  }
+
+
+  /*
+   * REVERSE GEOCODING
+   */
+
+  async function reverseGeocode(
+    latitude,
+    longitude
+  ) {
+
+    try {
+
+      const url =
+        "https://nominatim.openstreetmap.org/reverse" +
+        "?format=jsonv2" +
+        "&lat=" +
+        encodeURIComponent(latitude) +
+        "&lon=" +
+        encodeURIComponent(longitude) +
+        "&zoom=18" +
+        "&addressdetails=1";
+
+
+      const response =
+        await fetch(url, {
+          headers: {
+            "Accept":
+              "application/json"
+          }
+        });
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          "Address lookup failed"
+        );
+
+      }
+
+
+      const data =
+        await response.json();
+
+
+      const address =
+        data.address || {};
+
+
+      /*
+       * ADDRESS
+       */
+
+      const fullAddress =
+        data.display_name ||
+        "Address unavailable";
+
+
+      document.getElementById(
+        "address"
+      ).textContent =
+        fullAddress;
+
+
+      /*
+       * CITY
+       */
+
+      const city =
+        address.city ||
+        address.town ||
+        address.municipality ||
+        address.village ||
+        address.county ||
+        "—";
+
+
+      document.getElementById(
+        "city"
+      ).textContent =
+        city;
+
+
+      /*
+       * COUNTRY
+       */
+
+      document.getElementById(
+        "country"
+      ).textContent =
+        address.country ||
+        "—";
+
+
+      /*
+       * UPDATE POPUP
+       */
+
+      if (locationMarker) {
+
+        locationMarker.bindPopup(
+          "<strong>📍 Current Location</strong><br>" +
+          escapeHtml(fullAddress)
+        );
+
+      }
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Reverse geocoding error:",
+        error
+      );
+
+      document.getElementById(
+        "address"
+      ).textContent =
+        "Address unavailable";
+
+    }
+
+  }
+
+
+  /*
+   * BASIC HTML ESCAPING
+   */
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  }
+
+
+  /*
+   * LOCATION ERROR
+   */
+
+  function locationError(error) {
+
+    statusBox.classList.remove(
+      "active"
+    );
+
+
+    statusText.textContent =
+      "Location sharing is not active.";
+
+
+    if (error.code === 1) {
+
+      errorMessage.textContent =
+        "Location permission was denied. " +
+        "Please allow location access in your browser settings.";
+
+    }
+
+    else if (error.code === 2) {
+
+      errorMessage.textContent =
+        "Your location could not be determined.";
+
+    }
+
+    else if (error.code === 3) {
+
+      errorMessage.textContent =
+        "Location request timed out. Please try again.";
+
+    }
+
+    else {
+
+      errorMessage.textContent =
+        "Unable to access your location.";
+
+    }
+
+  }
+
+
+  /*
+   * STOP LOCATION
+   */
+
+  function stopLocation() {
+
+    if (watchId !== null) {
+
+      navigator.geolocation
+        .clearWatch(watchId);
+
+      watchId = null;
+
+    }
+
+
+    statusBox.classList.remove(
+      "active"
+    );
+
+
+    statusText.textContent =
+      "Location sharing has been stopped.";
+
+
+    document.getElementById(
+      "accuracyText"
+    ).textContent =
+      "Location sharing stopped.";
+
+
+    document.getElementById(
+      "accuracyFill"
+    ).style.width =
+      "0%";
+
+  }
+
 </script>
 
 </body>
 </html>
-<div style="margin-top:15px;">
-  <span class="label">🔗 Facebook Profile URL:</span>
-
-  <input
-    id="facebookUrl"
-    type="url"
-    placeholder="https://www.facebook.com/username"
-    style="
-      width:100%;
-      padding:12px;
-      margin-top:8px;
-      box-sizing:border-box;
-      border:1px solid #ccc;
-      border-radius:8px;
-    "
-  >
-
-  <button
-    onclick="openFacebook()"
-    style="
-      width:100%;
-      padding:12px;
-      margin-top:8px;
-      border:0;
-      border-radius:8px;
-      background:#1877f2;
-      color:white;
-      font-size:16px;
-    "
-  >
-    Open Facebook Profile
-  </button>
-</div>
