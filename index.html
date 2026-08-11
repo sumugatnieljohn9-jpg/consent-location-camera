@@ -3,61 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Location & Camera Permission</title>
+
+  <title>Live Location Map</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
 
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
       background: #f4f6f8;
-      margin: 0;
-      padding: 30px 15px;
-      text-align: center;
     }
 
     .box {
-      max-width: 500px;
-      margin: auto;
+      max-width: 650px;
+      margin: 20px auto;
+      padding: 20px;
       background: white;
-      padding: 25px;
       border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .notice {
+      text-align: center;
+      color: #555;
+      line-height: 1.5;
     }
 
     button {
       width: 100%;
-      padding: 14px;
-      margin: 8px 0;
+      padding: 15px;
+      margin: 10px 0;
       border: 0;
-      border-radius: 8px;
+      border-radius: 9px;
       background: #1877f2;
       color: white;
       font-size: 16px;
-      cursor: pointer;
     }
 
-    button:hover {
-      opacity: .9;
-    }
-
-    #location {
-      margin-top: 15px;
-      padding: 12px;
-      background: #f1f1f1;
-      border-radius: 8px;
-      word-break: break-word;
-    }
-
-    video {
+    #map {
+      height: 450px;
       width: 100%;
       margin-top: 15px;
-      border-radius: 10px;
-      display: none;
+      border-radius: 12px;
     }
 
-    .notice {
-      font-size: 14px;
-      color: #555;
-      line-height: 1.5;
+    #status {
+      margin-top: 15px;
+      padding: 12px;
+      background: #eee;
+      border-radius: 8px;
+      text-align: center;
     }
   </style>
 </head>
@@ -66,92 +68,115 @@
 
 <div class="box">
 
-  <h2>Location & Camera Access</h2>
+  <h1>📍 Live Location</h1>
 
   <p class="notice">
-    This page only accesses your device location or camera
-    after you explicitly grant browser permission.
+    This page requests your device location only after
+    you press the button and grant browser permission.
   </p>
 
-  <button onclick="getLocation()">
-    📍 Allow Location
+  <button onclick="startLocation()">
+    📍 Allow Live Location
   </button>
 
-  <button onclick="startCamera()">
-    📷 Allow Camera
-  </button>
-
-  <div id="location">
-    Location: Not shared
+  <div id="status">
+    Location sharing is not active.
   </div>
 
-  <video id="camera" autoplay playsinline></video>
+  <div id="map"></div>
 
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
 
-function getLocation() {
+let map;
+let marker;
+let accuracyCircle;
+let watchID;
 
-  const output = document.getElementById("location");
+function startLocation() {
 
   if (!navigator.geolocation) {
-    output.innerHTML = "Location is not supported by this browser.";
+    document.getElementById("status").innerText =
+      "Geolocation is not supported by this browser.";
     return;
   }
 
-  output.innerHTML = "Requesting location permission...";
+  document.getElementById("status").innerText =
+    "Requesting location permission...";
 
-  navigator.geolocation.getCurrentPosition(
+  watchID = navigator.geolocation.watchPosition(
 
     function(position) {
 
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
       const accuracy = position.coords.accuracy;
 
-      output.innerHTML =
-        "Latitude: " + latitude + "<br>" +
-        "Longitude: " + longitude + "<br>" +
-        "Accuracy: approximately " + Math.round(accuracy) + " meters";
+      document.getElementById("status").innerHTML =
+        "📍 Live location active<br>" +
+        "Latitude: " + lat.toFixed(6) + "<br>" +
+        "Longitude: " + lon.toFixed(6) + "<br>" +
+        "Accuracy: approximately " +
+        Math.round(accuracy) + " meters";
+
+      updateMap(lat, lon, accuracy);
 
     },
 
     function(error) {
 
-      output.innerHTML =
+      document.getElementById("status").innerText =
         "Location permission was denied or unavailable.";
 
     },
 
     {
       enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0
+      maximumAge: 0,
+      timeout: 10000
     }
   );
 }
 
 
-async function startCamera() {
+function updateMap(lat, lon, accuracy) {
 
-  const video = document.getElementById("camera");
+  if (!map) {
 
-  try {
+    map = L.map("map").setView([lat, lon], 18);
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: false
-    });
+    L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {
+        maxZoom: 19,
+        attribution:
+          "Tiles © Esri"
+      }
+    ).addTo(map);
 
-    video.srcObject = stream;
-    video.style.display = "block";
+    marker = L.marker([lat, lon])
+      .addTo(map)
+      .bindPopup("📍 Your current location")
+      .openPopup();
 
-  } catch (error) {
+    accuracyCircle = L.circle(
+      [lat, lon],
+      {
+        radius: accuracy
+      }
+    ).addTo(map);
 
-    alert(
-      "Camera permission was denied or the camera is unavailable."
-    );
+  } else {
+
+    marker.setLatLng([lat, lon]);
+
+    accuracyCircle.setLatLng([lat, lon]);
+    accuracyCircle.setRadius(accuracy);
+
+    map.setView([lat, lon], map.getZoom());
 
   }
 }
