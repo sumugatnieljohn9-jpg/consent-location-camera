@@ -4,30 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Live Location Map</title>
+  <title>Live Location Dashboard</title>
 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f4f6f8;
+      background: #eef1f4;
+      color: #111;
     }
 
-    .box {
-      max-width: 650px;
-      margin: 20px auto;
-      padding: 20px;
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 18px;
+    }
+
+    .card {
       background: white;
-      border-radius: 15px;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 3px 15px rgba(0,0,0,.12);
     }
 
     h1 {
       text-align: center;
+      margin-top: 5px;
     }
 
     .notice {
@@ -39,51 +48,113 @@
     button {
       width: 100%;
       padding: 15px;
-      margin: 10px 0;
       border: 0;
-      border-radius: 9px;
+      border-radius: 10px;
       background: #1877f2;
       color: white;
-      font-size: 16px;
+      font-size: 17px;
+      font-weight: bold;
+      margin: 8px 0 15px;
     }
 
     #map {
-      height: 450px;
-      width: 100%;
-      margin-top: 15px;
+      height: 430px;
       border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .info {
+      background: #f3f4f6;
+      border-radius: 10px;
+      padding: 14px;
+      line-height: 1.7;
+      word-break: break-word;
+    }
+
+    .label {
+      font-weight: bold;
     }
 
     #status {
-      margin-top: 15px;
-      padding: 12px;
-      background: #eee;
-      border-radius: 8px;
       text-align: center;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+
+    .live {
+      color: green;
+    }
+
+    .error {
+      color: #c00;
     }
   </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="container">
 
-  <h1>📍 Live Location</h1>
+  <div class="card">
 
-  <p class="notice">
-    This page requests your device location only after
-    you press the button and grant browser permission.
-  </p>
+    <h1>🛰️ Live Location</h1>
 
-  <button onclick="startLocation()">
-    📍 Allow Live Location
-  </button>
+    <p class="notice">
+      Press the button below to share this device's location.
+      Your browser will ask for permission first.
+    </p>
 
-  <div id="status">
-    Location sharing is not active.
+    <button onclick="startTracking()">
+      📍 Allow Live Location
+    </button>
+
+    <div id="status">
+      Location sharing is not active.
+    </div>
+
+    <div id="map"></div>
+
+    <div class="info">
+
+      <div>
+        <span class="label">🌍 Country:</span>
+        <span id="country">—</span>
+      </div>
+
+      <div>
+        <span class="label">🏙️ City:</span>
+        <span id="city">—</span>
+      </div>
+
+      <div>
+        <span class="label">🛣️ Address:</span>
+        <span id="address">—</span>
+      </div>
+
+      <div>
+        <span class="label">📍 Latitude:</span>
+        <span id="latitude">—</span>
+      </div>
+
+      <div>
+        <span class="label">📍 Longitude:</span>
+        <span id="longitude">—</span>
+      </div>
+
+      <div>
+        <span class="label">🎯 Accuracy:</span>
+        <span id="accuracy">—</span>
+      </div>
+
+      <div>
+        <span class="label">🕐 Last update:</span>
+        <span id="timestamp">—</span>
+      </div>
+
+    </div>
+
   </div>
-
-  <div id="map"></div>
 
 </div>
 
@@ -91,54 +162,97 @@
 
 <script>
 
-let map;
-let marker;
-let accuracyCircle;
-let watchID;
+let map = null;
+let marker = null;
+let accuracyCircle = null;
+let watchId = null;
 
-function startLocation() {
+let lastGeocodeTime = 0;
+
+function startTracking() {
 
   if (!navigator.geolocation) {
-    document.getElementById("status").innerText =
-      "Geolocation is not supported by this browser.";
+
+    setStatus(
+      "This browser does not support location.",
+      true
+    );
+
     return;
   }
 
-  document.getElementById("status").innerText =
-    "Requesting location permission...";
+  setStatus(
+    "Requesting location permission..."
+  );
 
-  watchID = navigator.geolocation.watchPosition(
+  watchId = navigator.geolocation.watchPosition(
 
-    function(position) {
+    position => {
 
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      const accuracy = position.coords.accuracy;
-
-      document.getElementById("status").innerHTML =
-        "📍 Live location active<br>" +
-        "Latitude: " + lat.toFixed(6) + "<br>" +
-        "Longitude: " + lon.toFixed(6) + "<br>" +
-        "Accuracy: approximately " +
-        Math.round(accuracy) + " meters";
-
-      updateMap(lat, lon, accuracy);
+      updateLocation(position);
 
     },
 
-    function(error) {
+    error => {
 
-      document.getElementById("status").innerText =
-        "Location permission was denied or unavailable.";
+      setStatus(
+        "Location permission was denied or unavailable.",
+        true
+      );
 
     },
 
     {
       enableHighAccuracy: true,
       maximumAge: 0,
-      timeout: 10000
+      timeout: 15000
     }
   );
+}
+
+
+function updateLocation(position) {
+
+  const lat = position.coords.latitude;
+  const lon = position.coords.longitude;
+  const accuracy = position.coords.accuracy;
+
+  document.getElementById("latitude").textContent =
+    lat.toFixed(6);
+
+  document.getElementById("longitude").textContent =
+    lon.toFixed(6);
+
+  document.getElementById("accuracy").textContent =
+    "approximately " +
+    Math.round(accuracy) +
+    " meters";
+
+  const now = new Date();
+
+  document.getElementById("timestamp").textContent =
+    now.toLocaleString();
+
+  setStatus(
+    "● Live location active",
+    false
+  );
+
+  updateMap(lat, lon, accuracy);
+
+  /*
+    Avoid repeatedly requesting the address.
+    Reverse geocoding is performed at most once every 10 seconds.
+  */
+
+  const currentTime = Date.now();
+
+  if (currentTime - lastGeocodeTime > 10000) {
+
+    lastGeocodeTime = currentTime;
+
+    reverseGeocode(lat, lon);
+  }
 }
 
 
@@ -146,21 +260,30 @@ function updateMap(lat, lon, accuracy) {
 
   if (!map) {
 
-    map = L.map("map").setView([lat, lon], 18);
+    map = L.map("map").setView(
+      [lat, lon],
+      18
+    );
+
+    /*
+      Satellite imagery.
+    */
 
     L.tileLayer(
       "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
       {
         maxZoom: 19,
-        attribution:
-          "Tiles © Esri"
+        attribution: "© Esri"
       }
     ).addTo(map);
 
-    marker = L.marker([lat, lon])
-      .addTo(map)
-      .bindPopup("📍 Your current location")
-      .openPopup();
+    marker = L.marker(
+      [lat, lon]
+    ).addTo(map);
+
+    marker.bindPopup(
+      "📍 Current device location"
+    );
 
     accuracyCircle = L.circle(
       [lat, lon],
@@ -171,14 +294,88 @@ function updateMap(lat, lon, accuracy) {
 
   } else {
 
-    marker.setLatLng([lat, lon]);
+    marker.setLatLng(
+      [lat, lon]
+    );
 
-    accuracyCircle.setLatLng([lat, lon]);
-    accuracyCircle.setRadius(accuracy);
+    accuracyCircle.setLatLng(
+      [lat, lon]
+    );
 
-    map.setView([lat, lon], map.getZoom());
+    accuracyCircle.setRadius(
+      accuracy
+    );
+
+    map.setView(
+      [lat, lon],
+      map.getZoom()
+    );
+  }
+}
+
+
+async function reverseGeocode(lat, lon) {
+
+  document.getElementById("address").textContent =
+    "Looking up address...";
+
+  try {
+
+    const url =
+      "https://nominatim.openstreetmap.org/reverse" +
+      "?format=jsonv2" +
+      "&lat=" + encodeURIComponent(lat) +
+      "&lon=" + encodeURIComponent(lon) +
+      "&zoom=18" +
+      "&addressdetails=1";
+
+    const response = await fetch(url, {
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Geocoding request failed");
+    }
+
+    const data = await response.json();
+
+    const a = data.address || {};
+
+    document.getElementById("country").textContent =
+      a.country || "Unavailable";
+
+    document.getElementById("city").textContent =
+      a.city ||
+      a.town ||
+      a.municipality ||
+      a.village ||
+      a.suburb ||
+      "Unavailable";
+
+    document.getElementById("address").textContent =
+      data.display_name ||
+      "Address unavailable";
+
+  } catch (error) {
+
+    document.getElementById("address").textContent =
+      "Address lookup unavailable";
 
   }
+}
+
+
+function setStatus(message, isError = false) {
+
+  const status =
+    document.getElementById("status");
+
+  status.textContent = message;
+
+  status.className =
+    isError ? "error" : "live";
 }
 
 </script>
