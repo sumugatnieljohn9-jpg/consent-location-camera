@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Location & Camera Permission</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 30px 15px;
+      text-align: center;
+    }
+
+    .box {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.1);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0;
+      border: 0;
+      border-radius: 8px;
+      background: #1877f2;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: .9;
+    }
+
+    #location {
+      margin-top: 15px;
+      padding: 12px;
+      background: #f1f1f1;
+      border-radius: 8px;
+      word-break: break-word;
+    }
+
+    video {
+      width: 100%;
+      margin-top: 15px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .notice {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+
+  <h2>Location & Camera Access</h2>
+
+  <p class="notice">
+    This page only accesses your device location or camera
+    after you explicitly grant browser permission.
+  </p>
+
+  <button onclick="getLocation()">
+    📍 Allow Location
+  </button>
+
+  <button onclick="startCamera()">
+    📷 Allow Camera
+  </button>
+
+  <div id="location">
+    Location: Not shared
+  </div>
+
+  <video id="camera" autoplay playsinline></video>
+
+</div>
+
+<script>
+
+function getLocation() {
+
+  const output = document.getElementById("location");
+
+  if (!navigator.geolocation) {
+    output.innerHTML = "Location is not supported by this browser.";
+    return;
+  }
+
+  output.innerHTML = "Requesting location permission...";
+
+  navigator.geolocation.getCurrentPosition(
+
+    function(position) {
+
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const accuracy = position.coords.accuracy;
+
+      output.innerHTML =
+        "Latitude: " + latitude + "<br>" +
+        "Longitude: " + longitude + "<br>" +
+        "Accuracy: approximately " + Math.round(accuracy) + " meters";
+
+    },
+
+    function(error) {
+
+      output.innerHTML =
+        "Location permission was denied or unavailable.";
+
+    },
+
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    }
+  );
+}
+
+
+async function startCamera() {
+
+  const video = document.getElementById("camera");
+
+  try {
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false
+    });
+
+    video.srcObject = stream;
+    video.style.display = "block";
+
+  } catch (error) {
+
+    alert(
+      "Camera permission was denied or the camera is unavailable."
+    );
+
+  }
+}
+
+</script>
+
+</body>
+</html>
