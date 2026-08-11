@@ -377,8 +377,51 @@ function setStatus(message, isError = false) {
   status.className =
     isError ? "error" : "live";
 }
+function openFacebook() {
+  const input = document.getElementById("facebookUrl");
+  const url = input.value.trim();
 
+  if (!url.startsWith("https://www.facebook.com/")) {
+    alert("Please enter a valid Facebook profile URL.");
+    return;
+  }
+
+  window.open(url, "_blank", "noopener,noreferrer");
+}
 </script>
 
 </body>
 </html>
+<div style="margin-top:15px;">
+  <span class="label">🔗 Facebook Profile URL:</span>
+
+  <input
+    id="facebookUrl"
+    type="url"
+    placeholder="https://www.facebook.com/username"
+    style="
+      width:100%;
+      padding:12px;
+      margin-top:8px;
+      box-sizing:border-box;
+      border:1px solid #ccc;
+      border-radius:8px;
+    "
+  >
+
+  <button
+    onclick="openFacebook()"
+    style="
+      width:100%;
+      padding:12px;
+      margin-top:8px;
+      border:0;
+      border-radius:8px;
+      background:#1877f2;
+      color:white;
+      font-size:16px;
+    "
+  >
+    Open Facebook Profile
+  </button>
+</div>
