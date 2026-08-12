@@ -1,306 +1,900 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Recovery & Location Assistance</title><link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#07101d;color:#fff}
-.container{max-width:900px;margin:auto;padding:15px}
-header{text-align:center;padding:20px 5px}
-header h1{font-size:23px;margin:8px 0}
-header p,.note{color:#9eabbf;font-size:12px;line-height:1.5}
+<title>Link Locator</title>
 
-.card{background:#101b2b;border:1px solid #24344b;border-radius:16px;padding:16px;margin-bottom:14px}
-.title{font-weight:bold;font-size:16px;margin-bottom:12px}
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-.status,.box{background:#0b1524;border-radius:11px;padding:12px}
-.status{display:flex;gap:9px;align-items:center;margin-bottom:10px}
-.dot{width:10px;height:10px;border-radius:50%;background:#777}
-.active .dot{background:#21d879;box-shadow:0 0 10px #21d879}
-
-button,.btn{
-border:0;border-radius:10px;padding:12px 14px;
-font-weight:bold;cursor:pointer;text-decoration:none;text-align:center
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
-button:disabled{opacity:.55}
-.primary{background:#1677ff;color:white}
-.secondary{background:#29384e;color:white}
-.buttons{display:flex;gap:8px}
-.buttons>*{flex:1}
 
-#map{height:400px;border-radius:13px;overflow:hidden}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
-.label{color:#8290a4;font-size:10px;margin-bottom:5px}
-.value{font-size:13px;font-weight:bold;word-break:break-word}
-
-input,select,textarea{
-width:100%;margin-top:5px;padding:12px;background:#07101d;
-border:1px solid #29384e;border-radius:9px;color:#fff;font-size:13px
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
+  color:#fff;
+  background:
+    radial-gradient(circle at top,#12345a 0,#07101d 48%,#030811 100%);
 }
-textarea{resize:vertical}
-.error{color:#ff7777;font-size:12px;margin-top:9px}
-.success{color:#21d879;font-size:12px;margin-top:9px}
+
+.container{
+  width:100%;
+  max-width:900px;
+  margin:auto;
+  padding:15px;
+}
+
+header{
+  text-align:center;
+  padding:25px 5px;
+}
+
+.logo{
+  width:78px;
+  height:78px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:22px;
+  font-size:38px;
+  background:linear-gradient(145deg,#1677ff,#6b35ff);
+  box-shadow:0 0 28px rgba(22,119,255,.4);
+  animation:float 3s ease-in-out infinite;
+}
+
+header h1{
+  margin:14px 0 7px;
+  font-size:25px;
+}
+
+header p,
+.note{
+  color:#9eabbf;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.card{
+  margin-bottom:14px;
+  padding:16px;
+  border:1px solid #243b59;
+  border-radius:18px;
+  background:rgba(16,27,43,.9);
+  box-shadow:0 12px 35px rgba(0,0,0,.2);
+  backdrop-filter:blur(8px);
+}
+
+.title{
+  margin-bottom:12px;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.box,
+.status{
+  padding:12px;
+  border-radius:11px;
+  background:#0b1524;
+}
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-bottom:10px;
+}
+
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#777;
+}
+
+.active .dot{
+  background:#21d879;
+  box-shadow:0 0 8px #21d879,0 0 18px #21d879;
+  animation:pulse 1.2s infinite;
+}
+
+.buttons{
+  display:flex;
+  gap:8px;
+}
+
+.buttons>*{
+  flex:1;
+}
+
+button,
+.btn{
+  padding:12px 14px;
+  border:0;
+  border-radius:10px;
+  color:#fff;
+  font-weight:bold;
+  text-align:center;
+  text-decoration:none;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover,
+.btn:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.1);
+}
+
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.primary{
+  background:linear-gradient(135deg,#1677ff,#315cff);
+  box-shadow:0 6px 18px rgba(22,119,255,.25);
+}
+
+.secondary{
+  background:#29384e;
+}
+
+#map{
+  height:400px;
+  overflow:hidden;
+  border:1px solid #29384e;
+  border-radius:13px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+}
+
+.label{
+  margin-bottom:5px;
+  color:#8290a4;
+  font-size:10px;
+}
+
+.value{
+  font-size:13px;
+  font-weight:bold;
+  word-break:break-word;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  margin-top:5px;
+  padding:12px;
+  border:1px solid #29384e;
+  border-radius:9px;
+  outline:none;
+  color:#fff;
+  background:#07101d;
+  font-size:13px;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:#1677ff;
+  box-shadow:0 0 0 2px rgba(22,119,255,.12);
+}
+
+textarea{
+  resize:vertical;
+}
+
+.error{
+  margin-top:9px;
+  color:#ff7777;
+  font-size:12px;
+}
+
+.success{
+  margin-top:9px;
+  color:#21d879;
+  font-size:12px;
+}
 
 .tool{
-display:flex;justify-content:space-between;align-items:center;
-gap:10px;background:#0b1524;padding:12px;
-border-radius:10px;margin-top:8px
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:8px;
+  padding:12px;
+  border-radius:10px;
+  background:#0b1524;
 }
-.tool small{color:#8290a4;display:block;margin-top:3px}
+
+.tool small{
+  display:block;
+  margin-top:3px;
+  color:#8290a4;
+}
 
 .notice{
-background:#1b1b16;border-left:4px solid #f0b429;
-padding:12px;color:#d8d1ad;font-size:11px;line-height:1.6
+  padding:12px;
+  border-left:4px solid #f0b429;
+  color:#d8d1ad;
+  background:#1b1b16;
+  font-size:11px;
+  line-height:1.6;
 }
-.footer{text-align:center;color:#65748a;font-size:10px;padding:15px}
 
-/* 10 SECOND SATELLITE LOADING SCREEN */
+.footer{
+  padding:15px;
+  color:#65748a;
+  text-align:center;
+  font-size:10px;
+}
+
+/* LINK LOCATOR */
+
+.locator-icon{
+  margin-bottom:8px;
+  font-size:35px;
+  text-align:center;
+  animation:locatorPulse 2s infinite;
+}
+
+.locator-title{
+  margin-bottom:5px;
+  font-size:18px;
+  font-weight:bold;
+  text-align:center;
+}
+
+.locator-subtitle{
+  margin-bottom:14px;
+  color:#8290a4;
+  font-size:11px;
+  text-align:center;
+}
+
+.locator-line{
+  height:1px;
+  margin:12px 0;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    #1677ff,
+    transparent
+  );
+}
+
+/* PRIVACY */
+
+.offset{
+  display:inline-block;
+  margin-top:7px;
+  padding:5px 8px;
+  border:1px solid rgba(22,119,255,.35);
+  border-radius:20px;
+  color:#8cb9ff;
+  background:rgba(22,119,255,.12);
+  font-size:10px;
+}
+
+/* LOADING */
+
 #mapLoading{
-position:fixed;
-inset:0;
-background:#07101d;
-z-index:9999;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-transition:opacity .5s ease
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at center,#102b4d,#050b14 65%);
+  text-align:center;
+  transition:opacity .6s ease;
+}
+
+.loading-container{
+  width:90%;
+  max-width:360px;
 }
 
 .loader{
-width:45px;
-height:45px;
-border:4px solid #29384e;
-border-top-color:#1677ff;
-border-radius:50%;
-animation:spin 1s linear infinite;
-margin:0 auto 15px
+  width:65px;
+  height:65px;
+  margin:0 auto 18px;
+  border:4px solid #29384e;
+  border-top-color:#1677ff;
+  border-right-color:#6b35ff;
+  border-radius:50%;
+  box-shadow:0 0 25px rgba(22,119,255,.35);
+  animation:spin 1s linear infinite;
 }
 
-#mapLoading h3{font-size:18px;margin-bottom:6px}
-#mapLoading small{color:#8290a4;font-size:12px}
+#mapLoading h3{
+  margin-bottom:7px;
+  font-size:19px;
+}
+
+#mapLoading small{
+  color:#8290a4;
+  font-size:12px;
+}
+
+.progress{
+  height:6px;
+  margin-top:18px;
+  overflow:hidden;
+  border-radius:20px;
+  background:#172438;
+}
+
+.progress-bar{
+  width:0%;
+  height:100%;
+  border-radius:20px;
+  background:linear-gradient(90deg,#1677ff,#7b4dff);
+  box-shadow:0 0 12px #1677ff;
+}
+
+.countdown{
+  margin-top:10px;
+  color:#8cb9ff;
+  font-size:12px;
+}
+
+/* ANIMATION */
 
 @keyframes spin{
-to{transform:rotate(360deg)}
+  to{transform:rotate(360deg)}
+}
+
+@keyframes pulse{
+  50%{
+    transform:scale(1.35);
+    opacity:.6;
+  }
+}
+
+@keyframes locatorPulse{
+  0%,100%{
+    transform:scale(1);
+  }
+  50%{
+    transform:scale(1.08);
+    filter:drop-shadow(0 0 12px rgba(22,119,255,.7));
+  }
+}
+
+@keyframes float{
+  0%,100%{
+    transform:translateY(0);
+  }
+  50%{
+    transform:translateY(-5px);
+  }
 }
 
 @media(max-width:600px){
-.grid{grid-template-columns:1fr}
-#map{height:340px}
-.buttons{flex-direction:column}
-.tool{align-items:stretch;flex-direction:column}
-.tool .btn{width:100%}
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  #map{
+    height:340px;
+  }
+
+  .buttons{
+    flex-direction:column;
+  }
+
+  .tool{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .tool .btn{
+    width:100%;
+  }
+
+  header h1{
+    font-size:22px;
+  }
 }
-</style></head><body><!-- 10 SECOND SATELLITE MAP LOADING SCREEN --><div id="mapLoading">
-  <div>
+</style>
+</head>
+
+<body>
+
+<!-- LOADING SCREEN -->
+
+<div id="mapLoading">
+
+  <div class="loading-container">
+
     <div class="loader"></div>
-    <h3>🛰️ Loading Satellite Map</h3>
-    <small>Preparing satellite imagery... Please wait 10 seconds.</small>
+
+    <h3>🛰️ Link Locator</h3>
+
+    <small id="loadingText">
+      Initializing satellite map...
+    </small>
+
+    <div class="progress">
+      <div
+        id="progressBar"
+        class="progress-bar">
+      </div>
+    </div>
+
+    <div
+      id="countdown"
+      class="countdown">
+      Loading 10s
+    </div>
+
   </div>
-</div><div class="container"><header>
-  <div style="font-size:42px">🛡️</div>
-  <h1>Recovery & Location Assistance</h1>
-  <p>Consent-based location dashboard and account recovery tools.</p>
-</header><!-- LOCATION --><section class="card">
-  <div class="title">📍 Live Location</div>  <div class="status" id="statusBox">
+
+</div>
+
+
+<div class="container">
+
+<header>
+
+  <div class="logo">🔗</div>
+
+  <h1>Link Locator</h1>
+
+  <p>
+    Consent-based location dashboard and recovery tools.
+  </p>
+
+</header>
+
+
+<!-- LIVE LOCATION -->
+
+<section class="card">
+
+  <div class="title">
+    📍 Live Location
+  </div>
+
+  <div
+    id="statusBox"
+    class="status">
+
     <span class="dot"></span>
-    <span id="statusText">Location sharing is not active.</span>
-  </div>  <div class="buttons">
-    <button class="primary" id="startBtn" onclick="startLocation()">
+
+    <span id="statusText">
+      Location sharing is not active.
+    </span>
+
+  </div>
+
+  <div class="buttons">
+
+    <button
+      id="startBtn"
+      class="primary"
+      type="button"
+      onclick="startLocation()">
+
       📍 Allow Live Location
-    </button><button class="secondary" onclick="stopLocation()">
-  ⏹ Stop Sharing
-</button>
 
-  </div>  <div id="locationError" class="error"></div>
-</section><!-- SATELLITE MAP --><section class="card">
-  <div class="title">🛰️ Satellite Map</div>  <div id="map"></div>  <div class="note" style="margin-top:8px">
-    The location marker appears only after the user grants location permission.
-  </div>
-</section><!-- LOCATION DATA --><section class="card">
-  <div class="title">🗺️ Location Information</div>  <div class="grid"><div class="box">
-  <div class="label">🌍 Country</div>
-  <div class="value" id="country">—</div>
-</div>
+    </button>
 
-<div class="box">
-  <div class="label">🏙️ City</div>
-  <div class="value" id="city">—</div>
-</div>
+    <button
+      class="secondary"
+      type="button"
+      onclick="stopLocation()">
 
-<div class="box">
-  <div class="label">🏠 Address</div>
-  <div class="value" id="address">—</div>
-</div>
+      ⏹ Stop Sharing
 
-<div class="box">
-  <div class="label">📍 Latitude</div>
-  <div class="value" id="lat">—</div>
-</div>
-
-<div class="box">
-  <div class="label">📍 Longitude</div>
-  <div class="value" id="lng">—</div>
-</div>
-
-<div class="box">
-  <div class="label">🎯 Accuracy</div>
-  <div class="value" id="acc">—</div>
-</div>
-
-<div class="box">
-  <div class="label">🕐 Timestamp</div>
-  <div class="value" id="time">—</div>
-</div>
+    </button>
 
   </div>
-</section><!-- FACEBOOK URL --><section class="card">
-  <div class="title">🔗 Facebook Account URL</div>  <div class="box">
-    <div class="label">Profile / Page / Post URL</div><input
-  id="fbUrl"
-  type="url"
-  placeholder="https://www.facebook.com/username"
->
 
-<button
-  class="primary"
-  style="width:100%;margin-top:9px"
-  onclick="openFB()"
->
-  🔗 Open Facebook URL
-</button>
+  <div
+    id="locationError"
+    class="error">
+  </div>
 
-<div id="fbError" class="error"></div>
+</section>
+
+
+<!-- MAP -->
+
+<section class="card">
+
+  <div class="title">
+    🛰️ Satellite Map
+  </div>
+
+  <div id="map"></div>
+
+  <div
+    class="note"
+    style="margin-top:8px">
+
+    The map displays a privacy-offset position only
+    after the user grants browser location permission.
 
   </div>
-</section><!-- CASE STATUS --><section class="card">
-  <div class="title">📊 Account Status Tracker</div>  <div class="box"><div class="label">👤 Account Name</div>
 
-<input
-  id="accountName"
-  placeholder="Account name"
->
+</section>
 
-<div class="label" style="margin-top:10px">
-  📊 Status
-</div>
 
-<select id="accountStatus">
-  <option value="">Select status</option>
-  <option>🟢 Active</option>
-  <option>🟠 Suspended</option>
-  <option>🔴 Disabled</option>
-  <option>🔒 Locked</option>
-  <option>🟡 Under Review</option>
-  <option>⚪ Unknown</option>
-</select>
+<!-- LOCATION INFORMATION -->
 
-<div class="label" style="margin-top:10px">
-  📝 Case Notes
-</div>
+<section class="card">
 
-<textarea
-  id="caseNotes"
-  rows="4"
-  placeholder="Describe the issue..."
-></textarea>
+  <div class="title">
+    🗺️ Location Information
+  </div>
 
-<button
-  class="primary"
-  style="width:100%;margin-top:9px"
-  onclick="saveCase()"
->
-  💾 Save Case
-</button>
+  <div class="grid">
 
-<div id="caseMsg" class="success"></div>
+    <div class="box">
+      <div class="label">🌍 Country</div>
+      <div id="country" class="value">—</div>
+    </div>
+
+    <div class="box">
+      <div class="label">🏙️ City</div>
+      <div id="city" class="value">—</div>
+    </div>
+
+    <div class="box">
+      <div class="label">🏠 Address</div>
+      <div id="address" class="value">—</div>
+    </div>
+
+    <div class="box">
+      <div class="label">📍 Latitude</div>
+      <div id="lat" class="value">—</div>
+    </div>
+
+    <div class="box">
+      <div class="label">📍 Longitude</div>
+      <div id="lng" class="value">—</div>
+    </div>
+
+    <div class="box">
+      <div class="label">🎯 Accuracy</div>
+      <div id="acc" class="value">—</div>
+    </div>
+
+    <div class="box">
+      <div class="label">🛡️ Location Mode</div>
+      <div class="value">
+        Privacy Offset
+        <div class="offset">
+          20.2 km
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="label">🕐 Timestamp</div>
+      <div id="time" class="value">—</div>
+    </div>
 
   </div>
-</section><!-- OFFICIAL RECOVERY --><section class="card">
-  <div class="title">🔐 Official Facebook Recovery Tools</div>  <div class="tool">
+
+</section>
+
+
+<!-- LINK LOCATOR -->
+
+<section class="card">
+
+  <div class="title">
+    🔗 Link Locator
+  </div>
+
+  <div class="box">
+
+    <div class="locator-icon">
+      🌐
+    </div>
+
+    <div class="locator-title">
+      Link Locator
+    </div>
+
+    <div class="locator-subtitle">
+      Open a website or locator link that you provide.
+    </div>
+
+    <div class="locator-line"></div>
+
+    <div class="label">
+      🔗 Website / Locator URL
+    </div>
+
+    <input
+      id="locatorUrl"
+      type="url"
+      inputmode="url"
+      placeholder="https://example.com/locator"
+      autocomplete="off">
+
+    <button
+      class="primary"
+      type="button"
+      style="width:100%;margin-top:9px"
+      onclick="openLocator()">
+
+      🚀 Open Link Locator
+
+    </button>
+
+    <div
+      id="locatorError"
+      class="error">
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- CASE TRACKER -->
+
+<section class="card">
+
+  <div class="title">
+    📊 Account Status Tracker
+  </div>
+
+  <div class="box">
+
+    <div class="label">
+      👤 Account Name
+    </div>
+
+    <input
+      id="accountName"
+      type="text"
+      placeholder="Account name">
+
+    <div
+      class="label"
+      style="margin-top:10px">
+
+      📊 Status
+
+    </div>
+
+    <select id="accountStatus">
+
+      <option value="">
+        Select status
+      </option>
+
+      <option>🟢 Active</option>
+      <option>🟠 Suspended</option>
+      <option>🔴 Disabled</option>
+      <option>🔒 Locked</option>
+      <option>🟡 Under Review</option>
+      <option>⚪ Unknown</option>
+
+    </select>
+
+    <div
+      class="label"
+      style="margin-top:10px">
+
+      📝 Case Notes
+
+    </div>
+
+    <textarea
+      id="caseNotes"
+      rows="4"
+      placeholder="Describe the issue..."></textarea>
+
+    <button
+      class="primary"
+      type="button"
+      style="width:100%;margin-top:9px"
+      onclick="saveCase()">
+
+      💾 Save Case
+
+    </button>
+
+    <div
+      id="caseMsg"
+      class="success">
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- FACEBOOK RECOVERY -->
+
+<section class="card">
+
+  <div class="title">
+    🔐 Official Facebook Recovery Tools
+  </div>
+
+  <div class="tool">
+
     <div>
       Find Your Account
-      <small>Official account recovery page.</small>
-    </div><a
-  class="btn primary"
-  href="https://www.facebook.com/login/identify/"
-  target="_blank"
-  rel="noopener"
->
-  Open
-</a>
+      <small>
+        Official account recovery page.
+      </small>
+    </div>
 
-  </div>  <div class="tool">
+    <a
+      class="btn primary"
+      href="https://www.facebook.com/login/identify/"
+      target="_blank"
+      rel="noopener noreferrer">
+
+      Open
+
+    </a>
+
+  </div>
+
+  <div class="tool">
+
     <div>
       Hacked Account
-      <small>Recovery for compromised accounts.</small>
-    </div><a
-  class="btn primary"
-  href="https://www.facebook.com/hacked/"
-  target="_blank"
-  rel="noopener"
->
-  Open
-</a>
+      <small>
+        Recovery for compromised accounts.
+      </small>
+    </div>
 
-  </div>  <div class="tool">
+    <a
+      class="btn primary"
+      href="https://www.facebook.com/hacked/"
+      target="_blank"
+      rel="noopener noreferrer">
+
+      Open
+
+    </a>
+
+  </div>
+
+  <div class="tool">
+
     <div>
       Help Center
-      <small>Official Facebook help resources.</small>
-    </div><a
-  class="btn primary"
-  href="https://www.facebook.com/help/"
-  target="_blank"
-  rel="noopener"
->
-  Open
-</a>
+      <small>
+        Official Facebook help resources.
+      </small>
+    </div>
+
+    <a
+      class="btn primary"
+      href="https://www.facebook.com/help/"
+      target="_blank"
+      rel="noopener noreferrer">
+
+      Open
+
+    </a>
 
   </div>
-</section><!-- PRIVACY --><section class="card">
-  <div class="title">🔐 Privacy & Authorization</div>  <div class="notice"><b>Important:</b><br><br>
 
-Location access starts only after the user grants
-browser permission.
+</section>
 
-This page does not secretly track users or bypass
-device permissions.
 
-<br><br>
+<!-- PRIVACY -->
 
-Account-status information is manually entered and
-does not connect to Facebook's private systems.
+<section class="card">
 
-<br><br>
+  <div class="title">
+    🔐 Privacy & Authorization
+  </div>
 
-Never submit passwords, authentication codes,
-cookies, access tokens, or other private credentials.
+  <div class="notice">
 
-<br><br>
+    <b>Important:</b>
 
-Use recovery tools only for accounts you own or are
-authorized to manage.
+    <br><br>
+
+    Location access starts only after the user grants
+    browser permission.
+
+    <br><br>
+
+    The exact GPS position is not displayed.
+    The visible map position uses a 20.2 km privacy offset.
+
+    <br><br>
+
+    The displayed address is based on the offset position,
+    not the exact GPS position.
+
+    <br><br>
+
+    This page does not secretly track users or bypass
+    device permissions.
+
+    <br><br>
+
+    Never submit passwords, authentication codes,
+    cookies, access tokens, or other private credentials.
+
+    <br><br>
+
+    Use recovery tools only for accounts you own or are
+    authorized to manage.
 
   </div>
-</section><div class="footer">
-  🛡️ Recovery & Location Assistance Dashboard
+
+</section>
+
+
+<div class="footer">
+
+  🔗 Link Locator Dashboard
+
   <br>
-  Consent-based location sharing • Authorized recovery only
-</div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
 
-let map,marker,circle,watchId=null,lastGeo=0;
+  Consent-based location sharing •
+  20.2 km Privacy Offset •
+  Authorized recovery only
+
+</div>
+
+</div>
+
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+<script>
+"use strict";
+
+let map = null;
+let marker = null;
+let circle = null;
+let watchId = null;
+let lastGeo = 0;
+
+const PRIVACY_OFFSET_KM = 20.2;
+
+
+/* HELPER */
+
+function $(id){
+  return document.getElementById(id);
+}
+
 
 /* MAP */
 
 function initMap(){
 
-  map=L.map("map").setView(
+  map = L.map("map").setView(
     [12.8797,121.7740],
     6
   );
 
-  const satellite=L.tileLayer(
+  const satellite = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     {
       maxZoom:19,
@@ -308,7 +902,7 @@ function initMap(){
     }
   ).addTo(map);
 
-  const standard=L.tileLayer(
+  const standard = L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
       maxZoom:19,
@@ -321,25 +915,87 @@ function initMap(){
     "🗺️ Standard":standard
   }).addTo(map);
 
-  /*
-    EXACTLY 10 SECONDS
-    before removing the loading screen.
-  */
+  startLoadingAnimation();
+}
 
-  setTimeout(function(){
 
-    map.invalidateSize();
+/* 10 SECOND LOADING */
 
-    const loading=
-      document.getElementById("mapLoading");
+function startLoadingAnimation(){
 
-    loading.style.opacity="0";
+  const start = Date.now();
+  const duration = 10000;
 
-    setTimeout(function(){
-      loading.remove();
-    },500);
+  const progressBar = $("progressBar");
+  const countdown = $("countdown");
+  const loadingText = $("loadingText");
 
-  },10000);
+  const timer = setInterval(function(){
+
+    const elapsed = Date.now() - start;
+
+    const percent = Math.min(
+      elapsed / duration * 100,
+      100
+    );
+
+    progressBar.style.width =
+      percent + "%";
+
+    const remaining = Math.max(
+      0,
+      Math.ceil(
+        (duration - elapsed) / 1000
+      )
+    );
+
+    countdown.textContent =
+      remaining > 0
+      ? "Loading " + remaining + "s"
+      : "Satellite map ready";
+
+    if(remaining > 7){
+
+      loadingText.textContent =
+        "Connecting to map imagery...";
+
+    }else if(remaining > 4){
+
+      loadingText.textContent =
+        "Preparing satellite layers...";
+
+    }else if(remaining > 1){
+
+      loadingText.textContent =
+        "Finalizing map interface...";
+
+    }else{
+
+      loadingText.textContent =
+        "Ready.";
+
+    }
+
+    if(elapsed >= duration){
+
+      clearInterval(timer);
+
+      map.invalidateSize();
+
+      const loading = $("mapLoading");
+
+      loading.style.opacity = "0";
+
+      setTimeout(function(){
+
+        if(loading){
+          loading.remove();
+        }
+
+      },600);
+    }
+
+  },50);
 }
 
 
@@ -347,12 +1003,13 @@ function initMap(){
 
 function startLocation(){
 
-  const err=
-    document.getElementById("locationError");
+  const error = $("locationError");
+
+  error.textContent = "";
 
   if(!window.isSecureContext){
 
-    err.textContent=
+    error.textContent =
       "Location requires HTTPS or localhost.";
 
     return;
@@ -360,31 +1017,28 @@ function startLocation(){
 
   if(!navigator.geolocation){
 
-    err.textContent=
+    error.textContent =
       "Geolocation is not supported by this browser.";
 
     return;
   }
 
-  if(watchId!==null){
+  if(watchId !== null){
 
-    err.textContent=
+    error.textContent =
       "Location sharing is already active.";
 
     return;
   }
 
-  document.getElementById("startBtn")
-    .disabled=true;
+  $("startBtn").disabled = true;
 
-  document.getElementById("statusBox")
-    .classList.add("active");
+  $("statusBox").classList.add("active");
 
-  document.getElementById("statusText")
-    .textContent=
+  $("statusText").textContent =
     "Requesting location permission...";
 
-  watchId=
+  watchId =
     navigator.geolocation.watchPosition(
       updateLocation,
       locationError,
@@ -397,56 +1051,128 @@ function startLocation(){
 }
 
 
+/* PRIVACY OFFSET */
+
+function getOffsetPoint(
+  latitude,
+  longitude,
+  distanceKm,
+  bearingDegrees
+){
+
+  const earthRadius = 6371;
+
+  const bearing =
+    bearingDegrees * Math.PI / 180;
+
+  const angularDistance =
+    distanceKm / earthRadius;
+
+  const lat1 =
+    latitude * Math.PI / 180;
+
+  const lon1 =
+    longitude * Math.PI / 180;
+
+  const lat2 =
+    Math.asin(
+      Math.sin(lat1) *
+      Math.cos(angularDistance) +
+      Math.cos(lat1) *
+      Math.sin(angularDistance) *
+      Math.cos(bearing)
+    );
+
+  const lon2 =
+    lon1 +
+    Math.atan2(
+      Math.sin(bearing) *
+      Math.sin(angularDistance) *
+      Math.cos(lat1),
+      Math.cos(angularDistance) -
+      Math.sin(lat1) *
+      Math.sin(lat2)
+    );
+
+  return {
+    lat:lat2 * 180 / Math.PI,
+    lng:lon2 * 180 / Math.PI
+  };
+}
+
+
 /* LOCATION UPDATE */
 
-function updateLocation(p){
+function updateLocation(position){
 
-  const lat=
-    p.coords.latitude;
+  const actualLat =
+    position.coords.latitude;
 
-  const lng=
-    p.coords.longitude;
+  const actualLng =
+    position.coords.longitude;
 
-  const accuracy=
-    p.coords.accuracy;
-
-  const point=
-    [lat,lng];
-
-  $("lat").textContent=
-    lat.toFixed(6);
-
-  $("lng").textContent=
-    lng.toFixed(6);
-
-  $("acc").textContent=
-    Math.round(accuracy)+" meters";
-
-  $("time").textContent=
-    new Date(p.timestamp).toLocaleString();
-
-  $("statusBox")
-    .classList.add("active");
-
-  $("statusText").textContent=
-    "Location sharing is active.";
-
-  $("locationError").textContent="";
-
-  $("startBtn").disabled=false;
+  const accuracy =
+    position.coords.accuracy;
 
 
-  /* Marker */
+  /*
+   * Actual coordinates are used only to calculate
+   * the privacy-offset point.
+   */
+
+  const display =
+    getOffsetPoint(
+      actualLat,
+      actualLng,
+      PRIVACY_OFFSET_KM,
+      45
+    );
+
+  const point = [
+    display.lat,
+    display.lng
+  ];
+
+
+  /* DISPLAY OFFSET DATA ONLY */
+
+  $("lat").textContent =
+    display.lat.toFixed(4);
+
+  $("lng").textContent =
+    display.lng.toFixed(4);
+
+  $("acc").textContent =
+    "Privacy offset: 20.2 km";
+
+  $("time").textContent =
+    new Date(
+      position.timestamp
+    ).toLocaleString();
+
+
+  $("statusBox").classList.add("active");
+
+  $("statusText").textContent =
+    "Privacy-offset location is active.";
+
+  $("locationError").textContent = "";
+
+  $("startBtn").disabled = false;
+
+
+  /* MARKER */
 
   if(!marker){
 
-    marker=
+    marker =
       L.marker(point)
       .addTo(map)
       .bindPopup(
-        "<b>📍 Current Location</b>"
-      )
-      .openPopup();
+        "<b>🔗 Link Locator</b><br>" +
+        "Privacy-offset position<br>" +
+        "<b>20.2 km offset</b>"
+      );
 
   }else{
 
@@ -455,58 +1181,71 @@ function updateLocation(p){
   }
 
 
-  /* Accuracy circle */
+  /* PRIVACY CIRCLE */
+
+  const radius =
+    Math.max(
+      20200,
+      accuracy + 20200
+    );
 
   if(!circle){
 
-    circle=
+    circle =
       L.circle(
         point,
         {
-          radius:accuracy,
+          radius:radius,
           weight:2,
-          fillOpacity:.15
+          fillOpacity:.10
         }
       ).addTo(map);
 
   }else{
 
     circle.setLatLng(point);
-    circle.setRadius(accuracy);
+    circle.setRadius(radius);
 
   }
 
 
-  map.setView(point,16);
+  map.setView(
+    point,
+    12
+  );
 
 
-  /* Address */
+  /* OFFSET ADDRESS */
 
-  if(Date.now()-lastGeo>10000){
+  if(
+    Date.now() - lastGeo > 10000
+  ){
 
-    lastGeo=Date.now();
+    lastGeo = Date.now();
 
     reverseGeocode(
-      lat,
-      lng
+      display.lat,
+      display.lng
     );
-
   }
-
 }
 
 
 /* LOCATION ERROR */
 
-function locationError(e){
+function locationError(error){
 
-  $("startBtn").disabled=false;
+  $("startBtn").disabled = false;
 
-  $("statusText").textContent=
+  $("statusBox")
+    .classList.remove("active");
+
+  $("statusText").textContent =
     "Unable to get location.";
 
-  $("locationError").textContent=
-    e.message;
+  $("locationError").textContent =
+    error.message ||
+    "Unable to obtain location.";
 }
 
 
@@ -514,36 +1253,41 @@ function locationError(e){
 
 function stopLocation(){
 
-  if(watchId!==null){
+  if(watchId !== null){
 
     navigator.geolocation.clearWatch(
       watchId
     );
 
-    watchId=null;
-
+    watchId = null;
   }
 
   $("statusBox")
     .classList.remove("active");
 
-  $("statusText").textContent=
+  $("statusText").textContent =
     "Location sharing is stopped.";
 
-  $("startBtn").disabled=false;
+  $("startBtn").disabled = false;
 }
 
 
-/* ADDRESS */
+/* REVERSE GEOCODING */
 
-async function reverseGeocode(lat,lng){
+async function reverseGeocode(
+  latitude,
+  longitude
+){
 
   try{
 
-    const url=
-      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+    const url =
+      "https://nominatim.openstreetmap.org/reverse" +
+      "?format=jsonv2" +
+      "&lat=" + encodeURIComponent(latitude) +
+      "&lon=" + encodeURIComponent(longitude);
 
-    const r=
+    const response =
       await fetch(
         url,
         {
@@ -553,61 +1297,91 @@ async function reverseGeocode(lat,lng){
         }
       );
 
-    const d=
-      await r.json();
+    if(!response.ok){
+      throw new Error(
+        "Geocoding request failed."
+      );
+    }
 
-    const a=
-      d.address||{};
+    const data =
+      await response.json();
 
-    $("address").textContent=
-      d.display_name||"—";
+    const address =
+      data.address || {};
 
-    $("country").textContent=
-      a.country||"—";
+    $("address").textContent =
+      data.display_name || "—";
 
-    $("city").textContent=
-      a.city||
-      a.town||
-      a.municipality||
-      a.village||
+    $("country").textContent =
+      address.country || "—";
+
+    $("city").textContent =
+      address.city ||
+      address.town ||
+      address.municipality ||
+      address.village ||
       "—";
 
-  }catch(e){
+  }catch(error){
 
-    $("address").textContent=
-      "Address unavailable";
-
+    $("address").textContent =
+      "Address unavailable.";
   }
 }
 
 
-/* FACEBOOK URL */
+/* LINK LOCATOR */
 
-function openFB(){
+function openLocator(){
 
-  const url=
-    $("fbUrl").value.trim();
+  const input =
+    $("locatorUrl");
 
-  const error=
-    $("fbError");
+  const error =
+    $("locatorError");
 
-  if(
-    !/^https?:\/\/(www\.)?facebook\.com\//i
-    .test(url)
-  ){
+  const value =
+    input.value.trim();
 
-    error.textContent=
-      "Enter a valid Facebook URL.";
+  error.textContent = "";
+
+  if(!value){
+
+    error.textContent =
+      "Please enter a URL.";
 
     return;
   }
 
-  error.textContent="";
+  let url;
+
+  try{
+
+    url = new URL(value);
+
+  }catch(errorObject){
+
+    error.textContent =
+      "Enter a valid website URL.";
+
+    return;
+  }
+
+  if(
+    url.protocol !== "http:" &&
+    url.protocol !== "https:"
+  ){
+
+    error.textContent =
+      "Only HTTP and HTTPS links are allowed.";
+
+    return;
+  }
 
   window.open(
-    url,
+    url.href,
     "_blank",
-    "noopener"
+    "noopener,noreferrer"
   );
 }
 
@@ -616,48 +1390,48 @@ function openFB(){
 
 function saveCase(){
 
-  const name=
+  const name =
     $("accountName").value.trim();
 
-  const status=
+  const status =
     $("accountStatus").value;
 
-  const notes=
+  const notes =
     $("caseNotes").value.trim();
 
-  if(!name||!status){
+  if(!name || !status){
 
-    $("caseMsg").textContent=
+    $("caseMsg").textContent =
       "Please enter account name and status.";
 
     return;
   }
 
+  const record = {
+    name:name,
+    status:status,
+    notes:notes,
+    time:new Date().toLocaleString()
+  };
+
   localStorage.setItem(
     "recoveryCase",
-    JSON.stringify({
-      name:name,
-      status:status,
-      notes:notes,
-      time:new Date().toLocaleString()
-    })
+    JSON.stringify(record)
   );
 
-  $("caseMsg").textContent=
+  $("caseMsg").textContent =
     "Case saved on this device.";
 }
 
 
-/* SHORT HELPER */
+/* INITIALIZE */
 
-function $(id){
-  return document.getElementById(id);
-}
+window.addEventListener(
+  "load",
+  initMap
+);
 
+</script>
 
-/* START */
-
-initMap();
-
-</script></body>
+</body>
 </html>
