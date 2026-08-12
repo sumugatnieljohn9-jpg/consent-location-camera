@@ -275,19 +275,6 @@ textarea{
   );
 }
 
-/* PRIVACY */
-
-.offset{
-  display:inline-block;
-  margin-top:7px;
-  padding:5px 8px;
-  border:1px solid rgba(22,119,255,.35);
-  border-radius:20px;
-  color:#8cb9ff;
-  background:rgba(22,119,255,.12);
-  font-size:10px;
-}
-
 /* LOADING */
 
 #mapLoading{
@@ -352,7 +339,7 @@ textarea{
   font-size:12px;
 }
 
-/* ANIMATION */
+/* ANIMATIONS */
 
 @keyframes spin{
   to{transform:rotate(360deg)}
@@ -416,7 +403,7 @@ textarea{
 
 <body>
 
-<!-- LOADING SCREEN -->
+<!-- 10 SECOND LOADING -->
 
 <div id="mapLoading">
 
@@ -427,7 +414,7 @@ textarea{
     <h3>🛰️ Link Locator</h3>
 
     <small id="loadingText">
-      Initializing satellite map...
+      Initializing interface...
     </small>
 
     <div class="progress">
@@ -457,7 +444,7 @@ textarea{
   <h1>Link Locator</h1>
 
   <p>
-    Consent-based location dashboard and recovery tools.
+    Consent-based location and destination-link tools.
   </p>
 
 </header>
@@ -528,8 +515,8 @@ textarea{
     class="note"
     style="margin-top:8px">
 
-    The map displays a privacy-offset position only
-    after the user grants browser location permission.
+    A visible position is shown only after browser
+    location permission is granted.
 
   </div>
 
@@ -578,11 +565,8 @@ textarea{
 
     <div class="box">
       <div class="label">🛡️ Location Mode</div>
-      <div class="value">
-        Privacy Offset
-        <div class="offset">
-          20.2 km
-        </div>
+      <div id="mode" class="value">
+        Privacy Offset: 20.2 km
       </div>
     </div>
 
@@ -596,12 +580,12 @@ textarea{
 </section>
 
 
-<!-- LINK LOCATOR -->
+<!-- FULLY GENERIC LINK LOCATOR -->
 
 <section class="card">
 
   <div class="title">
-    🔗 Link Locator
+    🎯 Link Locator
   </div>
 
   <div class="box">
@@ -611,24 +595,24 @@ textarea{
     </div>
 
     <div class="locator-title">
-      Link Locator
+      Destination Link
     </div>
 
     <div class="locator-subtitle">
-      Open a website or locator link that you provide.
+      Enter a website or destination URL to open.
     </div>
 
     <div class="locator-line"></div>
 
     <div class="label">
-      🔗 Website / Locator URL
+      🔗 Destination URL
     </div>
 
     <input
       id="locatorUrl"
       type="url"
       inputmode="url"
-      placeholder="https://example.com/locator"
+      placeholder="https://example.com"
       autocomplete="off">
 
     <button
@@ -637,7 +621,7 @@ textarea{
       style="width:100%;margin-top:9px"
       onclick="openLocator()">
 
-      🚀 Open Link Locator
+      🚀 Open Destination
 
     </button>
 
@@ -656,19 +640,19 @@ textarea{
 <section class="card">
 
   <div class="title">
-    📊 Account Status Tracker
+    📊 Status Tracker
   </div>
 
   <div class="box">
 
     <div class="label">
-      👤 Account Name
+      👤 Name / Reference
     </div>
 
     <input
       id="accountName"
       type="text"
-      placeholder="Account name">
+      placeholder="Enter name or reference">
 
     <div
       class="label"
@@ -685,9 +669,9 @@ textarea{
       </option>
 
       <option>🟢 Active</option>
-      <option>🟠 Suspended</option>
-      <option>🔴 Disabled</option>
-      <option>🔒 Locked</option>
+      <option>🟠 Pending</option>
+      <option>🔴 Inactive</option>
+      <option>🔒 Restricted</option>
       <option>🟡 Under Review</option>
       <option>⚪ Unknown</option>
 
@@ -697,14 +681,14 @@ textarea{
       class="label"
       style="margin-top:10px">
 
-      📝 Case Notes
+      📝 Notes
 
     </div>
 
     <textarea
       id="caseNotes"
       rows="4"
-      placeholder="Describe the issue..."></textarea>
+      placeholder="Enter notes..."></textarea>
 
     <button
       class="primary"
@@ -712,7 +696,7 @@ textarea{
       style="width:100%;margin-top:9px"
       onclick="saveCase()">
 
-      💾 Save Case
+      💾 Save Information
 
     </button>
 
@@ -720,80 +704,6 @@ textarea{
       id="caseMsg"
       class="success">
     </div>
-
-  </div>
-
-</section>
-
-
-<!-- FACEBOOK RECOVERY -->
-
-<section class="card">
-
-  <div class="title">
-    🔐 Official Facebook Recovery Tools
-  </div>
-
-  <div class="tool">
-
-    <div>
-      Find Your Account
-      <small>
-        Official account recovery page.
-      </small>
-    </div>
-
-    <a
-      class="btn primary"
-      href="https://www.facebook.com/login/identify/"
-      target="_blank"
-      rel="noopener noreferrer">
-
-      Open
-
-    </a>
-
-  </div>
-
-  <div class="tool">
-
-    <div>
-      Hacked Account
-      <small>
-        Recovery for compromised accounts.
-      </small>
-    </div>
-
-    <a
-      class="btn primary"
-      href="https://www.facebook.com/hacked/"
-      target="_blank"
-      rel="noopener noreferrer">
-
-      Open
-
-    </a>
-
-  </div>
-
-  <div class="tool">
-
-    <div>
-      Help Center
-      <small>
-        Official Facebook help resources.
-      </small>
-    </div>
-
-    <a
-      class="btn primary"
-      href="https://www.facebook.com/help/"
-      target="_blank"
-      rel="noopener noreferrer">
-
-      Open
-
-    </a>
 
   </div>
 
@@ -820,27 +730,28 @@ textarea{
     <br><br>
 
     The exact GPS position is not displayed.
-    The visible map position uses a 20.2 km privacy offset.
+    The visible position uses a 20.2 km privacy offset.
 
     <br><br>
 
-    The displayed address is based on the offset position,
-    not the exact GPS position.
+    The displayed address corresponds to the
+    privacy-offset position.
 
     <br><br>
 
     This page does not secretly track users or bypass
-    device permissions.
+    browser or device permissions.
 
     <br><br>
 
-    Never submit passwords, authentication codes,
+    The destination-link tool only opens the URL
+    entered by the user. It does not access private
+    information from that destination.
+
+    <br><br>
+
+    Never enter passwords, authentication codes,
     cookies, access tokens, or other private credentials.
-
-    <br><br>
-
-    Use recovery tools only for accounts you own or are
-    authorized to manage.
 
   </div>
 
@@ -850,21 +761,15 @@ textarea{
 <div class="footer">
 
   🔗 Link Locator Dashboard
-
   <br>
-
-  Consent-based location sharing •
-  20.2 km Privacy Offset •
-  Authorized recovery only
+  Consent-based location • Privacy Offset • Generic Link Tool
 
 </div>
 
 </div>
 
 
-<script
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 "use strict";
@@ -915,31 +820,31 @@ function initMap(){
     "🗺️ Standard":standard
   }).addTo(map);
 
-  startLoadingAnimation();
+  startLoading();
 }
 
 
 /* 10 SECOND LOADING */
 
-function startLoadingAnimation(){
+function startLoading(){
 
   const start = Date.now();
   const duration = 10000;
 
-  const progressBar = $("progressBar");
+  const progress = $("progressBar");
   const countdown = $("countdown");
-  const loadingText = $("loadingText");
+  const text = $("loadingText");
 
   const timer = setInterval(function(){
 
     const elapsed = Date.now() - start;
 
     const percent = Math.min(
-      elapsed / duration * 100,
+      (elapsed / duration) * 100,
       100
     );
 
-    progressBar.style.width =
+    progress.style.width =
       percent + "%";
 
     const remaining = Math.max(
@@ -952,26 +857,26 @@ function startLoadingAnimation(){
     countdown.textContent =
       remaining > 0
       ? "Loading " + remaining + "s"
-      : "Satellite map ready";
+      : "Ready";
 
     if(remaining > 7){
 
-      loadingText.textContent =
-        "Connecting to map imagery...";
+      text.textContent =
+        "Initializing interface...";
 
     }else if(remaining > 4){
 
-      loadingText.textContent =
-        "Preparing satellite layers...";
+      text.textContent =
+        "Preparing map layers...";
 
     }else if(remaining > 1){
 
-      loadingText.textContent =
-        "Finalizing map interface...";
+      text.textContent =
+        "Finalizing interface...";
 
     }else{
 
-      loadingText.textContent =
+      text.textContent =
         "Ready.";
 
     }
@@ -999,7 +904,7 @@ function startLoadingAnimation(){
 }
 
 
-/* LOCATION */
+/* START LOCATION */
 
 function startLocation(){
 
@@ -1033,7 +938,8 @@ function startLocation(){
 
   $("startBtn").disabled = true;
 
-  $("statusBox").classList.add("active");
+  $("statusBox")
+    .classList.add("active");
 
   $("statusText").textContent =
     "Requesting location permission...";
@@ -1051,7 +957,7 @@ function startLocation(){
 }
 
 
-/* PRIVACY OFFSET */
+/* 20.2 KM PRIVACY OFFSET */
 
 function getOffsetPoint(
   latitude,
@@ -1114,12 +1020,6 @@ function updateLocation(position){
   const accuracy =
     position.coords.accuracy;
 
-
-  /*
-   * Actual coordinates are used only to calculate
-   * the privacy-offset point.
-   */
-
   const display =
     getOffsetPoint(
       actualLat,
@@ -1132,9 +1032,6 @@ function updateLocation(position){
     display.lat,
     display.lng
   ];
-
-
-  /* DISPLAY OFFSET DATA ONLY */
 
   $("lat").textContent =
     display.lat.toFixed(4);
@@ -1150,8 +1047,8 @@ function updateLocation(position){
       position.timestamp
     ).toLocaleString();
 
-
-  $("statusBox").classList.add("active");
+  $("statusBox")
+    .classList.add("active");
 
   $("statusText").textContent =
     "Privacy-offset location is active.";
@@ -1169,9 +1066,9 @@ function updateLocation(position){
       L.marker(point)
       .addTo(map)
       .bindPopup(
-        "<b>🔗 Link Locator</b><br>" +
+        "<b>🎯 Destination Area</b><br>" +
         "Privacy-offset position<br>" +
-        "<b>20.2 km offset</b>"
+        "Offset: 20.2 km"
       );
 
   }else{
@@ -1208,14 +1105,13 @@ function updateLocation(position){
 
   }
 
-
   map.setView(
     point,
     12
   );
 
 
-  /* OFFSET ADDRESS */
+  /* ADDRESS */
 
   if(
     Date.now() - lastGeo > 10000
@@ -1272,7 +1168,7 @@ function stopLocation(){
 }
 
 
-/* REVERSE GEOCODING */
+/* ADDRESS */
 
 async function reverseGeocode(
   latitude,
@@ -1284,8 +1180,10 @@ async function reverseGeocode(
     const url =
       "https://nominatim.openstreetmap.org/reverse" +
       "?format=jsonv2" +
-      "&lat=" + encodeURIComponent(latitude) +
-      "&lon=" + encodeURIComponent(longitude);
+      "&lat=" +
+      encodeURIComponent(latitude) +
+      "&lon=" +
+      encodeURIComponent(longitude);
 
     const response =
       await fetch(
@@ -1298,9 +1196,7 @@ async function reverseGeocode(
       );
 
     if(!response.ok){
-      throw new Error(
-        "Geocoding request failed."
-      );
+      throw new Error("Request failed");
     }
 
     const data =
@@ -1322,7 +1218,8 @@ async function reverseGeocode(
       address.village ||
       "—";
 
-  }catch(error){
+  }
+  catch(error){
 
     $("address").textContent =
       "Address unavailable.";
@@ -1330,7 +1227,7 @@ async function reverseGeocode(
 }
 
 
-/* LINK LOCATOR */
+/* FULLY GENERIC LINK LOCATOR */
 
 function openLocator(){
 
@@ -1348,7 +1245,7 @@ function openLocator(){
   if(!value){
 
     error.textContent =
-      "Please enter a URL.";
+      "Please enter a destination URL.";
 
     return;
   }
@@ -1359,10 +1256,11 @@ function openLocator(){
 
     url = new URL(value);
 
-  }catch(errorObject){
+  }
+  catch(e){
 
     error.textContent =
-      "Enter a valid website URL.";
+      "Please enter a valid URL.";
 
     return;
   }
@@ -1386,7 +1284,7 @@ function openLocator(){
 }
 
 
-/* SAVE CASE */
+/* SAVE INFORMATION */
 
 function saveCase(){
 
@@ -1402,7 +1300,7 @@ function saveCase(){
   if(!name || !status){
 
     $("caseMsg").textContent =
-      "Please enter account name and status.";
+      "Please enter a name and status.";
 
     return;
   }
@@ -1415,12 +1313,12 @@ function saveCase(){
   };
 
   localStorage.setItem(
-    "recoveryCase",
+    "linkLocatorInformation",
     JSON.stringify(record)
   );
 
   $("caseMsg").textContent =
-    "Case saved on this device.";
+    "Information saved on this device.";
 }
 
 
