@@ -3,11 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#07101d">
-<title>Link Locator</title>
+<meta name="description" content="Consent-based location and destination link dashboard">
+<title>Link Locator Dashboard</title>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  crossorigin=""
+>
 
 <style>
 *{
@@ -16,201 +19,378 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   padding:0;
 }
 
+:root{
+  --bg:#050b14;
+  --panel:#101b2b;
+  --panel2:#0b1524;
+  --border:#243b59;
+  --blue:#1677ff;
+  --blue2:#315cff;
+  --purple:#6b35ff;
+  --text:#f4f7fb;
+  --muted:#8290a4;
+  --green:#21d879;
+  --red:#ff7777;
+  --yellow:#f0b429;
+}
+
 html{
   scroll-behavior:smooth;
 }
 
 body{
   min-height:100vh;
-  overflow-x:hidden;
   font-family:Arial,Helvetica,sans-serif;
-  color:#fff;
+  color:var(--text);
   background:
-    radial-gradient(circle at top,#12345a 0,#07101d 48%,#030811 100%);
-}
-
-button,
-input,
-select,
-textarea{
-  font:inherit;
-}
-
-.container{
-  width:min(1400px,100%);
-  margin:auto;
-  padding:28px 34px 40px;
+    radial-gradient(
+      circle at 50% -10%,
+      #173d68 0,
+      #07101d 42%,
+      #030811 100%
+    );
 }
 
 /* HEADER */
 
-header{
-  padding:28px 10px 32px;
-  text-align:center;
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  height:68px;
+  border-bottom:1px solid var(--border);
+  background:rgba(5,11,20,.92);
+  backdrop-filter:blur(14px);
 }
 
-.logo{
-  width:86px;
-  height:86px;
+.topbar-inner{
+  width:min(1400px,calc(100% - 40px));
+  height:100%;
   margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.brand-icon{
+  width:38px;
+  height:38px;
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:24px;
-  font-size:42px;
-  background:linear-gradient(145deg,#1677ff,#6b35ff);
-  box-shadow:
-    0 0 28px rgba(22,119,255,.4),
-    inset 0 0 20px rgba(255,255,255,.08);
-  animation:float 3s ease-in-out infinite;
+  border-radius:11px;
+  font-size:21px;
+  background:linear-gradient(
+    145deg,
+    var(--blue),
+    var(--purple)
+  );
+  box-shadow:0 0 20px rgba(22,119,255,.35);
 }
 
-header h1{
-  margin:15px 0 7px;
-  font-size:32px;
-  letter-spacing:.3px;
-}
-
-header p,
-.note{
-  max-width:650px;
-  margin:auto;
-  color:#9eabbf;
-  font-size:13px;
-  line-height:1.6;
-}
-
-/* CARDS */
-
-.card{
-  margin-bottom:18px;
-  padding:20px;
-  border:1px solid #243b59;
-  border-radius:18px;
-  background:rgba(16,27,43,.9);
-  box-shadow:0 12px 35px rgba(0,0,0,.22);
-  backdrop-filter:blur(8px);
-}
-
-.title{
-  margin-bottom:13px;
-  font-size:17px;
+.brand-name{
+  font-size:16px;
   font-weight:bold;
 }
 
-.box,
-.status{
-  padding:13px;
-  border-radius:11px;
-  background:#0b1524;
+.brand-sub{
+  margin-top:2px;
+  color:var(--muted);
+  font-size:10px;
 }
 
-.status{
+.connection{
   display:flex;
   align-items:center;
-  gap:9px;
-  margin-bottom:10px;
+  gap:7px;
+  color:var(--muted);
+  font-size:11px;
 }
 
-.dot{
-  width:10px;
-  height:10px;
-  flex:0 0 10px;
+.connection-dot{
+  width:8px;
+  height:8px;
   border-radius:50%;
   background:#777;
 }
 
-.active .dot{
-  background:#21d879;
-  box-shadow:
-    0 0 8px #21d879,
-    0 0 18px #21d879;
-  animation:pulse 1.2s infinite;
+.connection-dot.online{
+  background:var(--green);
+  box-shadow:0 0 10px var(--green);
 }
 
-/* BUTTONS */
+/* MAIN */
+
+.container{
+  width:min(1400px,calc(100% - 40px));
+  margin:auto;
+  padding:28px 0 45px;
+}
+
+.hero{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:30px;
+  margin-bottom:22px;
+  padding:24px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:rgba(16,27,43,.88);
+  box-shadow:0 15px 45px rgba(0,0,0,.22);
+}
+
+.hero-left{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.hero-logo{
+  width:70px;
+  height:70px;
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:20px;
+  font-size:34px;
+  background:linear-gradient(
+    145deg,
+    var(--blue),
+    var(--purple)
+  );
+  box-shadow:0 0 30px rgba(22,119,255,.32);
+}
+
+.hero h1{
+  margin-bottom:6px;
+  font-size:25px;
+}
+
+.hero p{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.hero-badge{
+  padding:9px 13px;
+  border:1px solid #29486c;
+  border-radius:10px;
+  color:#a9c9ff;
+  background:#0b1728;
+  font-size:11px;
+  white-space:nowrap;
+}
+
+/* GRID */
+
+.dashboard{
+  display:grid;
+  grid-template-columns:minmax(0,1.55fr) minmax(320px,.85fr);
+  gap:18px;
+  align-items:start;
+}
+
+.left-column,
+.right-column{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+/* CARD */
+
+.card{
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:rgba(16,27,43,.9);
+  box-shadow:0 12px 35px rgba(0,0,0,.18);
+}
+
+.card-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:14px;
+  font-size:14px;
+  font-weight:bold;
+}
+
+.card-title small{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:normal;
+}
+
+/* LOCATION STATUS */
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:45px;
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:10px;
+  background:var(--panel2);
+  color:#dce5f2;
+  font-size:12px;
+}
+
+.dot{
+  width:9px;
+  height:9px;
+  flex:none;
+  border-radius:50%;
+  background:#777;
+}
+
+.status.active .dot{
+  background:var(--green);
+  box-shadow:
+    0 0 7px var(--green),
+    0 0 16px var(--green);
+  animation:pulse 1.2s infinite;
+}
 
 .buttons{
   display:flex;
   gap:9px;
-  max-width:760px;
-}
-
-.buttons>*{
-  flex:1;
 }
 
 button,
 .btn{
-  display:inline-block;
-  padding:12px 14px;
+  min-height:42px;
+  padding:11px 15px;
   border:0;
-  border-radius:10px;
+  border-radius:9px;
   color:#fff;
+  font-size:12px;
   font-weight:bold;
-  text-align:center;
-  text-decoration:none;
   cursor:pointer;
-  transition:.2s ease;
+  text-decoration:none;
+  transition:.2s;
 }
 
 button:hover,
 .btn:hover{
-  transform:translateY(-2px);
-  filter:brightness(1.1);
+  transform:translateY(-1px);
+  filter:brightness(1.08);
 }
 
 button:disabled{
-  opacity:.55;
+  opacity:.5;
   cursor:not-allowed;
   transform:none;
 }
 
 .primary{
-  background:linear-gradient(135deg,#1677ff,#315cff);
-  box-shadow:0 6px 18px rgba(22,119,255,.25);
+  background:linear-gradient(
+    135deg,
+    var(--blue),
+    var(--blue2)
+  );
+  box-shadow:0 6px 18px rgba(22,119,255,.2);
 }
 
 .secondary{
   background:#29384e;
 }
 
+.full{
+  width:100%;
+}
+
+.error{
+  min-height:16px;
+  margin-top:8px;
+  color:var(--red);
+  font-size:11px;
+}
+
+.success{
+  min-height:16px;
+  margin-top:8px;
+  color:var(--green);
+  font-size:11px;
+}
+
+.warning{
+  margin-top:10px;
+  padding:11px;
+  border-left:3px solid var(--yellow);
+  border-radius:6px;
+  color:#d8d1ad;
+  background:#1b1b16;
+  font-size:10px;
+  line-height:1.55;
+}
+
 /* MAP */
+
+.map-wrap{
+  position:relative;
+  overflow:hidden;
+  border:1px solid #29384e;
+  border-radius:12px;
+}
 
 #map{
   width:100%;
-  height:600px;
-  overflow:hidden;
-  border:1px solid #29384e;
-  border-radius:13px;
+  height:560px;
+  background:#08111d;
 }
 
-.leaflet-container{
-  background:#07101d;
+.map-status{
+  position:absolute;
+  left:12px;
+  bottom:12px;
+  z-index:500;
+  padding:8px 10px;
+  border:1px solid #334a67;
+  border-radius:8px;
+  color:#d9e4f4;
+  background:rgba(5,11,20,.88);
+  font-size:10px;
+  backdrop-filter:blur(8px);
 }
 
-/* LOCATION GRID */
+/* INFO */
 
-.grid{
+.info-grid{
   display:grid;
-  grid-template-columns:
-    repeat(4,minmax(0,1fr));
-  gap:12px;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
 }
 
-.grid .box{
-  min-height:78px;
+.info-box{
+  min-height:76px;
+  padding:12px;
+  border:1px solid #172b44;
+  border-radius:10px;
+  background:#0b1524;
 }
 
 .label{
-  margin-bottom:5px;
-  color:#8290a4;
-  font-size:10px;
-  text-transform:none;
+  margin-bottom:7px;
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.3px;
 }
 
 .value{
-  font-size:13px;
+  color:#f1f5fb;
+  font-size:12px;
   font-weight:bold;
   line-height:1.45;
   word-break:break-word;
@@ -218,198 +398,189 @@ button:disabled{
 
 /* FORM */
 
+.form-group{
+  margin-bottom:11px;
+}
+
 input,
 select,
 textarea{
   width:100%;
   margin-top:5px;
-  padding:12px;
+  padding:11px 12px;
   border:1px solid #29384e;
   border-radius:9px;
   outline:none;
   color:#fff;
   background:#07101d;
-  font-size:14px;
-}
-
-input::placeholder,
-textarea::placeholder{
-  color:#66758a;
+  font:inherit;
+  font-size:12px;
 }
 
 input:focus,
 select:focus,
 textarea:focus{
-  border-color:#1677ff;
+  border-color:var(--blue);
   box-shadow:0 0 0 2px rgba(22,119,255,.12);
 }
 
 textarea{
+  min-height:100px;
   resize:vertical;
 }
 
-/* LINK LOCATOR */
+/* LINK */
 
-.locator-box{
-  max-width:900px;
-  margin:auto;
-}
-
-.locator-icon{
-  margin-bottom:8px;
-  font-size:40px;
-  text-align:center;
-  animation:locatorPulse 2s infinite;
-}
-
-.locator-title{
-  margin-bottom:5px;
-  font-size:21px;
-  font-weight:bold;
-  text-align:center;
-}
-
-.locator-subtitle{
-  margin-bottom:14px;
-  color:#8290a4;
-  font-size:12px;
-  text-align:center;
-}
-
-.locator-line{
-  height:1px;
-  margin:14px 0;
-  background:linear-gradient(
-    90deg,
-    transparent,
-    #1677ff,
-    transparent
-  );
-}
-
-/* TOOLS */
-
-.tool{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  min-height:70px;
-  margin-top:8px;
+.link-panel{
   padding:15px;
-  border-radius:10px;
+  border-radius:11px;
   background:#0b1524;
 }
 
-.tool small{
-  display:block;
-  margin-top:4px;
-  color:#8290a4;
+.link-icon{
+  margin-bottom:7px;
+  text-align:center;
+  font-size:31px;
 }
 
-/* MESSAGE */
-
-.error{
-  min-height:15px;
-  margin-top:9px;
-  color:#ff7777;
-  font-size:12px;
+.link-title{
+  margin-bottom:4px;
+  text-align:center;
+  font-size:16px;
+  font-weight:bold;
 }
 
-.success{
-  min-height:15px;
-  margin-top:9px;
-  color:#21d879;
-  font-size:12px;
+.link-sub{
+  margin-bottom:14px;
+  color:var(--muted);
+  text-align:center;
+  font-size:10px;
+}
+
+.separator{
+  height:1px;
+  margin:12px 0;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    var(--blue),
+    transparent
+  );
 }
 
 /* PRIVACY */
 
 .notice{
-  padding:16px;
-  border-left:4px solid #f0b429;
-  color:#d8d1ad;
-  background:#1b1b16;
-  font-size:12px;
-  line-height:1.7;
+  padding:14px;
+  border-radius:10px;
+  color:#cbd6e5;
+  background:#0b1524;
+  font-size:10px;
+  line-height:1.65;
+}
+
+.notice strong{
+  color:#fff;
 }
 
 /* FOOTER */
 
 .footer{
-  padding:25px 10px;
+  margin-top:22px;
+  padding:18px;
+  border-top:1px solid var(--border);
   color:#65748a;
   text-align:center;
-  font-size:11px;
-  line-height:1.7;
+  font-size:10px;
 }
 
-/* 10 SECOND LOADING */
+/* LOADING */
 
-#mapLoading{
+#loadingScreen{
   position:fixed;
   inset:0;
-  z-index:9999;
+  z-index:99999;
   display:flex;
   align-items:center;
   justify-content:center;
   background:
-    radial-gradient(circle at center,#102b4d,#050b14 65%);
+    radial-gradient(
+      circle at center,
+      #102b4d,
+      #050b14 68%
+    );
+  transition:opacity .5s ease;
+}
+
+.loading-box{
+  width:min(380px,90%);
   text-align:center;
-  transition:opacity .6s ease;
 }
 
-.loading-container{
-  width:90%;
-  max-width:380px;
-}
-
-.loader{
-  width:65px;
-  height:65px;
+.loading-logo{
+  width:68px;
+  height:68px;
   margin:0 auto 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:19px;
+  font-size:31px;
+  background:linear-gradient(
+    145deg,
+    var(--blue),
+    var(--purple)
+  );
+  box-shadow:0 0 30px rgba(22,119,255,.35);
+}
+
+.spinner{
+  width:45px;
+  height:45px;
+  margin:0 auto 15px;
   border:4px solid #29384e;
-  border-top-color:#1677ff;
-  border-right-color:#6b35ff;
+  border-top-color:var(--blue);
+  border-right-color:var(--purple);
   border-radius:50%;
-  box-shadow:0 0 25px rgba(22,119,255,.35);
   animation:spin 1s linear infinite;
 }
 
-#mapLoading h3{
-  margin-bottom:7px;
-  font-size:20px;
+.loading-box h2{
+  margin-bottom:6px;
+  font-size:18px;
 }
 
-#mapLoading small{
-  color:#8290a4;
-  font-size:12px;
+.loading-box p{
+  color:var(--muted);
+  font-size:11px;
 }
 
 .progress{
-  height:6px;
-  margin-top:18px;
+  height:5px;
+  margin-top:17px;
   overflow:hidden;
-  border-radius:20px;
+  border-radius:10px;
   background:#172438;
 }
 
 .progress-bar{
-  width:0%;
+  width:0;
   height:100%;
-  border-radius:20px;
-  background:linear-gradient(90deg,#1677ff,#7b4dff);
-  box-shadow:0 0 12px #1677ff;
-  transition:width .1s linear;
+  background:linear-gradient(
+    90deg,
+    var(--blue),
+    var(--purple)
+  );
+  transition:width .05s linear;
 }
 
-.countdown{
-  margin-top:10px;
+#loadingCount{
+  margin-top:8px;
   color:#8cb9ff;
-  font-size:12px;
+  font-size:10px;
 }
 
-/* ANIMATIONS */
+/* ANIMATION */
 
 @keyframes spin{
   to{
@@ -424,185 +595,103 @@ textarea{
   }
 }
 
-@keyframes locatorPulse{
-  0%,100%{
-    transform:scale(1);
+/* TABLET */
+
+@media(max-width:1050px){
+
+  .dashboard{
+    grid-template-columns:1fr;
   }
 
-  50%{
-    transform:scale(1.08);
-    filter:drop-shadow(
-      0 0 12px rgba(22,119,255,.7)
-    );
-  }
-}
-
-@keyframes float{
-  0%,100%{
-    transform:translateY(0);
-  }
-
-  50%{
-    transform:translateY(-5px);
-  }
-}
-
-/* DESKTOP */
-
-@media(min-width:1200px){
-
-  .container{
-    padding-left:45px;
-    padding-right:45px;
-  }
-
-  .desktop-pair{
+  .right-column{
     display:grid;
-    grid-template-columns:
-      repeat(2,minmax(0,1fr));
-    gap:18px;
+    grid-template-columns:1fr 1fr;
     align-items:start;
   }
 
   #map{
-    height:620px;
-  }
-}
-
-/* LAPTOP */
-
-@media(min-width:901px) and (max-width:1199px){
-
-  .container{
-    max-width:1100px;
-    padding:24px;
+    height:500px;
   }
 
-  #map{
-    height:520px;
-  }
-
-  .grid{
-    grid-template-columns:
-      repeat(4,minmax(0,1fr));
-  }
-}
-
-/* TABLET */
-
-@media(min-width:601px) and (max-width:900px){
-
-  .container{
-    max-width:900px;
-    padding:20px;
-  }
-
-  header h1{
-    font-size:28px;
-  }
-
-  #map{
-    height:460px;
-  }
-
-  .grid{
-    grid-template-columns:
-      repeat(2,minmax(0,1fr));
+  .info-grid{
+    grid-template-columns:repeat(4,1fr);
   }
 }
 
 /* MOBILE */
 
-@media(max-width:600px){
+@media(max-width:700px){
 
+  .topbar-inner,
   .container{
+    width:min(100% - 24px,1400px);
+  }
+
+  .topbar{
+    height:60px;
+  }
+
+  .brand-sub,
+  .connection{
+    display:none;
+  }
+
+  .hero{
+    flex-direction:column;
+    align-items:flex-start;
+    padding:18px;
+  }
+
+  .hero-logo{
+    width:58px;
+    height:58px;
+    font-size:28px;
+  }
+
+  .hero h1{
+    font-size:21px;
+  }
+
+  .hero-badge{
     width:100%;
-    padding:12px;
+    text-align:center;
   }
 
-  header{
-    padding:20px 5px;
-  }
-
-  header h1{
-    font-size:22px;
-  }
-
-  header p{
-    font-size:11px;
-  }
-
-  .logo{
-    width:68px;
-    height:68px;
-    font-size:32px;
-    border-radius:18px;
-  }
-
-  .card{
-    padding:14px;
-    border-radius:15px;
-    margin-bottom:12px;
-  }
-
-  .title{
-    font-size:15px;
-  }
-
-  #map{
-    height:340px;
-  }
-
-  .grid{
-    grid-template-columns:1fr;
+  .right-column{
+    display:flex;
   }
 
   .buttons{
     flex-direction:column;
   }
 
-  .buttons>*{
-    width:100%;
+  #map{
+    height:380px;
   }
 
-  .tool{
-    flex-direction:column;
-    align-items:stretch;
-  }
-
-  .tool .btn{
-    width:100%;
-  }
-
-  input,
-  select,
-  textarea{
-    font-size:13px;
-  }
-
-  .notice{
-    font-size:11px;
+  .info-grid{
+    grid-template-columns:repeat(2,1fr);
   }
 }
 
-/* SMALL PHONE */
+/* SMALL MOBILE */
 
-@media(max-width:380px){
+@media(max-width:420px){
 
   .container{
-    padding:9px;
-  }
-
-  header h1{
-    font-size:20px;
-  }
-
-  #map{
-    height:300px;
+    padding-top:15px;
   }
 
   .card{
-    padding:12px;
+    padding:13px;
+  }
+
+  .info-grid{
+    grid-template-columns:1fr;
+  }
+
+  #map{
+    height:330px;
   }
 }
 </style>
@@ -610,18 +699,20 @@ textarea{
 
 <body>
 
-<!-- LOADING SCREEN -->
+<!-- LOADING -->
 
-<div id="mapLoading">
-  <div class="loading-container">
+<div id="loadingScreen">
+  <div class="loading-box">
 
-    <div class="loader"></div>
+    <div class="loading-logo">🔗</div>
 
-    <h3>🛰️ Link Locator</h3>
+    <div class="spinner"></div>
 
-    <small id="loadingText">
-      Initializing interface...
-    </small>
+    <h2>Link Locator</h2>
+
+    <p id="loadingText">
+      Initializing dashboard...
+    </p>
 
     <div class="progress">
       <div
@@ -630,481 +721,568 @@ textarea{
       </div>
     </div>
 
-    <div
-      id="countdown"
-      class="countdown">
-      Loading 10s
+    <div id="loadingCount">
+      Loading...
     </div>
 
   </div>
 </div>
 
 
-<div class="container">
+<!-- TOP BAR -->
 
-<header>
+<nav class="topbar">
 
-  <div class="logo">
-    🔗
-  </div>
+  <div class="topbar-inner">
 
-  <h1>Link Locator</h1>
+    <div class="brand">
 
-  <p>
-    Consent-based location and destination-link tools.
-  </p>
+      <div class="brand-icon">🔗</div>
 
-</header>
+      <div>
+        <div class="brand-name">
+          Link Locator
+        </div>
 
+        <div class="brand-sub">
+          Consent-based dashboard
+        </div>
+      </div>
 
-<!-- DESKTOP PAIR -->
-
-<div class="desktop-pair">
-
-  <!-- LIVE LOCATION -->
-
-  <section class="card">
-
-    <div class="title">
-      📍 Live Location
     </div>
 
-    <div
-      id="statusBox"
-      class="status">
+    <div class="connection">
 
-      <span class="dot"></span>
+      <span
+        id="connectionDot"
+        class="connection-dot">
+      </span>
 
-      <span id="statusText">
-        Location sharing is not active.
+      <span id="connectionText">
+        Checking connection
       </span>
 
     </div>
 
-    <div class="buttons">
+  </div>
 
-      <button
-        id="startBtn"
-        class="primary"
-        type="button">
+</nav>
 
-        📍 Allow Live Location
 
-      </button>
+<!-- MAIN -->
 
-      <button
-        id="stopBtn"
-        class="secondary"
-        type="button">
+<main class="container">
 
-        ⏹ Stop Sharing
+  <!-- HERO -->
 
-      </button>
+  <section class="hero">
+
+    <div class="hero-left">
+
+      <div class="hero-logo">
+        🔗
+      </div>
+
+      <div>
+
+        <h1>
+          Link Locator Dashboard
+        </h1>
+
+        <p>
+          Consent-based location and destination-link tools.
+        </p>
+
+      </div>
 
     </div>
 
-    <div
-      id="locationError"
-      class="error">
+    <div class="hero-badge">
+      🔐 Permission Required
     </div>
 
   </section>
 
 
-  <!-- STATUS TRACKER -->
+  <div class="dashboard">
 
-  <section class="card">
+    <!-- LEFT -->
 
-    <div class="title">
-      📊 Status Tracker
+    <div class="left-column">
+
+      <!-- LOCATION -->
+
+      <section class="card">
+
+        <div class="card-title">
+          <span>📍 Live Location</span>
+          <small>Browser permission</small>
+        </div>
+
+        <div
+          id="statusBox"
+          class="status">
+
+          <span class="dot"></span>
+
+          <span id="statusText">
+            Location sharing is not active.
+          </span>
+
+        </div>
+
+        <div class="buttons">
+
+          <button
+            id="startBtn"
+            class="primary"
+            type="button">
+            📍 Allow Live Location
+          </button>
+
+          <button
+            id="stopBtn"
+            class="secondary"
+            type="button">
+            ⏹ Stop Sharing
+          </button>
+
+        </div>
+
+        <div
+          id="locationError"
+          class="error">
+        </div>
+
+        <div class="warning">
+
+          <strong>Location permission:</strong>
+          Your browser must allow location access.
+          This page does not bypass device or browser
+          permission controls.
+
+        </div>
+
+      </section>
+
+
+      <!-- MAP -->
+
+      <section class="card">
+
+        <div class="card-title">
+          <span>🛰️ Satellite Map</span>
+          <small>OpenStreetMap / Esri</small>
+        </div>
+
+        <div class="map-wrap">
+
+          <div id="map"></div>
+
+          <div
+            id="mapStatus"
+            class="map-status">
+            Waiting for location permission
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- LOCATION INFO -->
+
+      <section class="card">
+
+        <div class="card-title">
+          <span>🗺️ Location Information</span>
+          <small>Privacy-offset display</small>
+        </div>
+
+        <div class="info-grid">
+
+          <div class="info-box">
+            <div class="label">🌍 Country</div>
+            <div id="country" class="value">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">🏙️ City</div>
+            <div id="city" class="value">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">🏠 Address</div>
+            <div id="address" class="value">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">📍 Latitude</div>
+            <div id="lat" class="value">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">📍 Longitude</div>
+            <div id="lng" class="value">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">🎯 Accuracy</div>
+            <div id="acc" class="value">—</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">🛡️ Location Mode</div>
+            <div
+              id="mode"
+              class="value">
+              Privacy Offset: 20.2 km
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">🕐 Timestamp</div>
+            <div id="time" class="value">—</div>
+          </div>
+
+        </div>
+
+      </section>
+
     </div>
 
-    <div class="box">
 
-      <div class="label">
-        👤 Name / Reference
-      </div>
+    <!-- RIGHT -->
 
-      <input
-        id="accountName"
-        type="text"
-        placeholder="Enter name or reference">
+    <div class="right-column">
 
-      <div
-        class="label"
-        style="margin-top:10px">
+      <!-- DESTINATION LINK -->
 
-        📊 Status
+      <section class="card">
 
-      </div>
+        <div class="card-title">
+          <span>🎯 Destination Link</span>
+          <small>Generic URL tool</small>
+        </div>
 
-      <select id="accountStatus">
+        <div class="link-panel">
 
-        <option value="">
-          Select status
-        </option>
+          <div class="link-icon">
+            🌐
+          </div>
 
-        <option>🟢 Active</option>
-        <option>🟠 Pending</option>
-        <option>🔴 Inactive</option>
-        <option>🔒 Restricted</option>
-        <option>🟡 Under Review</option>
-        <option>⚪ Unknown</option>
+          <div class="link-title">
+            Open Destination
+          </div>
 
-      </select>
+          <div class="link-sub">
+            Enter an HTTP or HTTPS destination.
+          </div>
 
-      <div
-        class="label"
-        style="margin-top:10px">
+          <div class="separator"></div>
 
-        📝 Notes
+          <div class="label">
+            🔗 Destination URL
+          </div>
 
-      </div>
+          <input
+            id="locatorUrl"
+            type="url"
+            inputmode="url"
+            autocomplete="off"
+            placeholder="https://example.com">
 
-      <textarea
-        id="caseNotes"
-        rows="3"
-        placeholder="Enter notes..."></textarea>
+          <button
+            id="openUrlBtn"
+            class="primary full"
+            type="button"
+            style="margin-top:9px">
+            🚀 Open Destination
+          </button>
 
-      <button
-        id="saveBtn"
-        class="primary"
-        type="button"
-        style="width:100%;margin-top:9px">
+          <div
+            id="locatorError"
+            class="error">
+          </div>
 
-        💾 Save Information
+        </div>
 
-      </button>
+      </section>
 
-      <div
-        id="caseMsg"
-        class="success">
-      </div>
+
+      <!-- STATUS TRACKER -->
+
+      <section class="card">
+
+        <div class="card-title">
+          <span>📊 Status Tracker</span>
+          <small>Local storage</small>
+        </div>
+
+        <div class="form-group">
+
+          <div class="label">
+            👤 Name / Reference
+          </div>
+
+          <input
+            id="accountName"
+            type="text"
+            autocomplete="off"
+            placeholder="Enter name or reference">
+
+        </div>
+
+
+        <div class="form-group">
+
+          <div class="label">
+            📊 Status
+          </div>
+
+          <select id="accountStatus">
+
+            <option value="">
+              Select status
+            </option>
+
+            <option>🟢 Active</option>
+            <option>🟠 Pending</option>
+            <option>🔴 Inactive</option>
+            <option>🔒 Restricted</option>
+            <option>🟡 Under Review</option>
+            <option>⚪ Unknown</option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <div class="label">
+            📝 Notes
+          </div>
+
+          <textarea
+            id="caseNotes"
+            placeholder="Enter notes..."></textarea>
+
+        </div>
+
+
+        <button
+          id="saveBtn"
+          class="primary full"
+          type="button">
+          💾 Save Information
+        </button>
+
+        <div
+          id="caseMsg"
+          class="success">
+        </div>
+
+      </section>
+
+
+      <!-- PRIVACY -->
+
+      <section class="card">
+
+        <div class="card-title">
+          <span>🔐 Privacy & Authorization</span>
+        </div>
+
+        <div class="notice">
+
+          <strong>Important:</strong>
+
+          <br><br>
+
+          Location access begins only after the user
+          grants browser permission.
+
+          <br><br>
+
+          The displayed coordinates use a
+          <strong>20.2 km privacy offset</strong>
+          rather than displaying the exact GPS point.
+
+          <br><br>
+
+          The destination-link tool only opens the
+          HTTP/HTTPS URL entered by the user.
+
+          <br><br>
+
+          This page does not secretly track users,
+          bypass browser permissions, access private
+          accounts, or collect passwords.
+
+          <br><br>
+
+          Never enter passwords, authentication codes,
+          cookies, access tokens, or other private
+          credentials.
+
+        </div>
+
+      </section>
 
     </div>
 
-  </section>
-
-</div>
-
-
-<!-- MAP -->
-
-<section class="card">
-
-  <div class="title">
-    🛰️ Satellite Map
   </div>
 
-  <div id="map"></div>
 
-  <div
-    class="note"
-    style="margin-top:10px">
+  <footer class="footer">
 
-    A visible position is shown only after browser
-    location permission is granted.
-
-  </div>
-
-</section>
-
-
-<!-- LOCATION INFORMATION -->
-
-<section class="card">
-
-  <div class="title">
-    🗺️ Location Information
-  </div>
-
-  <div class="grid">
-
-    <div class="box">
-      <div class="label">🌍 Country</div>
-      <div id="country" class="value">—</div>
-    </div>
-
-    <div class="box">
-      <div class="label">🏙️ City</div>
-      <div id="city" class="value">—</div>
-    </div>
-
-    <div class="box">
-      <div class="label">🏠 Address</div>
-      <div id="address" class="value">—</div>
-    </div>
-
-    <div class="box">
-      <div class="label">📍 Latitude</div>
-      <div id="lat" class="value">—</div>
-    </div>
-
-    <div class="box">
-      <div class="label">📍 Longitude</div>
-      <div id="lng" class="value">—</div>
-    </div>
-
-    <div class="box">
-      <div class="label">🎯 Accuracy</div>
-      <div id="acc" class="value">—</div>
-    </div>
-
-    <div class="box">
-      <div class="label">🛡️ Location Mode</div>
-      <div id="mode" class="value">
-        Privacy Offset: 20.2 km
-      </div>
-    </div>
-
-    <div class="box">
-      <div class="label">🕐 Timestamp</div>
-      <div id="time" class="value">—</div>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- GENERIC LINK -->
-
-<section class="card">
-
-  <div class="title">
-    🎯 Link Locator
-  </div>
-
-  <div class="box locator-box">
-
-    <div class="locator-icon">
-      🌐
-    </div>
-
-    <div class="locator-title">
-      Destination Link
-    </div>
-
-    <div class="locator-subtitle">
-      Enter a website or destination URL to open.
-    </div>
-
-    <div class="locator-line"></div>
-
-    <div class="label">
-      🔗 Destination URL
-    </div>
-
-    <input
-      id="locatorUrl"
-      type="url"
-      inputmode="url"
-      placeholder="https://example.com"
-      autocomplete="off">
-
-    <button
-      id="openBtn"
-      class="primary"
-      type="button"
-      style="width:100%;margin-top:9px">
-
-      🚀 Open Destination
-
-    </button>
-
-    <div
-      id="locatorError"
-      class="error">
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- PRIVACY -->
-
-<section class="card">
-
-  <div class="title">
-    🔐 Privacy & Authorization
-  </div>
-
-  <div class="notice">
-
-    <b>Important:</b>
-
+    🔗 Link Locator Dashboard
     <br><br>
+    Consent-based location • Privacy Offset • Generic Link Tool
 
-    Location access starts only after the user grants
-    browser permission.
+  </footer>
 
-    <br><br>
-
-    The exact GPS position is not displayed.
-    The visible position uses a 20.2 km privacy offset.
-
-    <br><br>
-
-    The displayed address corresponds to the
-    privacy-offset position.
-
-    <br><br>
-
-    This page does not secretly track users or bypass
-    browser or device permissions.
-
-    <br><br>
-
-    The destination-link tool only opens the URL
-    entered by the user.
-
-    <br><br>
-
-    Never enter passwords, authentication codes,
-    cookies, access tokens, or other private credentials.
-
-  </div>
-
-</section>
-
-
-<div class="footer">
-
-  🔗 Link Locator Dashboard
-  <br>
-  Consent-based location • Privacy Offset • Generic Link Tool
-
-</div>
-
-</div>
+</main>
 
 
 <script
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  crossorigin="">
 </script>
+
 
 <script>
 "use strict";
 
-/* =========================================
-   STATE
-========================================= */
+/* =========================
+   GLOBALS
+========================= */
 
 let map = null;
 let marker = null;
-let circle = null;
+let privacyCircle = null;
 let watchId = null;
-let lastGeo = 0;
+let lastReverseGeocode = 0;
 
 const PRIVACY_OFFSET_KM = 20.2;
 
 
-/* =========================================
+/* =========================
    HELPER
-========================================= */
+========================= */
 
 function $(id){
   return document.getElementById(id);
 }
 
 
-/* =========================================
+/* =========================
+   CONNECTION
+========================= */
+
+function updateConnection(){
+
+  const dot = $("connectionDot");
+  const text = $("connectionText");
+
+  if(navigator.onLine){
+
+    dot.classList.add("online");
+    text.textContent = "Online";
+
+  }else{
+
+    dot.classList.remove("online");
+    text.textContent = "Offline";
+
+  }
+}
+
+window.addEventListener(
+  "online",
+  updateConnection
+);
+
+window.addEventListener(
+  "offline",
+  updateConnection
+);
+
+
+/* =========================
    MAP
-========================================= */
+========================= */
 
 function initMap(){
 
-  if(typeof L === "undefined"){
+  if(
+    typeof L === "undefined"
+  ){
 
-    showMapError(
-      "Map library could not be loaded."
-    );
+    $("mapStatus").textContent =
+      "Map library failed to load.";
 
     return;
   }
 
-  try{
+  map = L.map("map",{
+    zoomControl:true
+  }).setView(
+    [12.8797,121.7740],
+    6
+  );
 
-    map = L.map("map").setView(
-      [12.8797,121.7740],
-      6
-    );
 
-    const satellite =
-      L.tileLayer(
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        {
-          maxZoom:19,
-          attribution:"Tiles © Esri"
-        }
-      );
+  const satellite = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      maxZoom:19,
+      attribution:"Tiles © Esri"
+    }
+  );
 
-    const standard =
-      L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-          maxZoom:19,
-          attribution:"© OpenStreetMap"
-        }
-      );
 
-    satellite.addTo(map);
+  const standard = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      maxZoom:19,
+      attribution:"© OpenStreetMap contributors"
+    }
+  );
 
-    L.control.layers({
+
+  satellite.addTo(map);
+
+
+  L.control.layers(
+    {
       "🛰️ Satellite":satellite,
       "🗺️ Standard":standard
-    }).addTo(map);
+    },
+    null,
+    {
+      collapsed:true
+    }
+  ).addTo(map);
 
-    startLoading();
 
-  }catch(error){
+  setTimeout(function(){
 
-    showMapError(
-      "Unable to initialize the map."
-    );
+    map.invalidateSize();
 
-  }
+  },300);
 }
 
 
-/* =========================================
-   MAP ERROR
-========================================= */
-
-function showMapError(message){
-
-  const mapElement = $("map");
-
-  if(mapElement){
-
-    mapElement.innerHTML =
-      '<div style="' +
-      'padding:30px;' +
-      'text-align:center;' +
-      'color:#9eabbf;' +
-      'font-size:13px;">' +
-      message +
-      '</div>';
-
-  }
-
-  hideLoading();
-}
-
-
-/* =========================================
+/* =========================
    LOADING
-========================================= */
+========================= */
 
 function startLoading(){
 
+  const duration = 1800;
   const start = Date.now();
-  const duration = 10000;
-
-  const progress = $("progressBar");
-  const countdown = $("countdown");
-  const text = $("loadingText");
 
   const timer =
     setInterval(function(){
@@ -1114,114 +1292,130 @@ function startLoading(){
 
       const percent =
         Math.min(
-          (elapsed / duration) * 100,
-          100
+          100,
+          (elapsed / duration) * 100
         );
 
-      if(progress){
-        progress.style.width =
-          percent + "%";
+      $("progressBar").style.width =
+        percent + "%";
+
+
+      if(percent < 35){
+
+        $("loadingText").textContent =
+          "Initializing dashboard...";
+
+      }else if(percent < 70){
+
+        $("loadingText").textContent =
+          "Preparing map interface...";
+
+      }else{
+
+        $("loadingText").textContent =
+          "Ready.";
+
       }
 
-      const remaining =
-        Math.max(
-          0,
-          Math.ceil(
-            (duration - elapsed) / 1000
-          )
-        );
 
-      if(countdown){
+      $("loadingCount").textContent =
+        Math.round(percent) + "%";
 
-        countdown.textContent =
-          remaining > 0
-          ? "Loading " + remaining + "s"
-          : "Ready";
-
-      }
-
-      if(text){
-
-        if(remaining > 7){
-
-          text.textContent =
-            "Initializing interface...";
-
-        }else if(remaining > 4){
-
-          text.textContent =
-            "Preparing map layers...";
-
-        }else if(remaining > 1){
-
-          text.textContent =
-            "Finalizing interface...";
-
-        }else{
-
-          text.textContent =
-            "Ready.";
-
-        }
-      }
 
       if(elapsed >= duration){
 
         clearInterval(timer);
 
-        if(map){
-          map.invalidateSize();
-        }
+        const screen =
+          $("loadingScreen");
 
-        hideLoading();
+        screen.style.opacity = "0";
 
+        setTimeout(function(){
+
+          screen.remove();
+
+          if(map){
+            map.invalidateSize();
+          }
+
+        },500);
       }
 
-    },50);
+    },30);
 }
 
 
-/* =========================================
-   HIDE LOADING
-========================================= */
+/* =========================
+   LOCATION SECURITY CHECK
+========================= */
 
-function hideLoading(){
+function locationEnvironmentError(){
 
-  const loading = $("mapLoading");
+  const protocol =
+    window.location.protocol;
 
-  if(!loading){
-    return;
+  const hostname =
+    window.location.hostname;
+
+  if(
+    window.isSecureContext
+  ){
+
+    return "";
+
   }
 
-  loading.style.opacity = "0";
 
-  setTimeout(function(){
+  if(
+    protocol === "file:" ||
+    protocol === "content:"
+  ){
 
-    if(loading.parentNode){
-      loading.parentNode.removeChild(loading);
-    }
+    return (
+      "This page is opened as a local file. " +
+      "Live Location requires HTTPS or localhost."
+    );
 
-  },650);
+  }
+
+
+  return (
+    "Live Location requires a secure HTTPS connection."
+  );
 }
 
 
-/* =========================================
+/* =========================
    START LOCATION
-========================================= */
+========================= */
 
 function startLocation(){
 
-  const error = $("locationError");
+  const error =
+    $("locationError");
 
   error.textContent = "";
 
-  if(!window.isSecureContext){
+
+  const environmentError =
+    locationEnvironmentError();
+
+
+  if(environmentError){
 
     error.textContent =
-      "Location requires HTTPS or localhost.";
+      environmentError;
+
+    $("statusText").textContent =
+      "Secure connection required.";
+
+    $("mapStatus").textContent =
+      "Open this page using HTTPS.";
 
     return;
   }
+
 
   if(!navigator.geolocation){
 
@@ -1231,6 +1425,7 @@ function startLocation(){
     return;
   }
 
+
   if(watchId !== null){
 
     error.textContent =
@@ -1238,6 +1433,7 @@ function startLocation(){
 
     return;
   }
+
 
   $("startBtn").disabled = true;
 
@@ -1247,6 +1443,10 @@ function startLocation(){
   $("statusText").textContent =
     "Requesting location permission...";
 
+  $("mapStatus").textContent =
+    "Waiting for GPS position...";
+
+
   watchId =
     navigator.geolocation.watchPosition(
       updateLocation,
@@ -1254,15 +1454,15 @@ function startLocation(){
       {
         enableHighAccuracy:true,
         maximumAge:5000,
-        timeout:15000
+        timeout:20000
       }
     );
 }
 
 
-/* =========================================
+/* =========================
    PRIVACY OFFSET
-========================================= */
+========================= */
 
 function getOffsetPoint(
   latitude,
@@ -1275,16 +1475,23 @@ function getOffsetPoint(
 
   const bearing =
     bearingDegrees *
-    Math.PI / 180;
+    Math.PI /
+    180;
 
   const angularDistance =
-    distanceKm / earthRadius;
+    distanceKm /
+    earthRadius;
 
   const lat1 =
-    latitude * Math.PI / 180;
+    latitude *
+    Math.PI /
+    180;
 
   const lon1 =
-    longitude * Math.PI / 180;
+    longitude *
+    Math.PI /
+    180;
+
 
   const lat2 =
     Math.asin(
@@ -1294,6 +1501,7 @@ function getOffsetPoint(
       Math.sin(angularDistance) *
       Math.cos(bearing)
     );
+
 
   const lon2 =
     lon1 +
@@ -1306,19 +1514,26 @@ function getOffsetPoint(
       Math.sin(lat2)
     );
 
+
   return {
+
     lat:
-      lat2 * 180 / Math.PI,
+      lat2 *
+      180 /
+      Math.PI,
 
     lng:
-      lon2 * 180 / Math.PI
+      lon2 *
+      180 /
+      Math.PI
+
   };
 }
 
 
-/* =========================================
+/* =========================
    LOCATION UPDATE
-========================================= */
+========================= */
 
 function updateLocation(position){
 
@@ -1329,7 +1544,13 @@ function updateLocation(position){
     position.coords.longitude;
 
   const accuracy =
-    Number(position.coords.accuracy) || 0;
+    position.coords.accuracy;
+
+
+  /*
+    Fixed bearing for predictable
+    privacy-offset display.
+  */
 
   const display =
     getOffsetPoint(
@@ -1339,32 +1560,44 @@ function updateLocation(position){
       45
     );
 
+
   const point = [
     display.lat,
     display.lng
   ];
 
+
   $("lat").textContent =
-    display.lat.toFixed(4);
+    display.lat.toFixed(5);
 
   $("lng").textContent =
-    display.lng.toFixed(4);
+    display.lng.toFixed(5);
+
 
   $("acc").textContent =
     "Privacy offset: 20.2 km";
+
 
   $("time").textContent =
     new Date(
       position.timestamp
     ).toLocaleString();
 
+
   $("statusBox")
     .classList.add("active");
+
 
   $("statusText").textContent =
     "Privacy-offset location is active.";
 
+
   $("locationError").textContent = "";
+
+
+  $("mapStatus").textContent =
+    "Privacy-offset position displayed.";
+
 
   $("startBtn").disabled = false;
 
@@ -1377,7 +1610,7 @@ function updateLocation(position){
       L.marker(point)
       .addTo(map)
       .bindPopup(
-        "<b>🎯 Destination Area</b><br>" +
+        "<strong>🎯 Displayed Area</strong><br>" +
         "Privacy-offset position<br>" +
         "Offset: 20.2 km"
       );
@@ -1389,60 +1622,69 @@ function updateLocation(position){
   }
 
 
-  /* PRIVACY CIRCLE */
+  /* CIRCLE */
 
   const radius =
     Math.max(
       20200,
-      accuracy + 20200
+      Number(accuracy) + 20200
     );
 
-  if(!circle){
 
-    circle =
+  if(!privacyCircle){
+
+    privacyCircle =
       L.circle(
         point,
         {
           radius:radius,
           weight:2,
-          fillOpacity:.10
+          fillOpacity:.08
         }
       ).addTo(map);
 
   }else{
 
-    circle.setLatLng(point);
+    privacyCircle.setLatLng(point);
 
-    circle.setRadius(radius);
+    privacyCircle.setRadius(
+      radius
+    );
 
   }
 
+
   map.setView(
     point,
-    12
+    12,
+    {
+      animate:true
+    }
   );
 
 
   /* ADDRESS */
 
   if(
-    Date.now() - lastGeo > 10000
+    Date.now() -
+    lastReverseGeocode >
+    10000
   ){
 
-    lastGeo = Date.now();
+    lastReverseGeocode =
+      Date.now();
 
     reverseGeocode(
       display.lat,
       display.lng
     );
-
   }
 }
 
 
-/* =========================================
+/* =========================
    LOCATION ERROR
-========================================= */
+========================= */
 
 function locationError(error){
 
@@ -1451,43 +1693,60 @@ function locationError(error){
   $("statusBox")
     .classList.remove("active");
 
-  $("statusText").textContent =
-    "Unable to get location.";
 
   let message =
     "Unable to obtain location.";
 
-  if(error){
 
-    if(error.code === 1){
-      message =
-        "Location permission was denied.";
-    }
+  if(
+    error &&
+    error.code === 1
+  ){
 
-    else if(error.code === 2){
-      message =
-        "Location is unavailable.";
-    }
+    message =
+      "Location permission was denied. " +
+      "Allow Location for this website in browser settings.";
 
-    else if(error.code === 3){
-      message =
-        "Location request timed out.";
-    }
+  }else if(
+    error &&
+    error.code === 2
+  ){
 
-    else if(error.message){
-      message =
-        error.message;
-    }
+    message =
+      "Location information is unavailable.";
+
+  }else if(
+    error &&
+    error.code === 3
+  ){
+
+    message =
+      "Location request timed out. Please try again.";
+
+  }else if(
+    error &&
+    error.message
+  ){
+
+    message =
+      error.message;
   }
+
+
+  $("statusText").textContent =
+    "Unable to get location.";
 
   $("locationError").textContent =
     message;
+
+  $("mapStatus").textContent =
+    "Location unavailable.";
 }
 
 
-/* =========================================
+/* =========================
    STOP LOCATION
-========================================= */
+========================= */
 
 function stopLocation(){
 
@@ -1500,19 +1759,26 @@ function stopLocation(){
     watchId = null;
   }
 
+
   $("statusBox")
     .classList.remove("active");
+
 
   $("statusText").textContent =
     "Location sharing is stopped.";
 
+
   $("startBtn").disabled = false;
+
+
+  $("mapStatus").textContent =
+    "Location sharing stopped.";
 }
 
 
-/* =========================================
+/* =========================
    REVERSE GEOCODING
-========================================= */
+========================= */
 
 async function reverseGeocode(
   latitude,
@@ -1529,6 +1795,7 @@ async function reverseGeocode(
       "&lon=" +
       encodeURIComponent(longitude);
 
+
     const response =
       await fetch(
         url,
@@ -1539,45 +1806,62 @@ async function reverseGeocode(
         }
       );
 
+
     if(!response.ok){
+
       throw new Error(
-        "Geocoding request failed."
+        "Address request failed"
       );
+
     }
+
 
     const data =
       await response.json();
 
+
     const address =
       data.address || {};
 
+
     $("address").textContent =
-      data.display_name || "—";
+      data.display_name ||
+      "—";
+
 
     $("country").textContent =
-      address.country || "—";
+      address.country ||
+      "—";
+
 
     $("city").textContent =
       address.city ||
       address.town ||
       address.municipality ||
       address.village ||
+      address.county ||
       "—";
 
-  }catch(error){
+  }
+  catch(error){
 
     $("address").textContent =
       "Address unavailable.";
 
+    $("country").textContent =
+      "—";
+
+    $("city").textContent =
+      "—";
   }
 }
 
 
-/* =========================================
-   GENERIC DESTINATION LINK
-========================================= */
+/* =========================
+   GENERIC URL
+========================= */
 
-function openLocator(){
+function openDestination(){
 
   const input =
     $("locatorUrl");
@@ -1588,29 +1872,38 @@ function openLocator(){
   const value =
     input.value.trim();
 
+
   error.textContent = "";
+
 
   if(!value){
 
     error.textContent =
       "Please enter a destination URL.";
 
+    input.focus();
+
     return;
   }
+
 
   let url;
 
+
   try{
 
-    url = new URL(value);
+    url =
+      new URL(value);
 
-  }catch(errorObject){
+  }
+  catch(e){
 
     error.textContent =
-      "Please enter a valid URL.";
+      "Please enter a valid URL, for example https://example.com";
 
     return;
   }
+
 
   if(
     url.protocol !== "http:" &&
@@ -1618,10 +1911,16 @@ function openLocator(){
   ){
 
     error.textContent =
-      "Only HTTP and HTTPS links are allowed.";
+      "Only HTTP and HTTPS destinations are allowed.";
 
     return;
   }
+
+
+  /*
+    Normal browser navigation.
+    No private data is accessed.
+  */
 
   window.open(
     url.href,
@@ -1631,9 +1930,9 @@ function openLocator(){
 }
 
 
-/* =========================================
-   SAVE INFORMATION
-========================================= */
+/* =========================
+   STATUS TRACKER
+========================= */
 
 function saveCase(){
 
@@ -1651,21 +1950,42 @@ function saveCase(){
       .value
       .trim();
 
-  if(!name || !status){
+
+  $("caseMsg").textContent = "";
+
+
+  if(!name){
 
     $("caseMsg").textContent =
-      "Please enter a name and status.";
+      "Please enter a name or reference.";
 
     return;
   }
 
+
+  if(!status){
+
+    $("caseMsg").textContent =
+      "Please select a status.";
+
+    return;
+  }
+
+
   const record = {
+
     name:name,
+
     status:status,
+
     notes:notes,
-    time:new Date()
+
+    time:
+      new Date()
       .toLocaleString()
+
   };
+
 
   try{
 
@@ -1674,10 +1994,12 @@ function saveCase(){
       JSON.stringify(record)
     );
 
+
     $("caseMsg").textContent =
       "Information saved on this device.";
 
-  }catch(error){
+  }
+  catch(error){
 
     $("caseMsg").textContent =
       "Unable to save information.";
@@ -1686,39 +2008,130 @@ function saveCase(){
 }
 
 
-/* =========================================
-   EVENTS
-========================================= */
+/* =========================
+   LOAD SAVED CASE
+========================= */
+
+function loadCase(){
+
+  try{
+
+    const raw =
+      localStorage.getItem(
+        "linkLocatorInformation"
+      );
+
+
+    if(!raw){
+      return;
+    }
+
+
+    const record =
+      JSON.parse(raw);
+
+
+    if(record.name){
+
+      $("accountName").value =
+        record.name;
+
+    }
+
+
+    if(record.status){
+
+      $("accountStatus").value =
+        record.status;
+
+    }
+
+
+    if(record.notes){
+
+      $("caseNotes").value =
+        record.notes;
+
+    }
+
+  }
+  catch(error){
+
+    /* Ignore invalid local data */
+
+  }
+}
+
+
+/* =========================
+   ENTER KEY URL
+========================= */
+
+function setupEvents(){
+
+  $("startBtn")
+    .addEventListener(
+      "click",
+      startLocation
+    );
+
+
+  $("stopBtn")
+    .addEventListener(
+      "click",
+      stopLocation
+    );
+
+
+  $("openUrlBtn")
+    .addEventListener(
+      "click",
+      openDestination
+    );
+
+
+  $("saveBtn")
+    .addEventListener(
+      "click",
+      saveCase
+    );
+
+
+  $("locatorUrl")
+    .addEventListener(
+      "keydown",
+      function(event){
+
+        if(event.key === "Enter"){
+
+          event.preventDefault();
+
+          openDestination();
+
+        }
+
+      }
+    );
+}
+
+
+/* =========================
+   INITIALIZE
+========================= */
 
 window.addEventListener(
   "load",
   function(){
 
-    $("startBtn")
-      .addEventListener(
-        "click",
-        startLocation
-      );
-
-    $("stopBtn")
-      .addEventListener(
-        "click",
-        stopLocation
-      );
-
-    $("openBtn")
-      .addEventListener(
-        "click",
-        openLocator
-      );
-
-    $("saveBtn")
-      .addEventListener(
-        "click",
-        saveCase
-      );
+    updateConnection();
 
     initMap();
+
+    loadCase();
+
+    setupEvents();
+
+    startLoading();
 
   }
 );
