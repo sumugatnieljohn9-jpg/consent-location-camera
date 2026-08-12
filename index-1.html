@@ -2,15 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Consent-based location and destination link dashboard">
-<title>Link Locator Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SignalTrace — Number Intelligence</title>
 
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  crossorigin=""
->
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 *{
@@ -20,673 +16,464 @@
 }
 
 :root{
-  --bg:#050b14;
-  --panel:#101b2b;
-  --panel2:#0b1524;
-  --border:#243b59;
-  --blue:#1677ff;
-  --blue2:#315cff;
-  --purple:#6b35ff;
-  --text:#f4f7fb;
-  --muted:#8290a4;
-  --green:#21d879;
-  --red:#ff7777;
-  --yellow:#f0b429;
-}
-
-html{
-  scroll-behavior:smooth;
+  --bg:#07090d;
+  --panel:#111318;
+  --panel2:#17191f;
+  --field:#090b0f;
+  --border:#292c34;
+  --text:#e8e9ed;
+  --muted:#777b87;
+  --pink:#d61d61;
+  --purple:#7547ff;
+  --green:#18c982;
+  --yellow:#e5a72d;
+  --red:#e04462;
 }
 
 body{
   min-height:100vh;
-  font-family:Arial,Helvetica,sans-serif;
-  color:var(--text);
   background:
     radial-gradient(
-      circle at 50% -10%,
-      #173d68 0,
-      #07101d 42%,
-      #030811 100%
+      circle at 50% -20%,
+      #211522 0,
+      #0b0c10 38%,
+      #050609 100%
     );
+  color:var(--text);
+  font-family:
+    Inter,
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.app{
+  width:min(1180px,94%);
+  margin:auto;
+  padding:24px 0 50px;
 }
 
 /* HEADER */
 
-.topbar{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  height:68px;
-  border-bottom:1px solid var(--border);
-  background:rgba(5,11,20,.92);
-  backdrop-filter:blur(14px);
-}
-
-.topbar-inner{
-  width:min(1400px,calc(100% - 40px));
-  height:100%;
-  margin:auto;
+.header{
+  height:62px;
   display:flex;
   align-items:center;
   justify-content:space-between;
+  padding:0 18px;
+  margin-bottom:18px;
+  border:1px solid #24262d;
+  border-radius:12px;
+  background:rgba(13,14,18,.96);
+  box-shadow:0 12px 40px rgba(0,0,0,.3);
 }
 
 .brand{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:11px;
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:.3px;
 }
 
 .brand-icon{
-  width:38px;
-  height:38px;
+  width:31px;
+  height:31px;
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:11px;
-  font-size:21px;
-  background:linear-gradient(
-    145deg,
-    var(--blue),
-    var(--purple)
-  );
-  box-shadow:0 0 20px rgba(22,119,255,.35);
+  border-radius:8px;
+  color:#fff;
+  background:
+    linear-gradient(
+      145deg,
+      #8f1547,
+      #dd2166
+    );
+  box-shadow:0 0 20px rgba(214,29,97,.25);
 }
 
-.brand-name{
-  font-size:16px;
-  font-weight:bold;
-}
-
-.brand-sub{
-  margin-top:2px;
-  color:var(--muted);
-  font-size:10px;
-}
-
-.connection{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  color:var(--muted);
+.version{
+  color:#696d77;
   font-size:11px;
-}
-
-.connection-dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#777;
-}
-
-.connection-dot.online{
-  background:var(--green);
-  box-shadow:0 0 10px var(--green);
 }
 
 /* MAIN */
 
-.container{
-  width:min(1400px,calc(100% - 40px));
-  margin:auto;
-  padding:28px 0 45px;
-}
-
-.hero{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:30px;
-  margin-bottom:22px;
-  padding:24px;
-  border:1px solid var(--border);
-  border-radius:18px;
-  background:rgba(16,27,43,.88);
-  box-shadow:0 15px 45px rgba(0,0,0,.22);
-}
-
-.hero-left{
-  display:flex;
-  align-items:center;
-  gap:18px;
-}
-
-.hero-logo{
-  width:70px;
-  height:70px;
-  flex:none;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:20px;
-  font-size:34px;
-  background:linear-gradient(
-    145deg,
-    var(--blue),
-    var(--purple)
-  );
-  box-shadow:0 0 30px rgba(22,119,255,.32);
-}
-
-.hero h1{
-  margin-bottom:6px;
-  font-size:25px;
-}
-
-.hero p{
-  color:var(--muted);
-  font-size:12px;
-}
-
-.hero-badge{
-  padding:9px 13px;
-  border:1px solid #29486c;
-  border-radius:10px;
-  color:#a9c9ff;
-  background:#0b1728;
-  font-size:11px;
-  white-space:nowrap;
-}
-
-/* GRID */
-
-.dashboard{
-  display:grid;
-  grid-template-columns:minmax(0,1.55fr) minmax(320px,.85fr);
-  gap:18px;
-  align-items:start;
-}
-
-.left-column,
-.right-column{
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-}
-
-/* CARD */
-
-.card{
+.panel{
   padding:18px;
+  margin-bottom:17px;
   border:1px solid var(--border);
-  border-radius:16px;
-  background:rgba(16,27,43,.9);
-  box-shadow:0 12px 35px rgba(0,0,0,.18);
+  border-radius:13px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(23,25,31,.98),
+      rgba(15,17,22,.98)
+    );
+  box-shadow:0 14px 40px rgba(0,0,0,.22);
 }
 
-.card-title{
+.panel-title{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:10px;
+  gap:8px;
   margin-bottom:14px;
+  color:#cfd1d7;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:1.3px;
+  text-transform:uppercase;
+}
+
+.panel-title .icon{
+  color:var(--pink);
   font-size:14px;
-  font-weight:bold;
 }
 
-.card-title small{
-  color:var(--muted);
-  font-size:10px;
-  font-weight:normal;
-}
+/* SEARCH */
 
-/* LOCATION STATUS */
-
-.status{
+.search-row{
   display:flex;
-  align-items:center;
-  gap:10px;
-  min-height:45px;
-  padding:12px;
-  margin-bottom:10px;
-  border-radius:10px;
-  background:var(--panel2);
-  color:#dce5f2;
-  font-size:12px;
+  gap:8px;
 }
 
-.dot{
-  width:9px;
-  height:9px;
-  flex:none;
-  border-radius:50%;
-  background:#777;
+.search-input{
+  flex:1;
+  min-width:0;
+  height:45px;
+  padding:0 14px;
+  outline:none;
+  border:1px solid #282b32;
+  border-radius:7px;
+  color:#eee;
+  background:#08090c;
+  font-family:monospace;
+  font-size:14px;
 }
 
-.status.active .dot{
-  background:var(--green);
-  box-shadow:
-    0 0 7px var(--green),
-    0 0 16px var(--green);
-  animation:pulse 1.2s infinite;
+.search-input:focus{
+  border-color:#a71b50;
+  box-shadow:0 0 0 2px rgba(214,29,97,.08);
 }
 
-.buttons{
-  display:flex;
-  gap:9px;
-}
-
-button,
-.btn{
-  min-height:42px;
-  padding:11px 15px;
-  border:0;
-  border-radius:9px;
+.search-btn{
+  width:52px;
+  border:1px solid #8f1745;
+  border-radius:7px;
   color:#fff;
-  font-size:12px;
-  font-weight:bold;
+  background:#74143a;
   cursor:pointer;
-  text-decoration:none;
+  font-size:17px;
   transition:.2s;
 }
 
-button:hover,
-.btn:hover{
+.search-btn:hover{
+  background:#94194a;
   transform:translateY(-1px);
-  filter:brightness(1.08);
 }
 
-button:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-  transform:none;
+.examples{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
 }
 
-.primary{
-  background:linear-gradient(
-    135deg,
-    var(--blue),
-    var(--blue2)
-  );
-  box-shadow:0 6px 18px rgba(22,119,255,.2);
+.example-label{
+  margin-right:2px;
+  color:#646873;
+  font-size:9px;
+  letter-spacing:1px;
+  text-transform:uppercase;
 }
 
-.secondary{
-  background:#29384e;
+.example{
+  padding:6px 9px;
+  border:1px solid #282b31;
+  border-radius:5px;
+  color:#858995;
+  background:#0a0b0f;
+  cursor:pointer;
+  font-family:monospace;
+  font-size:10px;
 }
 
-.full{
-  width:100%;
+.example:hover{
+  border-color:#71304a;
+  color:#c8c9ce;
 }
 
-.error{
-  min-height:16px;
-  margin-top:8px;
-  color:var(--red);
+/* INTELLIGENCE */
+
+.intel-grid{
+  display:grid;
+  gap:0;
+  border:1px solid #24262c;
+  border-radius:8px;
+  overflow:hidden;
+  background:#0a0b0f;
+}
+
+.intel-row{
+  min-height:45px;
+  display:grid;
+  grid-template-columns:160px 1fr;
+  align-items:center;
+  border-bottom:1px solid #202228;
+}
+
+.intel-row:last-child{
+  border-bottom:0;
+}
+
+.intel-label{
+  padding:0 13px;
+  color:#737781;
   font-size:11px;
 }
 
-.success{
-  min-height:16px;
-  margin-top:8px;
-  color:var(--green);
-  font-size:11px;
+.intel-value{
+  padding:0 13px;
+  color:#d7d8dc;
+  font-size:12px;
+  font-family:monospace;
+}
+
+.verified{
+  color:var(--green)!important;
+  font-weight:800;
 }
 
 .warning{
-  margin-top:10px;
-  padding:11px;
-  border-left:3px solid var(--yellow);
-  border-radius:6px;
-  color:#d8d1ad;
-  background:#1b1b16;
-  font-size:10px;
-  line-height:1.55;
+  color:var(--yellow)!important;
+}
+
+/* TARGET */
+
+.target-box{
+  padding:14px;
+  border:1px solid #24262b;
+  border-radius:8px;
+  background:#0a0b0f;
+}
+
+.target-label{
+  margin-bottom:8px;
+  color:#757984;
+  font-size:9px;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+}
+
+.target-number{
+  color:#dddfe3;
+  font-family:monospace;
+  font-size:17px;
+  font-weight:700;
+  letter-spacing:1px;
+}
+
+.location-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+
+.location-card{
+  padding:13px;
+  border:1px solid #262930;
+  border-radius:8px;
+  background:#0a0b0f;
+}
+
+.location-label{
+  margin-bottom:8px;
+  color:#777b85;
+  font-size:9px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.location-value{
+  color:#d9dae0;
+  font-size:12px;
+  font-weight:700;
 }
 
 /* MAP */
 
 .map-wrap{
-  position:relative;
-  overflow:hidden;
-  border:1px solid #29384e;
-  border-radius:12px;
+  padding:7px;
+  border:1px solid #252830;
+  border-radius:9px;
+  background:#090a0d;
 }
 
 #map{
+  height:490px;
   width:100%;
-  height:560px;
-  background:#08111d;
+  overflow:hidden;
+  border-radius:6px;
+  background:#101218;
 }
 
-.map-status{
-  position:absolute;
-  left:12px;
-  bottom:12px;
-  z-index:500;
-  padding:8px 10px;
-  border:1px solid #334a67;
-  border-radius:8px;
-  color:#d9e4f4;
-  background:rgba(5,11,20,.88);
+.map-note{
+  margin-top:9px;
+  color:#646872;
   font-size:10px;
-  backdrop-filter:blur(8px);
+  line-height:1.5;
 }
 
-/* INFO */
+/* RESULTS */
 
-.info-grid{
+.result-grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:10px;
 }
 
-.info-box{
-  min-height:76px;
-  padding:12px;
-  border:1px solid #172b44;
-  border-radius:10px;
-  background:#0b1524;
+.result{
+  min-height:82px;
+  padding:13px;
+  border:1px solid #252830;
+  border-radius:8px;
+  background:#0a0b0f;
 }
 
-.label{
-  margin-bottom:7px;
-  color:var(--muted);
+.result-label{
+  margin-bottom:8px;
+  color:#70747f;
   font-size:9px;
   text-transform:uppercase;
-  letter-spacing:.3px;
+  letter-spacing:.8px;
 }
 
-.value{
-  color:#f1f5fb;
+.result-value{
+  color:#d8d9de;
+  font-family:monospace;
   font-size:12px;
-  font-weight:bold;
-  line-height:1.45;
+  font-weight:700;
   word-break:break-word;
 }
 
-/* FORM */
-
-.form-group{
-  margin-bottom:11px;
+.status-ok{
+  color:var(--green)!important;
 }
 
-input,
-select,
-textarea{
-  width:100%;
-  margin-top:5px;
-  padding:11px 12px;
-  border:1px solid #29384e;
-  border-radius:9px;
-  outline:none;
-  color:#fff;
-  background:#07101d;
-  font:inherit;
-  font-size:12px;
-}
+/* ACTIVITY */
 
-input:focus,
-select:focus,
-textarea:focus{
-  border-color:var(--blue);
-  box-shadow:0 0 0 2px rgba(22,119,255,.12);
-}
-
-textarea{
-  min-height:100px;
-  resize:vertical;
-}
-
-/* LINK */
-
-.link-panel{
-  padding:15px;
-  border-radius:11px;
-  background:#0b1524;
-}
-
-.link-icon{
-  margin-bottom:7px;
-  text-align:center;
-  font-size:31px;
-}
-
-.link-title{
-  margin-bottom:4px;
-  text-align:center;
-  font-size:16px;
-  font-weight:bold;
-}
-
-.link-sub{
-  margin-bottom:14px;
-  color:var(--muted);
-  text-align:center;
-  font-size:10px;
-}
-
-.separator{
-  height:1px;
-  margin:12px 0;
-  background:linear-gradient(
-    90deg,
-    transparent,
-    var(--blue),
-    transparent
-  );
-}
-
-/* PRIVACY */
-
-.notice{
-  padding:14px;
-  border-radius:10px;
-  color:#cbd6e5;
-  background:#0b1524;
-  font-size:10px;
-  line-height:1.65;
-}
-
-.notice strong{
-  color:#fff;
-}
-
-/* FOOTER */
-
-.footer{
-  margin-top:22px;
-  padding:18px;
-  border-top:1px solid var(--border);
-  color:#65748a;
-  text-align:center;
-  font-size:10px;
-}
-
-/* LOADING */
-
-#loadingScreen{
-  position:fixed;
-  inset:0;
-  z-index:99999;
+.activity{
   display:flex;
   align-items:center;
-  justify-content:center;
-  background:
-    radial-gradient(
-      circle at center,
-      #102b4d,
-      #050b14 68%
-    );
-  transition:opacity .5s ease;
+  gap:10px;
+  padding:11px 13px;
+  border:1px solid #24262a;
+  border-radius:7px;
+  background:#0a0b0f;
 }
 
-.loading-box{
-  width:min(380px,90%);
-  text-align:center;
-}
-
-.loading-logo{
-  width:68px;
-  height:68px;
-  margin:0 auto 18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:19px;
-  font-size:31px;
-  background:linear-gradient(
-    145deg,
-    var(--blue),
-    var(--purple)
-  );
-  box-shadow:0 0 30px rgba(22,119,255,.35);
-}
-
-.spinner{
-  width:45px;
-  height:45px;
-  margin:0 auto 15px;
-  border:4px solid #29384e;
-  border-top-color:var(--blue);
-  border-right-color:var(--purple);
+.activity-dot{
+  width:8px;
+  height:8px;
+  flex:none;
   border-radius:50%;
-  animation:spin 1s linear infinite;
+  background:var(--green);
+  box-shadow:0 0 10px rgba(24,201,130,.7);
 }
 
-.loading-box h2{
-  margin-bottom:6px;
-  font-size:18px;
-}
-
-.loading-box p{
-  color:var(--muted);
+.activity-text{
+  color:#979aa3;
   font-size:11px;
 }
 
-.progress{
-  height:5px;
-  margin-top:17px;
-  overflow:hidden;
-  border-radius:10px;
-  background:#172438;
+.footer{
+  padding:18px 5px;
+  color:#4f535c;
+  text-align:center;
+  font-size:9px;
+  letter-spacing:.5px;
 }
 
-.progress-bar{
-  width:0;
-  height:100%;
-  background:linear-gradient(
-    90deg,
-    var(--blue),
-    var(--purple)
-  );
-  transition:width .05s linear;
+/* TOAST */
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:9999;
+  max-width:330px;
+  padding:12px 15px;
+  border:1px solid #363942;
+  border-radius:8px;
+  color:#d8d9de;
+  background:#12141a;
+  box-shadow:0 15px 40px rgba(0,0,0,.45);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(10px);
+  transition:.25s;
+  font-size:11px;
 }
 
-#loadingCount{
-  margin-top:8px;
-  color:#8cb9ff;
-  font-size:10px;
-}
-
-/* ANIMATION */
-
-@keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
-}
-
-@keyframes pulse{
-  50%{
-    transform:scale(1.35);
-    opacity:.6;
-  }
-}
-
-/* TABLET */
-
-@media(max-width:1050px){
-
-  .dashboard{
-    grid-template-columns:1fr;
-  }
-
-  .right-column{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    align-items:start;
-  }
-
-  #map{
-    height:500px;
-  }
-
-  .info-grid{
-    grid-template-columns:repeat(4,1fr);
-  }
+.toast.show{
+  opacity:1;
+  transform:translateY(0);
 }
 
 /* MOBILE */
 
-@media(max-width:700px){
+@media(max-width:760px){
 
-  .topbar-inner,
-  .container{
-    width:min(100% - 24px,1400px);
+  .app{
+    width:94%;
+    padding:12px 0 30px;
   }
 
-  .topbar{
-    height:60px;
+  .header{
+    height:55px;
+    padding:0 13px;
   }
 
-  .brand-sub,
-  .connection{
-    display:none;
-  }
-
-  .hero{
-    flex-direction:column;
-    align-items:flex-start;
-    padding:18px;
-  }
-
-  .hero-logo{
-    width:58px;
-    height:58px;
-    font-size:28px;
-  }
-
-  .hero h1{
-    font-size:21px;
-  }
-
-  .hero-badge{
-    width:100%;
-    text-align:center;
-  }
-
-  .right-column{
-    display:flex;
-  }
-
-  .buttons{
-    flex-direction:column;
-  }
-
-  #map{
-    height:380px;
-  }
-
-  .info-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-}
-
-/* SMALL MOBILE */
-
-@media(max-width:420px){
-
-  .container{
-    padding-top:15px;
-  }
-
-  .card{
+  .panel{
     padding:13px;
   }
 
-  .info-grid{
+  .intel-row{
+    grid-template-columns:115px 1fr;
+  }
+
+  .location-grid{
+    grid-template-columns:1fr;
+  }
+
+  .result-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  #map{
+    height:390px;
+  }
+}
+
+@media(max-width:480px){
+
+  .search-row{
+    flex-direction:row;
+  }
+
+  .search-btn{
+    width:48px;
+  }
+
+  .examples{
+    gap:5px;
+  }
+
+  .result-grid{
     grid-template-columns:1fr;
   }
 
@@ -699,1442 +486,786 @@ textarea{
 
 <body>
 
-<!-- LOADING -->
+<div class="app">
 
-<div id="loadingScreen">
-  <div class="loading-box">
+  <!-- HEADER -->
 
-    <div class="loading-logo">🔗</div>
-
-    <div class="spinner"></div>
-
-    <h2>Link Locator</h2>
-
-    <p id="loadingText">
-      Initializing dashboard...
-    </p>
-
-    <div class="progress">
-      <div
-        id="progressBar"
-        class="progress-bar">
-      </div>
-    </div>
-
-    <div id="loadingCount">
-      Loading...
-    </div>
-
-  </div>
-</div>
-
-
-<!-- TOP BAR -->
-
-<nav class="topbar">
-
-  <div class="topbar-inner">
+  <header class="header">
 
     <div class="brand">
 
-      <div class="brand-icon">🔗</div>
-
-      <div>
-        <div class="brand-name">
-          Link Locator
-        </div>
-
-        <div class="brand-sub">
-          Consent-based dashboard
-        </div>
+      <div class="brand-icon">
+        ⌁
       </div>
+
+      <span>SignalTrace</span>
 
     </div>
 
-    <div class="connection">
+    <div class="version">
+      v1.0.0
+    </div>
 
-      <span
-        id="connectionDot"
-        class="connection-dot">
+  </header>
+
+
+  <!-- SEARCH -->
+
+  <section class="panel">
+
+    <div class="panel-title">
+      <span class="icon">⌕</span>
+      Trace Phone Number
+    </div>
+
+    <div class="search-row">
+
+      <input
+        id="phoneInput"
+        class="search-input"
+        type="tel"
+        placeholder="+639XXXXXXXXX"
+        autocomplete="off">
+
+      <button
+        class="search-btn"
+        type="button"
+        onclick="analyzeNumber()">
+
+        ⌕
+
+      </button>
+
+    </div>
+
+    <div class="examples">
+
+      <span class="example-label">
+        Example Targets
       </span>
 
-      <span id="connectionText">
-        Checking connection
-      </span>
+      <button
+        class="example"
+        onclick="setExample('+639171234567')">
+        +639171234567
+      </button>
 
-    </div>
+      <button
+        class="example"
+        onclick="setExample('+639181234567')">
+        +639181234567
+      </button>
 
-  </div>
+      <button
+        class="example"
+        onclick="setExample('+14155552671')">
+        +14155552671
+      </button>
 
-</nav>
-
-
-<!-- MAIN -->
-
-<main class="container">
-
-  <!-- HERO -->
-
-  <section class="hero">
-
-    <div class="hero-left">
-
-      <div class="hero-logo">
-        🔗
-      </div>
-
-      <div>
-
-        <h1>
-          Link Locator Dashboard
-        </h1>
-
-        <p>
-          Consent-based location and destination-link tools.
-        </p>
-
-      </div>
-
-    </div>
-
-    <div class="hero-badge">
-      🔐 Permission Required
     </div>
 
   </section>
 
 
-  <div class="dashboard">
+  <!-- INTELLIGENCE STATUS -->
 
-    <!-- LEFT -->
+  <section class="panel">
 
-    <div class="left-column">
+    <div class="panel-title">
+      <span class="icon">◉</span>
+      Intelligence Status
+    </div>
 
-      <!-- LOCATION -->
+    <div class="intel-grid">
 
-      <section class="card">
+      <div class="intel-row">
 
-        <div class="card-title">
-          <span>📍 Live Location</span>
-          <small>Browser permission</small>
+        <div class="intel-label">
+          Scan Status
         </div>
 
         <div
-          id="statusBox"
-          class="status">
+          id="scanStatus"
+          class="intel-value verified">
 
-          <span class="dot"></span>
-
-          <span id="statusText">
-            Location sharing is not active.
-          </span>
+          READY
 
         </div>
 
-        <div class="buttons">
+      </div>
 
-          <button
-            id="startBtn"
-            class="primary"
-            type="button">
-            📍 Allow Live Location
-          </button>
+      <div class="intel-row">
 
-          <button
-            id="stopBtn"
-            class="secondary"
-            type="button">
-            ⏹ Stop Sharing
-          </button>
-
+        <div class="intel-label">
+          Line Type
         </div>
 
         <div
-          id="locationError"
-          class="error">
-        </div>
+          id="lineType"
+          class="intel-value">
 
-        <div class="warning">
-
-          <strong>Location permission:</strong>
-          Your browser must allow location access.
-          This page does not bypass device or browser
-          permission controls.
+          UNKNOWN
 
         </div>
 
-      </section>
+      </div>
 
+      <div class="intel-row">
 
-      <!-- MAP -->
-
-      <section class="card">
-
-        <div class="card-title">
-          <span>🛰️ Satellite Map</span>
-          <small>OpenStreetMap / Esri</small>
+        <div class="intel-label">
+          Input Format
         </div>
 
-        <div class="map-wrap">
+        <div
+          id="inputFormat"
+          class="intel-value">
 
-          <div id="map"></div>
-
-          <div
-            id="mapStatus"
-            class="map-status">
-            Waiting for location permission
-          </div>
+          AWAITING INPUT
 
         </div>
 
-      </section>
-
-
-      <!-- LOCATION INFO -->
-
-      <section class="card">
-
-        <div class="card-title">
-          <span>🗺️ Location Information</span>
-          <small>Privacy-offset display</small>
-        </div>
-
-        <div class="info-grid">
-
-          <div class="info-box">
-            <div class="label">🌍 Country</div>
-            <div id="country" class="value">—</div>
-          </div>
-
-          <div class="info-box">
-            <div class="label">🏙️ City</div>
-            <div id="city" class="value">—</div>
-          </div>
-
-          <div class="info-box">
-            <div class="label">🏠 Address</div>
-            <div id="address" class="value">—</div>
-          </div>
-
-          <div class="info-box">
-            <div class="label">📍 Latitude</div>
-            <div id="lat" class="value">—</div>
-          </div>
-
-          <div class="info-box">
-            <div class="label">📍 Longitude</div>
-            <div id="lng" class="value">—</div>
-          </div>
-
-          <div class="info-box">
-            <div class="label">🎯 Accuracy</div>
-            <div id="acc" class="value">—</div>
-          </div>
-
-          <div class="info-box">
-            <div class="label">🛡️ Location Mode</div>
-            <div
-              id="mode"
-              class="value">
-              Privacy Offset: 20.2 km
-            </div>
-          </div>
-
-          <div class="info-box">
-            <div class="label">🕐 Timestamp</div>
-            <div id="time" class="value">—</div>
-          </div>
-
-        </div>
-
-      </section>
+      </div>
 
     </div>
 
-
-    <!-- RIGHT -->
-
-    <div class="right-column">
-
-      <!-- DESTINATION LINK -->
-
-      <section class="card">
-
-        <div class="card-title">
-          <span>🎯 Destination Link</span>
-          <small>Generic URL tool</small>
-        </div>
-
-        <div class="link-panel">
-
-          <div class="link-icon">
-            🌐
-          </div>
-
-          <div class="link-title">
-            Open Destination
-          </div>
-
-          <div class="link-sub">
-            Enter an HTTP or HTTPS destination.
-          </div>
-
-          <div class="separator"></div>
-
-          <div class="label">
-            🔗 Destination URL
-          </div>
-
-          <input
-            id="locatorUrl"
-            type="url"
-            inputmode="url"
-            autocomplete="off"
-            placeholder="https://example.com">
-
-          <button
-            id="openUrlBtn"
-            class="primary full"
-            type="button"
-            style="margin-top:9px">
-            🚀 Open Destination
-          </button>
-
-          <div
-            id="locatorError"
-            class="error">
-          </div>
-
-        </div>
-
-      </section>
+  </section>
 
 
-      <!-- STATUS TRACKER -->
+  <!-- TARGET -->
 
-      <section class="card">
+  <section class="panel">
 
-        <div class="card-title">
-          <span>📊 Status Tracker</span>
-          <small>Local storage</small>
-        </div>
+    <div class="panel-title">
+      <span class="icon">⌁</span>
+      Target Number
+    </div>
 
-        <div class="form-group">
+    <div class="target-box">
 
-          <div class="label">
-            👤 Name / Reference
-          </div>
+      <div class="target-label">
+        Phone Number
+      </div>
 
-          <input
-            id="accountName"
-            type="text"
-            autocomplete="off"
-            placeholder="Enter name or reference">
+      <div
+        id="targetNumber"
+        class="target-number">
 
-        </div>
+        —
 
-
-        <div class="form-group">
-
-          <div class="label">
-            📊 Status
-          </div>
-
-          <select id="accountStatus">
-
-            <option value="">
-              Select status
-            </option>
-
-            <option>🟢 Active</option>
-            <option>🟠 Pending</option>
-            <option>🔴 Inactive</option>
-            <option>🔒 Restricted</option>
-            <option>🟡 Under Review</option>
-            <option>⚪ Unknown</option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <div class="label">
-            📝 Notes
-          </div>
-
-          <textarea
-            id="caseNotes"
-            placeholder="Enter notes..."></textarea>
-
-        </div>
-
-
-        <button
-          id="saveBtn"
-          class="primary full"
-          type="button">
-          💾 Save Information
-        </button>
-
-        <div
-          id="caseMsg"
-          class="success">
-        </div>
-
-      </section>
-
-
-      <!-- PRIVACY -->
-
-      <section class="card">
-
-        <div class="card-title">
-          <span>🔐 Privacy & Authorization</span>
-        </div>
-
-        <div class="notice">
-
-          <strong>Important:</strong>
-
-          <br><br>
-
-          Location access begins only after the user
-          grants browser permission.
-
-          <br><br>
-
-          The displayed coordinates use a
-          <strong>20.2 km privacy offset</strong>
-          rather than displaying the exact GPS point.
-
-          <br><br>
-
-          The destination-link tool only opens the
-          HTTP/HTTPS URL entered by the user.
-
-          <br><br>
-
-          This page does not secretly track users,
-          bypass browser permissions, access private
-          accounts, or collect passwords.
-
-          <br><br>
-
-          Never enter passwords, authentication codes,
-          cookies, access tokens, or other private
-          credentials.
-
-        </div>
-
-      </section>
+      </div>
 
     </div>
 
-  </div>
+    <div class="location-grid">
+
+      <div class="location-card">
+
+        <div class="location-label">
+          ◉ Country
+        </div>
+
+        <div
+          id="country"
+          class="location-value">
+
+          —
+
+        </div>
+
+      </div>
+
+      <div class="location-card">
+
+        <div class="location-label">
+          ◉ Region / Example Area
+        </div>
+
+        <div
+          id="region"
+          class="location-value">
+
+          —
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- MAP -->
+
+  <section class="panel">
+
+    <div class="panel-title">
+      <span class="icon">⌖</span>
+      Reference Map
+    </div>
+
+    <div class="map-wrap">
+
+      <div id="map"></div>
+
+    </div>
+
+    <div class="map-note">
+      Map markers in this standalone page are illustrative
+      reference points only. A phone number alone cannot
+      provide a private person's live GPS location.
+    </div>
+
+  </section>
+
+
+  <!-- RESULTS -->
+
+  <section class="panel">
+
+    <div class="panel-title">
+      <span class="icon">◈</span>
+      Number Information
+    </div>
+
+    <div class="result-grid">
+
+      <div class="result">
+
+        <div class="result-label">
+          Country Code
+        </div>
+
+        <div
+          id="countryCode"
+          class="result-value">
+
+          —
+
+        </div>
+
+      </div>
+
+      <div class="result">
+
+        <div class="result-label">
+          Number Length
+        </div>
+
+        <div
+          id="numberLength"
+          class="result-value">
+
+          —
+
+        </div>
+
+      </div>
+
+      <div class="result">
+
+        <div class="result-label">
+          Format
+        </div>
+
+        <div
+          id="numberFormat"
+          class="result-value">
+
+          —
+
+        </div>
+
+      </div>
+
+      <div class="result">
+
+        <div class="result-label">
+          Data Source
+        </div>
+
+        <div class="result-value">
+          Local Analysis
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ACTIVITY -->
+
+  <section class="panel">
+
+    <div class="panel-title">
+      <span class="icon">◌</span>
+      System Activity
+    </div>
+
+    <div class="activity">
+
+      <span class="activity-dot"></span>
+
+      <span
+        id="activityText"
+        class="activity-text">
+
+        System ready. Enter a number to begin
+        format analysis.
+
+      </span>
+
+    </div>
+
+  </section>
 
 
   <footer class="footer">
 
-    🔗 Link Locator Dashboard
+    SIGNALTRACE • NUMBER FORMAT & REFERENCE TOOL
     <br><br>
-    Consent-based location • Privacy Offset • Generic Link Tool
+    No carrier database • No private GPS access • No hidden tracking
 
   </footer>
 
-</main>
+</div>
 
 
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  crossorigin="">
-</script>
+<div
+  id="toast"
+  class="toast">
+</div>
 
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 "use strict";
 
-/* =========================
-   GLOBALS
-========================= */
+let map;
+let marker;
 
-let map = null;
-let marker = null;
-let privacyCircle = null;
-let watchId = null;
-let lastReverseGeocode = 0;
-
-const PRIVACY_OFFSET_KM = 20.2;
-
-
-/* =========================
-   HELPER
-========================= */
+/* DOM HELPER */
 
 function $(id){
   return document.getElementById(id);
 }
 
 
-/* =========================
-   CONNECTION
-========================= */
-
-function updateConnection(){
-
-  const dot = $("connectionDot");
-  const text = $("connectionText");
-
-  if(navigator.onLine){
-
-    dot.classList.add("online");
-    text.textContent = "Online";
-
-  }else{
-
-    dot.classList.remove("online");
-    text.textContent = "Offline";
-
-  }
-}
-
-window.addEventListener(
-  "online",
-  updateConnection
-);
-
-window.addEventListener(
-  "offline",
-  updateConnection
-);
-
-
-/* =========================
-   MAP
-========================= */
+/* MAP */
 
 function initMap(){
-
-  if(
-    typeof L === "undefined"
-  ){
-
-    $("mapStatus").textContent =
-      "Map library failed to load.";
-
-    return;
-  }
 
   map = L.map("map",{
     zoomControl:true
   }).setView(
     [12.8797,121.7740],
-    6
+    5
   );
 
+  const satellite =
+    L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {
+        maxZoom:19,
+        attribution:"Tiles © Esri"
+      }
+    );
 
-  const satellite = L.tileLayer(
-    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    {
-      maxZoom:19,
-      attribution:"Tiles © Esri"
-    }
-  );
-
-
-  const standard = L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      maxZoom:19,
-      attribution:"© OpenStreetMap contributors"
-    }
-  );
-
+  const standard =
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom:19,
+        attribution:"© OpenStreetMap"
+      }
+    );
 
   satellite.addTo(map);
 
+  L.control.layers({
+    "Satellite":satellite,
+    "Standard":standard
+  }).addTo(map);
 
-  L.control.layers(
-    {
-      "🛰️ Satellite":satellite,
-      "🗺️ Standard":standard
-    },
-    null,
-    {
-      collapsed:true
-    }
-  ).addTo(map);
+}
 
+
+/* EXAMPLE */
+
+function setExample(number){
+
+  $("phoneInput").value = number;
+
+  analyzeNumber();
+}
+
+
+/* TOAST */
+
+function showToast(message){
+
+  const toast = $("toast");
+
+  toast.textContent = message;
+
+  toast.classList.add("show");
 
   setTimeout(function(){
 
-    map.invalidateSize();
+    toast.classList.remove("show");
 
-  },300);
+  },3000);
 }
 
 
-/* =========================
-   LOADING
-========================= */
+/* ANALYZE */
 
-function startLoading(){
+function analyzeNumber(){
 
-  const duration = 1800;
-  const start = Date.now();
+  const input =
+    $("phoneInput").value.trim();
 
-  const timer =
-    setInterval(function(){
+  if(!input){
 
-      const elapsed =
-        Date.now() - start;
+    showToast(
+      "Enter a phone number first."
+    );
 
-      const percent =
-        Math.min(
-          100,
-          (elapsed / duration) * 100
-        );
+    return;
+  }
 
-      $("progressBar").style.width =
-        percent + "%";
-
-
-      if(percent < 35){
-
-        $("loadingText").textContent =
-          "Initializing dashboard...";
-
-      }else if(percent < 70){
-
-        $("loadingText").textContent =
-          "Preparing map interface...";
-
-      }else{
-
-        $("loadingText").textContent =
-          "Ready.";
-
-      }
-
-
-      $("loadingCount").textContent =
-        Math.round(percent) + "%";
-
-
-      if(elapsed >= duration){
-
-        clearInterval(timer);
-
-        const screen =
-          $("loadingScreen");
-
-        screen.style.opacity = "0";
-
-        setTimeout(function(){
-
-          screen.remove();
-
-          if(map){
-            map.invalidateSize();
-          }
-
-        },500);
-      }
-
-    },30);
-}
-
-
-/* =========================
-   LOCATION SECURITY CHECK
-========================= */
-
-function locationEnvironmentError(){
-
-  const protocol =
-    window.location.protocol;
-
-  const hostname =
-    window.location.hostname;
+  const cleaned =
+    input.replace(/[^\d+]/g,"");
 
   if(
-    window.isSecureContext
+    cleaned.length < 7 ||
+    cleaned.length > 16
   ){
 
-    return "";
+    $("scanStatus").textContent =
+      "INVALID";
 
+    $("scanStatus").className =
+      "intel-value warning";
+
+    $("activityText").textContent =
+      "The entered value does not appear to be a valid phone-number format.";
+
+    showToast(
+      "Please check the number format."
+    );
+
+    return;
   }
 
 
-  if(
-    protocol === "file:" ||
-    protocol === "content:"
-  ){
+  $("scanStatus").textContent =
+    "ANALYZED";
 
-    return (
-      "This page is opened as a local file. " +
-      "Live Location requires HTTPS or localhost."
+  $("scanStatus").className =
+    "intel-value verified";
+
+
+  $("targetNumber").textContent =
+    formatNumber(cleaned);
+
+
+  $("numberLength").textContent =
+    digitsOnly(cleaned).length +
+    " digits";
+
+
+  $("inputFormat").textContent =
+    cleaned.startsWith("+")
+    ? "INTERNATIONAL"
+    : "LOCAL / UNKNOWN";
+
+
+  const info =
+    detectCountry(cleaned);
+
+
+  $("country").textContent =
+    info.country;
+
+  $("region").textContent =
+    info.region;
+
+  $("countryCode").textContent =
+    info.code;
+
+
+  $("lineType").textContent =
+    "NOT DETERMINED";
+
+
+  $("numberFormat").textContent =
+    info.format;
+
+
+  $("activityText").textContent =
+    "Number format analyzed successfully. No private carrier or GPS data was accessed.";
+
+
+  if(info.lat !== null){
+
+    map.setView(
+      [info.lat,info.lng],
+      info.zoom
+    );
+
+    if(marker){
+
+      marker.setLatLng([
+        info.lat,
+        info.lng
+      ]);
+
+    }else{
+
+      marker =
+        L.marker([
+          info.lat,
+          info.lng
+        ]).addTo(map);
+
+    }
+
+    marker.bindPopup(
+      "<b>Reference Area</b><br>" +
+      escapeHtml(info.region) +
+      "<br><small>Illustrative location only</small>"
     );
 
   }
 
 
-  return (
-    "Live Location requires a secure HTTPS connection."
+  showToast(
+    "Analysis completed."
   );
 }
 
 
-/* =========================
-   START LOCATION
-========================= */
+/* COUNTRY DETECTION */
 
-function startLocation(){
+function detectCountry(number){
 
-  const error =
-    $("locationError");
-
-  error.textContent = "";
+  const digits =
+    digitsOnly(number);
 
 
-  const environmentError =
-    locationEnvironmentError();
+  /* PHILIPPINES */
 
+  if(
+    number.startsWith("+63") ||
+    digits.startsWith("63")
+  ){
 
-  if(environmentError){
+    return {
+      country:"Philippines (PH)",
+      region:"Philippines — reference area",
+      code:"+63",
+      format:"International PH",
+      lat:12.8797,
+      lng:121.7740,
+      zoom:5
+    };
 
-    error.textContent =
-      environmentError;
-
-    $("statusText").textContent =
-      "Secure connection required.";
-
-    $("mapStatus").textContent =
-      "Open this page using HTTPS.";
-
-    return;
   }
 
 
-  if(!navigator.geolocation){
+  /* UNITED STATES */
 
-    error.textContent =
-      "Geolocation is not supported by this browser.";
+  if(
+    number.startsWith("+1")
+  ){
 
-    return;
+    return {
+      country:"United States (US)",
+      region:"United States — reference area",
+      code:"+1",
+      format:"North America",
+      lat:39.8283,
+      lng:-98.5795,
+      zoom:4
+    };
+
   }
 
 
-  if(watchId !== null){
+  /* UNITED KINGDOM */
 
-    error.textContent =
-      "Location sharing is already active.";
+  if(
+    number.startsWith("+44")
+  ){
 
-    return;
+    return {
+      country:"United Kingdom (GB)",
+      region:"United Kingdom — reference area",
+      code:"+44",
+      format:"International UK",
+      lat:55.3781,
+      lng:-3.4360,
+      zoom:5
+    };
+
   }
 
 
-  $("startBtn").disabled = true;
+  /* AUSTRALIA */
 
-  $("statusBox")
-    .classList.add("active");
+  if(
+    number.startsWith("+61")
+  ){
 
-  $("statusText").textContent =
-    "Requesting location permission...";
+    return {
+      country:"Australia (AU)",
+      region:"Australia — reference area",
+      code:"+61",
+      format:"International AU",
+      lat:-25.2744,
+      lng:133.7751,
+      zoom:4
+    };
 
-  $("mapStatus").textContent =
-    "Waiting for GPS position...";
-
-
-  watchId =
-    navigator.geolocation.watchPosition(
-      updateLocation,
-      locationError,
-      {
-        enableHighAccuracy:true,
-        maximumAge:5000,
-        timeout:20000
-      }
-    );
-}
+  }
 
 
-/* =========================
-   PRIVACY OFFSET
-========================= */
+  /* CANADA */
 
-function getOffsetPoint(
-  latitude,
-  longitude,
-  distanceKm,
-  bearingDegrees
-){
+  if(
+    number.startsWith("+1") &&
+    number.length >= 11
+  ){
 
-  const earthRadius = 6371;
+    return {
+      country:"Canada (CA)",
+      region:"Canada — reference area",
+      code:"+1",
+      format:"North America",
+      lat:56.1304,
+      lng:-106.3468,
+      zoom:4
+    };
 
-  const bearing =
-    bearingDegrees *
-    Math.PI /
-    180;
-
-  const angularDistance =
-    distanceKm /
-    earthRadius;
-
-  const lat1 =
-    latitude *
-    Math.PI /
-    180;
-
-  const lon1 =
-    longitude *
-    Math.PI /
-    180;
-
-
-  const lat2 =
-    Math.asin(
-      Math.sin(lat1) *
-      Math.cos(angularDistance) +
-      Math.cos(lat1) *
-      Math.sin(angularDistance) *
-      Math.cos(bearing)
-    );
-
-
-  const lon2 =
-    lon1 +
-    Math.atan2(
-      Math.sin(bearing) *
-      Math.sin(angularDistance) *
-      Math.cos(lat1),
-      Math.cos(angularDistance) -
-      Math.sin(lat1) *
-      Math.sin(lat2)
-    );
+  }
 
 
   return {
-
-    lat:
-      lat2 *
-      180 /
-      Math.PI,
-
-    lng:
-      lon2 *
-      180 /
-      Math.PI
-
-  };
-}
-
-
-/* =========================
-   LOCATION UPDATE
-========================= */
-
-function updateLocation(position){
-
-  const actualLat =
-    position.coords.latitude;
-
-  const actualLng =
-    position.coords.longitude;
-
-  const accuracy =
-    position.coords.accuracy;
-
-
-  /*
-    Fixed bearing for predictable
-    privacy-offset display.
-  */
-
-  const display =
-    getOffsetPoint(
-      actualLat,
-      actualLng,
-      PRIVACY_OFFSET_KM,
-      45
-    );
-
-
-  const point = [
-    display.lat,
-    display.lng
-  ];
-
-
-  $("lat").textContent =
-    display.lat.toFixed(5);
-
-  $("lng").textContent =
-    display.lng.toFixed(5);
-
-
-  $("acc").textContent =
-    "Privacy offset: 20.2 km";
-
-
-  $("time").textContent =
-    new Date(
-      position.timestamp
-    ).toLocaleString();
-
-
-  $("statusBox")
-    .classList.add("active");
-
-
-  $("statusText").textContent =
-    "Privacy-offset location is active.";
-
-
-  $("locationError").textContent = "";
-
-
-  $("mapStatus").textContent =
-    "Privacy-offset position displayed.";
-
-
-  $("startBtn").disabled = false;
-
-
-  /* MARKER */
-
-  if(!marker){
-
-    marker =
-      L.marker(point)
-      .addTo(map)
-      .bindPopup(
-        "<strong>🎯 Displayed Area</strong><br>" +
-        "Privacy-offset position<br>" +
-        "Offset: 20.2 km"
-      );
-
-  }else{
-
-    marker.setLatLng(point);
-
-  }
-
-
-  /* CIRCLE */
-
-  const radius =
-    Math.max(
-      20200,
-      Number(accuracy) + 20200
-    );
-
-
-  if(!privacyCircle){
-
-    privacyCircle =
-      L.circle(
-        point,
-        {
-          radius:radius,
-          weight:2,
-          fillOpacity:.08
-        }
-      ).addTo(map);
-
-  }else{
-
-    privacyCircle.setLatLng(point);
-
-    privacyCircle.setRadius(
-      radius
-    );
-
-  }
-
-
-  map.setView(
-    point,
-    12,
-    {
-      animate:true
-    }
-  );
-
-
-  /* ADDRESS */
-
-  if(
-    Date.now() -
-    lastReverseGeocode >
-    10000
-  ){
-
-    lastReverseGeocode =
-      Date.now();
-
-    reverseGeocode(
-      display.lat,
-      display.lng
-    );
-  }
-}
-
-
-/* =========================
-   LOCATION ERROR
-========================= */
-
-function locationError(error){
-
-  $("startBtn").disabled = false;
-
-  $("statusBox")
-    .classList.remove("active");
-
-
-  let message =
-    "Unable to obtain location.";
-
-
-  if(
-    error &&
-    error.code === 1
-  ){
-
-    message =
-      "Location permission was denied. " +
-      "Allow Location for this website in browser settings.";
-
-  }else if(
-    error &&
-    error.code === 2
-  ){
-
-    message =
-      "Location information is unavailable.";
-
-  }else if(
-    error &&
-    error.code === 3
-  ){
-
-    message =
-      "Location request timed out. Please try again.";
-
-  }else if(
-    error &&
-    error.message
-  ){
-
-    message =
-      error.message;
-  }
-
-
-  $("statusText").textContent =
-    "Unable to get location.";
-
-  $("locationError").textContent =
-    message;
-
-  $("mapStatus").textContent =
-    "Location unavailable.";
-}
-
-
-/* =========================
-   STOP LOCATION
-========================= */
-
-function stopLocation(){
-
-  if(watchId !== null){
-
-    navigator.geolocation.clearWatch(
-      watchId
-    );
-
-    watchId = null;
-  }
-
-
-  $("statusBox")
-    .classList.remove("active");
-
-
-  $("statusText").textContent =
-    "Location sharing is stopped.";
-
-
-  $("startBtn").disabled = false;
-
-
-  $("mapStatus").textContent =
-    "Location sharing stopped.";
-}
-
-
-/* =========================
-   REVERSE GEOCODING
-========================= */
-
-async function reverseGeocode(
-  latitude,
-  longitude
-){
-
-  try{
-
-    const url =
-      "https://nominatim.openstreetmap.org/reverse" +
-      "?format=jsonv2" +
-      "&lat=" +
-      encodeURIComponent(latitude) +
-      "&lon=" +
-      encodeURIComponent(longitude);
-
-
-    const response =
-      await fetch(
-        url,
-        {
-          headers:{
-            "Accept-Language":"en"
-          }
-        }
-      );
-
-
-    if(!response.ok){
-
-      throw new Error(
-        "Address request failed"
-      );
-
-    }
-
-
-    const data =
-      await response.json();
-
-
-    const address =
-      data.address || {};
-
-
-    $("address").textContent =
-      data.display_name ||
-      "—";
-
-
-    $("country").textContent =
-      address.country ||
-      "—";
-
-
-    $("city").textContent =
-      address.city ||
-      address.town ||
-      address.municipality ||
-      address.village ||
-      address.county ||
-      "—";
-
-  }
-  catch(error){
-
-    $("address").textContent =
-      "Address unavailable.";
-
-    $("country").textContent =
-      "—";
-
-    $("city").textContent =
-      "—";
-  }
-}
-
-
-/* =========================
-   GENERIC URL
-========================= */
-
-function openDestination(){
-
-  const input =
-    $("locatorUrl");
-
-  const error =
-    $("locatorError");
-
-  const value =
-    input.value.trim();
-
-
-  error.textContent = "";
-
-
-  if(!value){
-
-    error.textContent =
-      "Please enter a destination URL.";
-
-    input.focus();
-
-    return;
-  }
-
-
-  let url;
-
-
-  try{
-
-    url =
-      new URL(value);
-
-  }
-  catch(e){
-
-    error.textContent =
-      "Please enter a valid URL, for example https://example.com";
-
-    return;
-  }
-
-
-  if(
-    url.protocol !== "http:" &&
-    url.protocol !== "https:"
-  ){
-
-    error.textContent =
-      "Only HTTP and HTTPS destinations are allowed.";
-
-    return;
-  }
-
-
-  /*
-    Normal browser navigation.
-    No private data is accessed.
-  */
-
-  window.open(
-    url.href,
-    "_blank",
-    "noopener,noreferrer"
-  );
-}
-
-
-/* =========================
-   STATUS TRACKER
-========================= */
-
-function saveCase(){
-
-  const name =
-    $("accountName")
-      .value
-      .trim();
-
-  const status =
-    $("accountStatus")
-      .value;
-
-  const notes =
-    $("caseNotes")
-      .value
-      .trim();
-
-
-  $("caseMsg").textContent = "";
-
-
-  if(!name){
-
-    $("caseMsg").textContent =
-      "Please enter a name or reference.";
-
-    return;
-  }
-
-
-  if(!status){
-
-    $("caseMsg").textContent =
-      "Please select a status.";
-
-    return;
-  }
-
-
-  const record = {
-
-    name:name,
-
-    status:status,
-
-    notes:notes,
-
-    time:
-      new Date()
-      .toLocaleString()
-
+    country:"Unknown",
+    region:"No country mapping available",
+    code:"—",
+    format:"Unrecognized",
+    lat:null,
+    lng:null,
+    zoom:5
   };
 
-
-  try{
-
-    localStorage.setItem(
-      "linkLocatorInformation",
-      JSON.stringify(record)
-    );
-
-
-    $("caseMsg").textContent =
-      "Information saved on this device.";
-
-  }
-  catch(error){
-
-    $("caseMsg").textContent =
-      "Unable to save information.";
-
-  }
 }
 
 
-/* =========================
-   LOAD SAVED CASE
-========================= */
+/* DIGITS */
 
-function loadCase(){
+function digitsOnly(value){
 
-  try{
+  return value.replace(/\D/g,"");
 
-    const raw =
-      localStorage.getItem(
-        "linkLocatorInformation"
+}
+
+
+/* FORMAT NUMBER */
+
+function formatNumber(value){
+
+  if(value.startsWith("+63")){
+
+    const d =
+      value.substring(3);
+
+    if(d.length === 10){
+
+      return (
+        "+63 " +
+        d.substring(0,3) +
+        " " +
+        d.substring(3,6) +
+        " " +
+        d.substring(6)
       );
 
-
-    if(!raw){
-      return;
     }
 
+  }
 
-    const record =
-      JSON.parse(raw);
+  if(value.startsWith("+1")){
 
+    const d =
+      value.substring(2);
 
-    if(record.name){
+    if(d.length === 10){
 
-      $("accountName").value =
-        record.name;
-
-    }
-
-
-    if(record.status){
-
-      $("accountStatus").value =
-        record.status;
-
-    }
-
-
-    if(record.notes){
-
-      $("caseNotes").value =
-        record.notes;
+      return (
+        "+1 " +
+        d.substring(0,3) +
+        " " +
+        d.substring(3,6) +
+        " " +
+        d.substring(6)
+      );
 
     }
 
   }
-  catch(error){
 
-    /* Ignore invalid local data */
+  return value;
+
+}
+
+
+/* ESCAPE */
+
+function escapeHtml(value){
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* ENTER KEY */
+
+$("phoneInput").addEventListener(
+  "keydown",
+  function(event){
+
+    if(event.key === "Enter"){
+
+      analyzeNumber();
+
+    }
 
   }
-}
+);
 
 
-/* =========================
-   ENTER KEY URL
-========================= */
-
-function setupEvents(){
-
-  $("startBtn")
-    .addEventListener(
-      "click",
-      startLocation
-    );
-
-
-  $("stopBtn")
-    .addEventListener(
-      "click",
-      stopLocation
-    );
-
-
-  $("openUrlBtn")
-    .addEventListener(
-      "click",
-      openDestination
-    );
-
-
-  $("saveBtn")
-    .addEventListener(
-      "click",
-      saveCase
-    );
-
-
-  $("locatorUrl")
-    .addEventListener(
-      "keydown",
-      function(event){
-
-        if(event.key === "Enter"){
-
-          event.preventDefault();
-
-          openDestination();
-
-        }
-
-      }
-    );
-}
-
-
-/* =========================
-   INITIALIZE
-========================= */
+/* START */
 
 window.addEventListener(
   "load",
   function(){
 
-    updateConnection();
-
     initMap();
-
-    loadCase();
-
-    setupEvents();
-
-    startLoading();
 
   }
 );
+
 </script>
 
 </body>
