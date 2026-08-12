@@ -1,12 +1,12 @@
+Single-File TikTok Lost Access Recovery Assistant
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SignalTrace — Number Intelligence</title>
-
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050505">
+<title>TikTok Lost Access Recovery</title>
 
 <style>
 *{
@@ -16,469 +16,400 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 }
 
 :root{
-  --bg:#07090d;
-  --panel:#111318;
-  --panel2:#17191f;
-  --field:#090b0f;
-  --border:#292c34;
-  --text:#e8e9ed;
-  --muted:#777b87;
-  --pink:#d61d61;
-  --purple:#7547ff;
-  --green:#18c982;
-  --yellow:#e5a72d;
-  --red:#e04462;
+  --bg:#050505;
+  --panel:#111;
+  --panel2:#181818;
+  --border:#292929;
+  --text:#fff;
+  --muted:#a7a7a7;
+  --pink:#fe2c55;
+  --cyan:#25f4ee;
 }
 
 body{
-  min-height:100vh;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
   background:
-    radial-gradient(
-      circle at 50% -20%,
-      #211522 0,
-      #0b0c10 38%,
-      #050609 100%
-    );
+    radial-gradient(circle at top right,rgba(254,44,85,.12),transparent 35%),
+    radial-gradient(circle at top left,rgba(37,244,238,.08),transparent 30%),
+    var(--bg);
   color:var(--text);
-  font-family:
-    Inter,
-    Arial,
-    Helvetica,
-    sans-serif;
+  min-height:100vh;
 }
 
-.app{
-  width:min(1180px,94%);
-  margin:auto;
-  padding:24px 0 50px;
-}
-
-/* HEADER */
-
-.header{
-  height:62px;
+.topbar{
+  height:72px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 18px;
-  margin-bottom:18px;
-  border:1px solid #24262d;
-  border-radius:12px;
-  background:rgba(13,14,18,.96);
-  box-shadow:0 12px 40px rgba(0,0,0,.3);
+  padding:0 6%;
+  border-bottom:1px solid var(--border);
+  background:rgba(5,5,5,.92);
+  position:sticky;
+  top:0;
+  z-index:20;
+  backdrop-filter:blur(12px);
 }
 
 .brand{
   display:flex;
   align-items:center;
-  gap:11px;
-  font-size:16px;
-  font-weight:800;
-  letter-spacing:.3px;
+  gap:12px;
 }
 
 .brand-icon{
-  width:31px;
-  height:31px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:8px;
-  color:#fff;
-  background:
-    linear-gradient(
-      145deg,
-      #8f1547,
-      #dd2166
-    );
-  box-shadow:0 0 20px rgba(214,29,97,.25);
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--cyan),var(--pink));
+  color:#000;
+  font-size:23px;
+  font-weight:900;
 }
 
-.version{
-  color:#696d77;
+.brand strong{
+  display:block;
+  font-size:15px;
+}
+
+.brand span{
+  display:block;
+  color:var(--muted);
   font-size:11px;
+  margin-top:2px;
 }
 
-/* MAIN */
-
-.panel{
-  padding:18px;
-  margin-bottom:17px;
-  border:1px solid var(--border);
-  border-radius:13px;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(23,25,31,.98),
-      rgba(15,17,22,.98)
-    );
-  box-shadow:0 14px 40px rgba(0,0,0,.22);
-}
-
-.panel-title{
+.status{
   display:flex;
   align-items:center;
-  gap:8px;
-  margin-bottom:14px;
-  color:#cfd1d7;
-  font-size:11px;
-  font-weight:800;
-  letter-spacing:1.3px;
-  text-transform:uppercase;
-}
-
-.panel-title .icon{
-  color:var(--pink);
-  font-size:14px;
-}
-
-/* SEARCH */
-
-.search-row{
-  display:flex;
-  gap:8px;
-}
-
-.search-input{
-  flex:1;
-  min-width:0;
-  height:45px;
-  padding:0 14px;
-  outline:none;
-  border:1px solid #282b32;
-  border-radius:7px;
-  color:#eee;
-  background:#08090c;
-  font-family:monospace;
-  font-size:14px;
-}
-
-.search-input:focus{
-  border-color:#a71b50;
-  box-shadow:0 0 0 2px rgba(214,29,97,.08);
-}
-
-.search-btn{
-  width:52px;
-  border:1px solid #8f1745;
-  border-radius:7px;
-  color:#fff;
-  background:#74143a;
-  cursor:pointer;
-  font-size:17px;
-  transition:.2s;
-}
-
-.search-btn:hover{
-  background:#94194a;
-  transform:translateY(-1px);
-}
-
-.examples{
-  display:flex;
-  align-items:center;
-  flex-wrap:wrap;
   gap:7px;
-  margin-top:12px;
+  color:#aaa;
+  font-size:13px;
 }
 
-.example-label{
-  margin-right:2px;
-  color:#646873;
-  font-size:9px;
-  letter-spacing:1px;
-  text-transform:uppercase;
+.status-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#34d399;
+  box-shadow:0 0 10px rgba(52,211,153,.7);
 }
 
-.example{
-  padding:6px 9px;
-  border:1px solid #282b31;
-  border-radius:5px;
-  color:#858995;
-  background:#0a0b0f;
-  cursor:pointer;
-  font-family:monospace;
-  font-size:10px;
+main{
+  width:min(900px,92%);
+  margin:auto;
+  padding:70px 0;
 }
 
-.example:hover{
-  border-color:#71304a;
-  color:#c8c9ce;
+.hero{
+  text-align:center;
+  margin-bottom:35px;
 }
 
-/* INTELLIGENCE */
-
-.intel-grid{
-  display:grid;
-  gap:0;
-  border:1px solid #24262c;
-  border-radius:8px;
-  overflow:hidden;
-  background:#0a0b0f;
-}
-
-.intel-row{
-  min-height:45px;
-  display:grid;
-  grid-template-columns:160px 1fr;
-  align-items:center;
-  border-bottom:1px solid #202228;
-}
-
-.intel-row:last-child{
-  border-bottom:0;
-}
-
-.intel-label{
-  padding:0 13px;
-  color:#737781;
+.hero-badge{
+  display:inline-block;
+  padding:7px 12px;
+  border-radius:999px;
+  background:rgba(254,44,85,.1);
+  border:1px solid rgba(254,44,85,.35);
+  color:#ff6a87;
   font-size:11px;
-}
-
-.intel-value{
-  padding:0 13px;
-  color:#d7d8dc;
-  font-size:12px;
-  font-family:monospace;
-}
-
-.verified{
-  color:var(--green)!important;
   font-weight:800;
+  letter-spacing:1.5px;
+  margin-bottom:18px;
 }
 
-.warning{
-  color:var(--yellow)!important;
+.hero h1{
+  font-size:clamp(32px,6vw,56px);
+  line-height:1.05;
+  max-width:760px;
+  margin:auto;
+  letter-spacing:-2px;
 }
 
-/* TARGET */
-
-.target-box{
-  padding:14px;
-  border:1px solid #24262b;
-  border-radius:8px;
-  background:#0a0b0f;
+.hero>p{
+  max-width:620px;
+  margin:18px auto 0;
+  color:var(--muted);
+  font-size:16px;
+  line-height:1.7;
 }
 
-.target-label{
-  margin-bottom:8px;
-  color:#757984;
-  font-size:9px;
-  letter-spacing:1.2px;
-  text-transform:uppercase;
+.notice{
+  max-width:680px;
+  margin:25px auto 0;
+  padding:14px 17px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:rgba(255,255,255,.035);
+  color:#bdbdbd;
+  font-size:13px;
+  line-height:1.6;
 }
 
-.target-number{
-  color:#dddfe3;
-  font-family:monospace;
-  font-size:17px;
-  font-weight:700;
-  letter-spacing:1px;
+.notice strong{
+  color:white;
 }
 
-.location-grid{
+.card{
+  background:linear-gradient(
+    145deg,
+    rgba(255,255,255,.055),
+    rgba(255,255,255,.02)
+  );
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:28px;
+  box-shadow:0 25px 70px rgba(0,0,0,.3);
+}
+
+.card h2{
+  font-size:22px;
+  margin-bottom:6px;
+}
+
+.muted{
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.options{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:12px;
+  gap:11px;
+  margin-top:23px;
 }
 
-.location-card{
-  padding:13px;
-  border:1px solid #262930;
-  border-radius:8px;
-  background:#0a0b0f;
-}
-
-.location-label{
-  margin-bottom:8px;
-  color:#777b85;
-  font-size:9px;
-  letter-spacing:1px;
-  text-transform:uppercase;
-}
-
-.location-value{
-  color:#d9dae0;
-  font-size:12px;
-  font-weight:700;
-}
-
-/* MAP */
-
-.map-wrap{
-  padding:7px;
-  border:1px solid #252830;
-  border-radius:9px;
-  background:#090a0d;
-}
-
-#map{
-  height:490px;
+.option{
   width:100%;
-  overflow:hidden;
-  border-radius:6px;
-  background:#101218;
-}
-
-.map-note{
-  margin-top:9px;
-  color:#646872;
-  font-size:10px;
-  line-height:1.5;
-}
-
-/* RESULTS */
-
-.result-grid{
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:white;
+  border-radius:14px;
+  padding:17px;
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
+  grid-template-columns:44px 1fr 25px;
+  align-items:center;
+  text-align:left;
+  cursor:pointer;
+  transition:.18s ease;
+}
+
+.option:hover{
+  transform:translateY(-2px);
+  background:var(--panel2);
+  border-color:#444;
+}
+
+.option-icon{
+  font-size:23px;
+}
+
+.option strong{
+  display:block;
+  font-size:15px;
+  margin-bottom:4px;
+}
+
+.option small{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.arrow{
+  color:#777;
+  font-size:27px;
 }
 
 .result{
-  min-height:82px;
-  padding:13px;
-  border:1px solid #252830;
-  border-radius:8px;
-  background:#0a0b0f;
-}
-
-.result-label{
-  margin-bottom:8px;
-  color:#70747f;
-  font-size:9px;
-  text-transform:uppercase;
-  letter-spacing:.8px;
-}
-
-.result-value{
-  color:#d8d9de;
-  font-family:monospace;
-  font-size:12px;
-  font-weight:700;
-  word-break:break-word;
-}
-
-.status-ok{
-  color:var(--green)!important;
-}
-
-/* ACTIVITY */
-
-.activity{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:11px 13px;
-  border:1px solid #24262a;
-  border-radius:7px;
-  background:#0a0b0f;
-}
-
-.activity-dot{
-  width:8px;
-  height:8px;
-  flex:none;
-  border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 10px rgba(24,201,130,.7);
-}
-
-.activity-text{
-  color:#979aa3;
-  font-size:11px;
-}
-
-.footer{
-  padding:18px 5px;
-  color:#4f535c;
+  margin-top:20px;
   text-align:center;
-  font-size:9px;
-  letter-spacing:.5px;
 }
 
-/* TOAST */
+.hidden{
+  display:none;
+}
 
-.toast{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  z-index:9999;
-  max-width:330px;
-  padding:12px 15px;
-  border:1px solid #363942;
-  border-radius:8px;
-  color:#d8d9de;
-  background:#12141a;
-  box-shadow:0 15px 40px rgba(0,0,0,.45);
-  opacity:0;
-  pointer-events:none;
-  transform:translateY(10px);
-  transition:.25s;
+.result-icon{
+  width:54px;
+  height:54px;
+  display:grid;
+  place-items:center;
+  margin:0 auto 15px;
+  border-radius:50%;
+  background:rgba(37,244,238,.1);
+  border:1px solid rgba(37,244,238,.3);
+  font-size:23px;
+  color:var(--cyan);
+}
+
+.result h2{
+  margin-bottom:8px;
+}
+
+.steps{
+  margin-top:25px;
+  display:grid;
+  gap:10px;
+  text-align:left;
+}
+
+.step{
+  display:flex;
+  gap:13px;
+  padding:15px;
+  border-radius:12px;
+  background:#0b0b0b;
+  border:1px solid var(--border);
+}
+
+.step-number{
+  flex:0 0 28px;
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:white;
+  color:black;
+  font-weight:800;
+  font-size:12px;
+}
+
+.step-text{
+  color:#ddd;
+  font-size:14px;
+  line-height:1.6;
+}
+
+.actions{
+  margin-top:25px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.primary-button,
+.secondary-button{
+  min-height:48px;
+  padding:0 20px;
+  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:14px;
+  text-decoration:none;
+  cursor:pointer;
+}
+
+.primary-button{
+  background:white;
+  color:black;
+  border:1px solid white;
+}
+
+.secondary-button{
+  background:transparent;
+  color:white;
+  border:1px solid #444;
+}
+
+.secondary-button:hover{
+  background:#191919;
+}
+
+.security-card{
+  margin-top:20px;
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  padding:20px;
+  border-radius:15px;
+  border:1px solid rgba(37,244,238,.18);
+  background:rgba(37,244,238,.035);
+}
+
+.security-icon{
+  font-size:24px;
+}
+
+.security-card h3{
+  font-size:15px;
+  margin-bottom:5px;
+}
+
+.security-card p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+}
+
+.official{
+  text-align:center;
+  padding:45px 20px;
+}
+
+.official h2{
+  font-size:20px;
+  margin-bottom:8px;
+}
+
+.official p{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:13px;
+}
+
+.official a{
+  color:var(--cyan);
+  text-decoration:none;
+  font-weight:700;
+  font-size:14px;
+}
+
+footer{
+  border-top:1px solid var(--border);
+  padding:28px 20px;
+  text-align:center;
+  color:#666;
   font-size:11px;
+  line-height:1.7;
 }
 
-.toast.show{
-  opacity:1;
-  transform:translateY(0);
-}
+@media(max-width:600px){
 
-/* MOBILE */
+  .topbar{
+    padding:0 18px;
+  }
 
-@media(max-width:760px){
-
-  .app{
+  main{
     width:94%;
-    padding:12px 0 30px;
+    padding:45px 0;
   }
 
-  .header{
-    height:55px;
-    padding:0 13px;
+  .hero h1{
+    letter-spacing:-1px;
   }
 
-  .panel{
-    padding:13px;
+  .card{
+    padding:20px;
+    border-radius:16px;
   }
 
-  .intel-row{
-    grid-template-columns:115px 1fr;
+  .option{
+    grid-template-columns:38px 1fr 20px;
+    padding:15px 12px;
   }
 
-  .location-grid{
-    grid-template-columns:1fr;
+  .actions{
+    flex-direction:column;
   }
 
-  .result-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  #map{
-    height:390px;
-  }
-}
-
-@media(max-width:480px){
-
-  .search-row{
-    flex-direction:row;
-  }
-
-  .search-btn{
-    width:48px;
-  }
-
-  .examples{
-    gap:5px;
-  }
-
-  .result-grid{
-    grid-template-columns:1fr;
-  }
-
-  #map{
-    height:330px;
+  .primary-button,
+  .secondary-button{
+    width:100%;
   }
 }
 </style>
@@ -486,785 +417,477 @@ body{
 
 <body>
 
-<div class="app">
+<header class="topbar">
 
-  <!-- HEADER -->
+  <div class="brand">
 
-  <header class="header">
+    <div class="brand-icon">♪</div>
 
-    <div class="brand">
-
-      <div class="brand-icon">
-        ⌁
-      </div>
-
-      <span>SignalTrace</span>
-
+    <div>
+      <strong>TikTok Recovery</strong>
+      <span>Lost Access Assistant</span>
     </div>
 
-    <div class="version">
-      v1.0.0
-    </div>
+  </div>
 
-  </header>
+  <div class="status">
+    <span class="status-dot"></span>
+    Secure
+  </div>
+
+</header>
 
 
-  <!-- SEARCH -->
+<main>
 
-  <section class="panel">
+<section class="hero">
 
-    <div class="panel-title">
-      <span class="icon">⌕</span>
-      Trace Phone Number
-    </div>
+  <div class="hero-badge">
+    ACCOUNT RECOVERY
+  </div>
 
-    <div class="search-row">
+  <h1>
+    Lost access to your TikTok account?
+  </h1>
 
-      <input
-        id="phoneInput"
-        class="search-input"
-        type="tel"
-        placeholder="+639XXXXXXXXX"
-        autocomplete="off">
+  <p>
+    Select the problem you're experiencing and follow
+    the appropriate official recovery instructions.
+  </p>
 
-      <button
-        class="search-btn"
-        type="button"
-        onclick="analyzeNumber()">
+  <div class="notice">
 
-        ⌕
+    <strong>Important:</strong>
+    This website does not ask for your TikTok password,
+    verification code, cookies, or login session.
 
-      </button>
+  </div>
 
-    </div>
+</section>
 
-    <div class="examples">
 
-      <span class="example-label">
-        Example Targets
+<section class="card">
+
+  <h2>What happened?</h2>
+
+  <p class="muted">
+    Select the situation that best describes your problem.
+  </p>
+
+
+  <div class="options">
+
+    <button class="option" data-type="password">
+
+      <span class="option-icon">🔐</span>
+
+      <span>
+        <strong>Forgot my password</strong>
+        <small>
+          I cannot remember my TikTok password.
+        </small>
       </span>
 
-      <button
-        class="example"
-        onclick="setExample('+639171234567')">
-        +639171234567
-      </button>
+      <span class="arrow">›</span>
 
-      <button
-        class="example"
-        onclick="setExample('+639181234567')">
-        +639181234567
-      </button>
+    </button>
 
-      <button
-        class="example"
-        onclick="setExample('+14155552671')">
-        +14155552671
-      </button>
 
-    </div>
+    <button class="option" data-type="email">
 
-  </section>
+      <span class="option-icon">✉️</span>
 
-
-  <!-- INTELLIGENCE STATUS -->
-
-  <section class="panel">
-
-    <div class="panel-title">
-      <span class="icon">◉</span>
-      Intelligence Status
-    </div>
-
-    <div class="intel-grid">
-
-      <div class="intel-row">
-
-        <div class="intel-label">
-          Scan Status
-        </div>
-
-        <div
-          id="scanStatus"
-          class="intel-value verified">
-
-          READY
-
-        </div>
-
-      </div>
-
-      <div class="intel-row">
-
-        <div class="intel-label">
-          Line Type
-        </div>
-
-        <div
-          id="lineType"
-          class="intel-value">
-
-          UNKNOWN
-
-        </div>
-
-      </div>
-
-      <div class="intel-row">
-
-        <div class="intel-label">
-          Input Format
-        </div>
-
-        <div
-          id="inputFormat"
-          class="intel-value">
-
-          AWAITING INPUT
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- TARGET -->
-
-  <section class="panel">
-
-    <div class="panel-title">
-      <span class="icon">⌁</span>
-      Target Number
-    </div>
-
-    <div class="target-box">
-
-      <div class="target-label">
-        Phone Number
-      </div>
-
-      <div
-        id="targetNumber"
-        class="target-number">
-
-        —
-
-      </div>
-
-    </div>
-
-    <div class="location-grid">
-
-      <div class="location-card">
-
-        <div class="location-label">
-          ◉ Country
-        </div>
-
-        <div
-          id="country"
-          class="location-value">
-
-          —
-
-        </div>
-
-      </div>
-
-      <div class="location-card">
-
-        <div class="location-label">
-          ◉ Region / Example Area
-        </div>
-
-        <div
-          id="region"
-          class="location-value">
-
-          —
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- MAP -->
-
-  <section class="panel">
-
-    <div class="panel-title">
-      <span class="icon">⌖</span>
-      Reference Map
-    </div>
-
-    <div class="map-wrap">
-
-      <div id="map"></div>
-
-    </div>
-
-    <div class="map-note">
-      Map markers in this standalone page are illustrative
-      reference points only. A phone number alone cannot
-      provide a private person's live GPS location.
-    </div>
-
-  </section>
-
-
-  <!-- RESULTS -->
-
-  <section class="panel">
-
-    <div class="panel-title">
-      <span class="icon">◈</span>
-      Number Information
-    </div>
-
-    <div class="result-grid">
-
-      <div class="result">
-
-        <div class="result-label">
-          Country Code
-        </div>
-
-        <div
-          id="countryCode"
-          class="result-value">
-
-          —
-
-        </div>
-
-      </div>
-
-      <div class="result">
-
-        <div class="result-label">
-          Number Length
-        </div>
-
-        <div
-          id="numberLength"
-          class="result-value">
-
-          —
-
-        </div>
-
-      </div>
-
-      <div class="result">
-
-        <div class="result-label">
-          Format
-        </div>
-
-        <div
-          id="numberFormat"
-          class="result-value">
-
-          —
-
-        </div>
-
-      </div>
-
-      <div class="result">
-
-        <div class="result-label">
-          Data Source
-        </div>
-
-        <div class="result-value">
-          Local Analysis
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- ACTIVITY -->
-
-  <section class="panel">
-
-    <div class="panel-title">
-      <span class="icon">◌</span>
-      System Activity
-    </div>
-
-    <div class="activity">
-
-      <span class="activity-dot"></span>
-
-      <span
-        id="activityText"
-        class="activity-text">
-
-        System ready. Enter a number to begin
-        format analysis.
-
+      <span>
+        <strong>Lost email access</strong>
+        <small>
+          I cannot access the email connected to my account.
+        </small>
       </span>
 
-    </div>
+      <span class="arrow">›</span>
 
-  </section>
-
-
-  <footer class="footer">
-
-    SIGNALTRACE • NUMBER FORMAT & REFERENCE TOOL
-    <br><br>
-    No carrier database • No private GPS access • No hidden tracking
-
-  </footer>
-
-</div>
+    </button>
 
 
-<div
-  id="toast"
-  class="toast">
-</div>
+    <button class="option" data-type="phone">
+
+      <span class="option-icon">📱</span>
+
+      <span>
+        <strong>Lost phone access</strong>
+        <small>
+          I no longer have access to my phone number.
+        </small>
+      </span>
+
+      <span class="arrow">›</span>
+
+    </button>
 
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <button class="option" data-type="hacked">
+
+      <span class="option-icon">🛡️</span>
+
+      <span>
+        <strong>My account may be hacked</strong>
+        <small>
+          I noticed activity I did not authorize.
+        </small>
+      </span>
+
+      <span class="arrow">›</span>
+
+    </button>
+
+
+    <button class="option" data-type="login">
+
+      <span class="option-icon">⚠️</span>
+
+      <span>
+        <strong>Other login problem</strong>
+        <small>
+          My problem does not fit the options above.
+        </small>
+      </span>
+
+      <span class="arrow">›</span>
+
+    </button>
+
+  </div>
+
+</section>
+
+
+<section id="result" class="card result hidden">
+
+  <div class="result-icon" id="resultIcon">
+    ✓
+  </div>
+
+  <h2 id="resultTitle">
+    Recovery steps
+  </h2>
+
+  <p id="resultDescription" class="muted"></p>
+
+  <div class="steps" id="steps"></div>
+
+  <div class="actions">
+
+    <a
+      class="primary-button"
+      href="https://support.tiktok.com/en/getting-started/log-in"
+      target="_blank"
+      rel="noopener noreferrer">
+
+      Open TikTok Help Center
+
+    </a>
+
+    <button
+      id="backButton"
+      class="secondary-button">
+
+      Choose another problem
+
+    </button>
+
+  </div>
+
+</section>
+
+
+<section class="security-card">
+
+  <div class="security-icon">
+    🔒
+  </div>
+
+  <div>
+
+    <h3>Stay safe</h3>
+
+    <p>
+      Never give your password, verification code,
+      recovery code, or login cookies to another person
+      or website.
+    </p>
+
+  </div>
+
+</section>
+
+
+<section class="official">
+
+  <h2>
+    Official TikTok recovery
+  </h2>
+
+  <p>
+    For actual account recovery, always use TikTok's
+    official application or Help Center.
+  </p>
+
+  <a
+    href="https://support.tiktok.com/en/getting-started/log-in"
+    target="_blank"
+    rel="noopener noreferrer">
+
+    Visit TikTok Help Center →
+
+  </a>
+
+</section>
+
+</main>
+
+
+<footer>
+
+  <p>
+    © 2026 TikTok Lost Access Recovery Assistant
+  </p>
+
+  <p>
+    Independent recovery-assistance project.
+    Not affiliated with TikTok.
+  </p>
+
+</footer>
+
 
 <script>
-"use strict";
 
-let map;
-let marker;
+const options =
+  document.querySelectorAll(".option");
 
-/* DOM HELPER */
+const result =
+  document.getElementById("result");
 
-function $(id){
-  return document.getElementById(id);
-}
+const resultTitle =
+  document.getElementById("resultTitle");
 
+const resultDescription =
+  document.getElementById("resultDescription");
 
-/* MAP */
+const resultIcon =
+  document.getElementById("resultIcon");
 
-function initMap(){
+const stepsContainer =
+  document.getElementById("steps");
 
-  map = L.map("map",{
-    zoomControl:true
-  }).setView(
-    [12.8797,121.7740],
-    5
-  );
+const backButton =
+  document.getElementById("backButton");
 
-  const satellite =
-    L.tileLayer(
-      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-      {
-        maxZoom:19,
-        attribution:"Tiles © Esri"
-      }
-    );
 
-  const standard =
-    L.tileLayer(
-      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      {
-        maxZoom:19,
-        attribution:"© OpenStreetMap"
-      }
-    );
+const recoveryData = {
 
-  satellite.addTo(map);
+  password: {
 
-  L.control.layers({
-    "Satellite":satellite,
-    "Standard":standard
-  }).addTo(map);
+    icon:"🔐",
 
-}
+    title:"Forgot your password?",
 
+    description:
+      "Use TikTok's official password recovery process.",
 
-/* EXAMPLE */
+    steps:[
 
-function setExample(number){
+      "Open TikTok and go to the login screen.",
 
-  $("phoneInput").value = number;
+      "Select Use phone/email/username.",
 
-  analyzeNumber();
-}
+      "Choose Email/Username.",
 
+      "Select Forgot password?.",
 
-/* TOAST */
+      "Follow TikTok's verification and password-reset instructions."
 
-function showToast(message){
+    ]
 
-  const toast = $("toast");
+  },
 
-  toast.textContent = message;
 
-  toast.classList.add("show");
+  email: {
 
-  setTimeout(function(){
+    icon:"✉️",
 
-    toast.classList.remove("show");
+    title:"Lost access to your email?",
 
-  },3000);
-}
+    description:
+      "Try another available login method first, then use TikTok's official support process.",
 
+    steps:[
 
-/* ANALYZE */
+      "Open the TikTok login screen.",
 
-function analyzeNumber(){
+      "Try logging in using your username or another available method.",
 
-  const input =
-    $("phoneInput").value.trim();
+      "If you cannot access the account, open TikTok's official Help Center.",
 
-  if(!input){
+      "Select the appropriate account or login problem.",
 
-    showToast(
-      "Enter a phone number first."
-    );
+      "Follow the recovery instructions provided by TikTok."
 
-    return;
-  }
+    ]
 
-  const cleaned =
-    input.replace(/[^\d+]/g,"");
+  },
 
-  if(
-    cleaned.length < 7 ||
-    cleaned.length > 16
-  ){
 
-    $("scanStatus").textContent =
-      "INVALID";
+  phone: {
 
-    $("scanStatus").className =
-      "intel-value warning";
+    icon:"📱",
 
-    $("activityText").textContent =
-      "The entered value does not appear to be a valid phone-number format.";
+    title:"Lost access to your phone?",
 
-    showToast(
-      "Please check the number format."
-    );
+    description:
+      "Try another available recovery method or contact TikTok through its official support process.",
 
-    return;
-  }
+    steps:[
 
+      "Open the TikTok login screen.",
 
-  $("scanStatus").textContent =
-    "ANALYZED";
+      "Try Email/Username if it is connected to your account.",
 
-  $("scanStatus").className =
-    "intel-value verified";
+      "If you cannot recover access, open TikTok's official Help Center.",
 
+      "Follow TikTok's account-recovery instructions."
 
-  $("targetNumber").textContent =
-    formatNumber(cleaned);
+    ]
 
+  },
 
-  $("numberLength").textContent =
-    digitsOnly(cleaned).length +
-    " digits";
 
+  hacked: {
 
-  $("inputFormat").textContent =
-    cleaned.startsWith("+")
-    ? "INTERNATIONAL"
-    : "LOCAL / UNKNOWN";
+    icon:"🛡️",
 
+    title:"Account may be compromised",
 
-  const info =
-    detectCountry(cleaned);
+    description:
+      "Secure your account using TikTok's official recovery process.",
 
+    steps:[
 
-  $("country").textContent =
-    info.country;
+      "Do not share your password or verification codes with anyone.",
 
-  $("region").textContent =
-    info.region;
+      "If you can still access your account, change your password.",
 
-  $("countryCode").textContent =
-    info.code;
+      "Review your account and security settings.",
 
+      "Remove devices or activity you do not recognize.",
 
-  $("lineType").textContent =
-    "NOT DETERMINED";
+      "If you cannot log in, use TikTok's official support process."
 
+    ]
 
-  $("numberFormat").textContent =
-    info.format;
+  },
 
 
-  $("activityText").textContent =
-    "Number format analyzed successfully. No private carrier or GPS data was accessed.";
+  login: {
 
+    icon:"⚠️",
 
-  if(info.lat !== null){
+    title:"Other login problem",
 
-    map.setView(
-      [info.lat,info.lng],
-      info.zoom
-    );
+    description:
+      "Use TikTok's official Help Center for additional login troubleshooting.",
 
-    if(marker){
+    steps:[
 
-      marker.setLatLng([
-        info.lat,
-        info.lng
-      ]);
+      "Make sure your TikTok application is updated.",
 
-    }else{
+      "Try the official login and password-recovery options.",
 
-      marker =
-        L.marker([
-          info.lat,
-          info.lng
-        ]).addTo(map);
+      "If the problem continues, use Report a Problem in TikTok.",
 
-    }
+      "Follow the instructions provided by TikTok support."
 
-    marker.bindPopup(
-      "<b>Reference Area</b><br>" +
-      escapeHtml(info.region) +
-      "<br><small>Illustrative location only</small>"
-    );
+    ]
 
   }
 
-
-  showToast(
-    "Analysis completed."
-  );
-}
+};
 
 
-/* COUNTRY DETECTION */
+options.forEach(option => {
 
-function detectCountry(number){
+  option.addEventListener("click", () => {
 
-  const digits =
-    digitsOnly(number);
+    const type = option.dataset.type;
 
+    const data = recoveryData[type];
 
-  /* PHILIPPINES */
+    if(!data) return;
 
-  if(
-    number.startsWith("+63") ||
-    digits.startsWith("63")
-  ){
+    resultIcon.textContent = data.icon;
 
-    return {
-      country:"Philippines (PH)",
-      region:"Philippines — reference area",
-      code:"+63",
-      format:"International PH",
-      lat:12.8797,
-      lng:121.7740,
-      zoom:5
-    };
+    resultTitle.textContent = data.title;
 
-  }
+    resultDescription.textContent =
+      data.description;
 
+    stepsContainer.innerHTML = "";
 
-  /* UNITED STATES */
+    data.steps.forEach((step,index) => {
 
-  if(
-    number.startsWith("+1")
-  ){
+      const item =
+        document.createElement("div");
 
-    return {
-      country:"United States (US)",
-      region:"United States — reference area",
-      code:"+1",
-      format:"North America",
-      lat:39.8283,
-      lng:-98.5795,
-      zoom:4
-    };
+      item.className = "step";
 
-  }
+      item.innerHTML = `
+        <div class="step-number">
+          ${index + 1}
+        </div>
 
+        <div class="step-text">
+          ${escapeHtml(step)}
+        </div>
+      `;
 
-  /* UNITED KINGDOM */
+      stepsContainer.appendChild(item);
 
-  if(
-    number.startsWith("+44")
-  ){
+    });
 
-    return {
-      country:"United Kingdom (GB)",
-      region:"United Kingdom — reference area",
-      code:"+44",
-      format:"International UK",
-      lat:55.3781,
-      lng:-3.4360,
-      zoom:5
-    };
+    result.classList.remove("hidden");
 
-  }
+    result.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+  });
+
+});
 
 
-  /* AUSTRALIA */
+backButton.addEventListener("click", () => {
 
-  if(
-    number.startsWith("+61")
-  ){
+  result.classList.add("hidden");
 
-    return {
-      country:"Australia (AU)",
-      region:"Australia — reference area",
-      code:"+61",
-      format:"International AU",
-      lat:-25.2744,
-      lng:133.7751,
-      zoom:4
-    };
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 
-  }
+});
 
 
-  /* CANADA */
+function escapeHtml(text){
 
-  if(
-    number.startsWith("+1") &&
-    number.length >= 11
-  ){
+  const div =
+    document.createElement("div");
 
-    return {
-      country:"Canada (CA)",
-      region:"Canada — reference area",
-      code:"+1",
-      format:"North America",
-      lat:56.1304,
-      lng:-106.3468,
-      zoom:4
-    };
+  div.textContent = text;
 
-  }
-
-
-  return {
-    country:"Unknown",
-    region:"No country mapping available",
-    code:"—",
-    format:"Unrecognized",
-    lat:null,
-    lng:null,
-    zoom:5
-  };
+  return div.innerHTML;
 
 }
-
-
-/* DIGITS */
-
-function digitsOnly(value){
-
-  return value.replace(/\D/g,"");
-
-}
-
-
-/* FORMAT NUMBER */
-
-function formatNumber(value){
-
-  if(value.startsWith("+63")){
-
-    const d =
-      value.substring(3);
-
-    if(d.length === 10){
-
-      return (
-        "+63 " +
-        d.substring(0,3) +
-        " " +
-        d.substring(3,6) +
-        " " +
-        d.substring(6)
-      );
-
-    }
-
-  }
-
-  if(value.startsWith("+1")){
-
-    const d =
-      value.substring(2);
-
-    if(d.length === 10){
-
-      return (
-        "+1 " +
-        d.substring(0,3) +
-        " " +
-        d.substring(3,6) +
-        " " +
-        d.substring(6)
-      );
-
-    }
-
-  }
-
-  return value;
-
-}
-
-
-/* ESCAPE */
-
-function escapeHtml(value){
-
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-
-/* ENTER KEY */
-
-$("phoneInput").addEventListener(
-  "keydown",
-  function(event){
-
-    if(event.key === "Enter"){
-
-      analyzeNumber();
-
-    }
-
-  }
-);
-
-
-/* START */
-
-window.addEventListener(
-  "load",
-  function(){
-
-    initMap();
-
-  }
-);
 
 </script>
 
